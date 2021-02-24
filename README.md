@@ -1,8 +1,9 @@
 
-[![Discord](https://discord.com/assets/192cb9459cbc0f9e73e2591b700f1857.svg)](DISCORD_URL)
+[![Discord](https://discord.com/assets/192cb9459cbc0f9e73e2591b700f1857.svg)](https://discord.gg/bYSaT74KzT)
 
 # ![Logo](./Images/logo.png)
 
+![Everyone](./Images/Everything.png)
 An Among Us mod that adds a lot of mods and relevant game settings
 
 
@@ -27,12 +28,12 @@ Roles might be added in the future
 # Releases :
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2020.12.19s | V1.0.0 | [Download]() |
+| 2020.12.19s | V1.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/1.0.0/TownOfUs-v1.0.0.zip) |
 
 # Installation
 **Download the zip file on the right side of Github.**  
 1. Find the folder of your game, for steams players you can right click in steam, on the game, a menu will appear proposing you to go to the folders.
-2. Make a copy of your game, it's not obligatory but advise, put it where you want, I advise you to put it in the __common__ folder of steam.
+2. Make a copy of your game (not required but recommended)
 3. Drag or extract the files from the zip into your game, at the .exe level.
 4. Turn on the game.
 5. Play the game.
@@ -185,7 +186,7 @@ A rainbow color has also been added. Anyone who equips this color will constantl
 
 
 # Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord server]() or create a ticket on GitHub
+If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/bYSaT74KzT) or create a ticket on GitHub
 
 # Credits & Resources
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
