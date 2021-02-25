@@ -28,8 +28,28 @@ Roles might be added in the future
 # Releases :
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2020.12.19s | v1.0.2 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.2/TownOfUs-v1.0.2.zip) |
 | 2020.12.19s | v1.0.1 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.1/TownOfUs-v1.0.1.zip) |
 | 2020.12.19s | v1.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.0/TownOfUs-v1.0.0.zip) |
+
+<details>
+  <summary> Changelog </summary>
+  <h3> <b> v1.0.2 </b> </h3>
+  <p> Fixes: </p>
+  <ul>
+    <li>  The Swapper being unable to vote </li>
+    Swapper unable to vote
+    <li> Mayor Vote Bank ending up negative </li>
+    <li> Anonymous Voting not working when Mayor is in a game </li>
+    <li> Chats not working in the lobby </li>
+    <li> Sheriff desync (I think) </li>
+    <li> Buttons being able to be used during meetings </li>
+  </ul>
+  <hr>
+  <h3> <b> v1.0.1 </b> </h3>
+  <p> Fixes errors of not being able to launch. </p>
+</details>
+
 
 # Installation
 **Download the zip file on the right side of Github.**  
@@ -113,7 +133,7 @@ The Mafioso is an impostor who cannot sabotage nor kill until the Godfather is d
 ### **Team: Crewmates**
 The Engineer can fix one sabotage per round from anywhere on the map.\
 However, once fixed, the impostors receive an arrow pointing to the Engineer, giving up their spot.\
-If an Engineer has used a fix for that round, the button cannot be pressed and meetings can only happen from reporting bodies.
+If an Engineer has used a fix for that round, the button cannot be pressed by *anybody* and meetings can only happen from reporting bodies.
 
 ### Game Options
 | Name | Description | Type | Default |
@@ -183,6 +203,7 @@ Nothing but movements and kills are affected (for now).
 New colors are added for crewmates so that they can be more colors
 ### Rainbow Color!
 A rainbow color has also been added. Anyone who equips this color will constantly switch between the colors of the rainbow.
+
 -----------------------
 
 
