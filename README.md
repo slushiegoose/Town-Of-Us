@@ -28,7 +28,8 @@ Roles might be added in the future
 # Releases :
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2020.12.19s | V1.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.0/TownOfUs-v1.0.0.zip) |
+| 2020.12.19s | v1.0.1 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.1/TownOfUs-v1.0.1.zip) |
+| 2020.12.19s | v1.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.0/TownOfUs-v1.0.0.zip) |
 
 # Installation
 **Download the zip file on the right side of Github.**  
