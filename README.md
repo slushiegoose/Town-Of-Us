@@ -1,5 +1,5 @@
 
-[![Discord](https://discord.com/assets/192cb9459cbc0f9e73e2591b700f1857.svg)](https://discord.gg/bYSaT74KzT)
+[![Discord](https://discord.com/assets/e4923594e694a21542a489471ecffa50.svg)](https://discord.gg/bYSaT74KzT)
 
 # ![Logo](./Images/logo.png)
 
@@ -28,12 +28,25 @@ Roles might be added in the future
 # Releases :
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2020.12.19s | v1.0.3 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.3/TownOfUs-v1.0.3.zip) |
 | 2020.12.19s | v1.0.2 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.2/TownOfUs-v1.0.2.zip) |
 | 2020.12.19s | v1.0.1 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.1/TownOfUs-v1.0.1.zip) |
 | 2020.12.19s | v1.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.0/TownOfUs-v1.0.0.zip) |
 
 <details>
   <summary> Changelog </summary>
+  <h3> <v> v1.0.3 </b> </h3>
+  <p> Fixes: </p>
+  <ul>
+    <li> Engineer being able to Fix every sabotage </li>
+    <li> The Investigator being able to revive people voted out (and instead made it an option) </li>
+    <li> Footprints not appearing if a person walks over old footprints </li>
+    <li> Graphical glitch where Jester and Lovers simultaneously win </li>
+    <li> Players spawning back into positions from the last game when time is rewound right at the beginning of a new game </li>
+    <li> Graphical Bug of Time Master's name not being blue in Meetings </li>
+    <li> Fixed Medbay Scan not working for custom colours </li>
+  </ul>
+  <hr>
   <h3> <b> v1.0.2 </b> </h3>
   <p> Fixes: </p>
   <ul>
@@ -197,6 +210,7 @@ Nothing but movements and kills are affected (for now).
 | Revive During Rewind | Whether to revive dead players when rewinding | Toggle | False |
 | Rewind Duration | How far to rewind back time | Number | 3s |
 | Rewind Cooldown | The cooldown of the Time Master's Rewind | Number | 25s |
+| Revive Voted Out | Whether people voted out are revived if time <br> is rewound just after a meeting finishes | Toggle | False |
 -----------------------
 ## Extras
 ### New Colors!
@@ -204,7 +218,7 @@ New colors are added for crewmates so that they can be more colors
 ### Rainbow Color!
 A rainbow color has also been added. Anyone who equips this color will constantly switch between the colors of the rainbow.
 
------------------------
+
 
 
 # Bug / Suggestions
