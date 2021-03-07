@@ -1,0 +1,25 @@
+﻿// Decompiled with JetBrains decompiler
+// Type: TownOfUs.RainbowMod.SetPlayerMaterialPatch
+// Assembly: TownOfUs, Version=1.0.3.0, Culture=neutral, PublicKeyToken=null
+// MVID: 167B09F5-14AA-4A43-BCE6-062AB9919D13
+// Assembly location: C:\Users\brayj\Downloads\TownOfUs-2020.12.9s (1).dll
+
+using HarmonyLib;
+using System;
+using UnityEngine;
+
+namespace TownOfUs.RainbowMod
+{
+  [HarmonyPatch(typeof (FFGALNAPKCD), "SetPlayerMaterialColors", new Type[] {typeof (int), typeof (Renderer)})]
+  public class SetPlayerMaterialPatch
+  {
+    public static bool Prefix([HarmonyArgument(0)] int colorId, [HarmonyArgument(1)] Renderer rend)
+    {
+      RainbowBehaviour rainbowBehaviour = (RainbowBehaviour) ((Component) rend).get_gameObject().GetComponent<RainbowBehaviour>();
+      if (Object.op_Equality((Object) rainbowBehaviour, (Object) null))
+        rainbowBehaviour = (RainbowBehaviour) ((Component) rend).get_gameObject().AddComponent<RainbowBehaviour>();
+      rainbowBehaviour.AddRend(rend, colorId);
+      return !RainbowUtils.IsRainbow(colorId);
+    }
+  }
+}

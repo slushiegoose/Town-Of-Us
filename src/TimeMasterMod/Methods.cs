@@ -1,0 +1,36 @@
+﻿// Decompiled with JetBrains decompiler
+// Type: TownOfUs.TimeMasterMod.Methods
+// Assembly: TownOfUs, Version=1.0.3.0, Culture=neutral, PublicKeyToken=null
+// MVID: 167B09F5-14AA-4A43-BCE6-062AB9919D13
+// Assembly location: C:\Users\brayj\Downloads\TownOfUs-2020.12.9s (1).dll
+
+using System;
+
+namespace TownOfUs.TimeMasterMod
+{
+  public class Methods
+  {
+    public static DateTime StartRewind;
+    public static DateTime FinishRewind;
+
+    public static float TimeMasterRewindTimer()
+    {
+      DateTime utcNow = DateTime.UtcNow;
+      TimeSpan timeSpan;
+      float num;
+      if (RecordRewind.rewinding)
+      {
+        timeSpan = utcNow - Methods.StartRewind;
+        num = (float) ((double) CustomGameOptions.RewindDuration * 1000.0 / 3.0);
+      }
+      else
+      {
+        timeSpan = utcNow - Methods.FinishRewind;
+        num = CustomGameOptions.RewindCooldown * 1000f;
+      }
+      return (double) num - timeSpan.TotalMilliseconds < 0.0 ? 0.0f : (float) (((double) num - timeSpan.TotalMilliseconds) / 1000.0);
+    }
+
+    public static float GetCooldown() => RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.SheriffKillCd;
+  }
+}
