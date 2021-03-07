@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\temp\TownOfUs-2020.12.9s.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2304F523-FF75-4806-85C1-6D860A8D5024}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>TownOfUs</AssemblyName>
+    <ApplicationVersion>1.0.3.0</ApplicationVersion>
+    <RootNamespace>TownOfUs</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="HSBColor.cs" />
+    <Compile Include="RainbowUtils.cs" />
+    <Compile Include="CustomGameOptions.cs" />
+    <Compile Include="CustomRPC.cs" />
+    <Compile Include="EndGamePatch.cs" />
+    <Compile Include="EndGameManagerPatch.cs" />
+    <Compile Include="Flamed.cs" />
+    <Compile Include="GameSettings.cs" />
+    <Compile Include="KillButtonSprite.cs" />
+    <Compile Include="Murder.cs" />
+    <Compile Include="MurderEnum.cs" />
+    <Compile Include="PingTrackerUpdate.cs" />
+    <Compile Include="Roles.cs" />
+    <Compile Include="RPC.cs" />
+    <Compile Include="RpcHandling.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="VersionShowerUpdate.cs" />
+    <Compile Include="TownOfUs.cs" />
+    <Compile Include="TimeMasterMod\ColourChange.cs" />
+    <Compile Include="TimeMasterMod\HUDClose.cs" />
+    <Compile Include="TimeMasterMod\HUDRewind.cs" />
+    <Compile Include="TimeMasterMod\Intro.cs" />
+    <Compile Include="TimeMasterMod\Methods.cs" />
+    <Compile Include="TimeMasterMod\PerformKillButton.cs" />
+    <Compile Include="TimeMasterMod\PointInTime.cs" />
+    <Compile Include="TimeMasterMod\RecordRewind.cs" />
+    <Compile Include="TimeMasterMod\Role.cs" />
+    <Compile Include="TimeMasterMod\Start.cs" />
+    <Compile Include="TimeMasterMod\StartStop.cs" />
+    <Compile Include="SwapperMod\AddButton.cs" />
+    <Compile Include="SwapperMod\ColourChange.cs" />
+    <Compile Include="SwapperMod\Intro.cs" />
+    <Compile Include="SwapperMod\NoButtons.cs" />
+    <Compile Include="SwapperMod\NoSabotage.cs" />
+    <Compile Include="SwapperMod\Role.cs" />
+    <Compile Include="SwapperMod\ShowHideButtons.cs" />
+    <Compile Include="SwapperMod\SwapVotes.cs" />
+    <Compile Include="ShifterMod\ColourChange.cs" />
+    <Compile Include="ShifterMod\EndGame.cs" />
+    <Compile Include="ShifterMod\HUDClose.cs" />
+    <Compile Include="ShifterMod\HUDShift.cs" />
+    <Compile Include="ShifterMod\Intro.cs" />
+    <Compile Include="ShifterMod\Methods.cs" />
+    <Compile Include="ShifterMod\PerformKillButton.cs" />
+    <Compile Include="ShifterMod\RemoveTasks.cs" />
+    <Compile Include="ShifterMod\Role.cs" />
+    <Compile Include="ShifterMod\Start.cs" />
+    <Compile Include="SheriffMod\ColourChange.cs" />
+    <Compile Include="SheriffMod\HUDClose.cs" />
+    <Compile Include="SheriffMod\HUDKill.cs" />
+    <Compile Include="SheriffMod\Intro.cs" />
+    <Compile Include="SheriffMod\Kill.cs" />
+    <Compile Include="SheriffMod\Methods.cs" />
+    <Compile Include="SheriffMod\Role.cs" />
+    <Compile Include="SheriffMod\Start.cs" />
+    <Compile Include="RainbowMod\PalettePatch.cs" />
+    <Compile Include="RainbowMod\PlayerTabPatch.cs" />
+    <Compile Include="RainbowMod\RainbowBehaviour.cs" />
+    <Compile Include="RainbowMod\SetPlayerMaterialPatch.cs" />
+    <Compile Include="MafiaMod\Intro.cs" />
+    <Compile Include="MafiaMod\NameChange.cs" />
+    <Compile Include="MafiaMod\Role.cs" />
+    <Compile Include="MafiaMod\Mafioso\HUD.cs" />
+    <Compile Include="MafiaMod\Mafioso\UseButton.cs" />
+    <Compile Include="MafiaMod\Janitor\Coroutine.cs" />
+    <Compile Include="MafiaMod\Janitor\HUDClose.cs" />
+    <Compile Include="MafiaMod\Janitor\KillButtonTarget.cs" />
+    <Compile Include="MafiaMod\Janitor\PerformKillButton.cs" />
+    <Compile Include="MafiaMod\Janitor\PlayerControlUpdate.cs" />
+    <Compile Include="MafiaMod\Janitor\Start.cs" />
+    <Compile Include="MayorMod\LowLights.cs" />
+    <Compile Include="MayorMod\AllowExtraVotes.cs" />
+    <Compile Include="MayorMod\ColourChange.cs" />
+    <Compile Include="MayorMod\Intro.cs" />
+    <Compile Include="MayorMod\NoSabotage.cs" />
+    <Compile Include="MayorMod\RegisterExtraVotes.cs" />
+    <Compile Include="MayorMod\Role.cs" />
+    <Compile Include="LoversMod\AddChat.cs" />
+    <Compile Include="LoversMod\ColourChange.cs" />
+    <Compile Include="LoversMod\Die.cs" />
+    <Compile Include="LoversMod\EndCriteria.cs" />
+    <Compile Include="LoversMod\Intro.cs" />
+    <Compile Include="LoversMod\Methods.cs" />
+    <Compile Include="LoversMod\Murder.cs" />
+    <Compile Include="LoversMod\Outro.cs" />
+    <Compile Include="LoversMod\Role.cs" />
+    <Compile Include="JesterMod\ColourChange.cs" />
+    <Compile Include="JesterMod\EndCriteria.cs" />
+    <Compile Include="JesterMod\EndGame.cs" />
+    <Compile Include="JesterMod\Intro.cs" />
+    <Compile Include="JesterMod\Outro.cs" />
+    <Compile Include="JesterMod\RemoveTasks.cs" />
+    <Compile Include="JesterMod\Role.cs" />
+    <Compile Include="JesterMod\VoteOut.cs" />
+    <Compile Include="InvestigatorMod\AddPrints.cs" />
+    <Compile Include="InvestigatorMod\ColourChange.cs" />
+    <Compile Include="InvestigatorMod\EndGame.cs" />
+    <Compile Include="InvestigatorMod\Footprint.cs" />
+    <Compile Include="InvestigatorMod\Intro.cs" />
+    <Compile Include="InvestigatorMod\Role.cs" />
+    <Compile Include="InvestigatorMod\StartGame.cs" />
+    <Compile Include="EngineerMod\Arrows.cs" />
+    <Compile Include="EngineerMod\Button.cs" />
+    <Compile Include="EngineerMod\ColourChange.cs" />
+    <Compile Include="EngineerMod\Intro.cs" />
+    <Compile Include="EngineerMod\KillButtonSprite.cs" />
+    <Compile Include="EngineerMod\PerformKill.cs" />
+    <Compile Include="EngineerMod\Role.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Engineer.png" />
+    <EmbeddedResource Include="Resources\EngineerArrow.png" />
+    <EmbeddedResource Include="Resources\Footprint.png" />
+    <EmbeddedResource Include="Resources\GreyscaleKill.png" />
+    <EmbeddedResource Include="Resources\Janitor.png" />
+    <EmbeddedResource Include="Resources\Kill.png" />
+    <EmbeddedResource Include="Resources\NormalKill.png" />
+    <EmbeddedResource Include="Resources\Rewind.png" />
+    <EmbeddedResource Include="Resources\Shift.png" />
+    <EmbeddedResource Include="Resources\SwapperSwitch.png" />
+    <EmbeddedResource Include="Resources\SwapperSwitchDisabled.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
