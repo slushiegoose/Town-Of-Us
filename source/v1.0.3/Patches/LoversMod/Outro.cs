@@ -1,0 +1,62 @@
+using HarmonyLib;
+using UnityEngine;
+
+namespace TownOfUs.LoversMod
+{
+	
+	[HarmonyPatch(typeof(EndGameManager))]
+	internal class Outro
+	{
+	
+		[HarmonyPatch("Start")]
+		public static void Postfix(EndGameManager __instance)
+		{
+			TextRenderer text;
+			Vector3 pos;
+			if (EndCriteria.NobodyWins)
+			{
+				text = Object.Instantiate(__instance.WinText);
+				var color = __instance.WinText.Color;
+				color.a = 1f;
+				text.Color = color;
+				text.Text = "Only neutral roles were left";
+				pos = __instance.WinText.transform.localPosition;
+				pos.y = 1.5f;
+				text.transform.position = pos;
+				text.scale = 0.5f;
+				return;
+			}
+
+			if (!EndCriteria.LoveCoupleWins) return;
+			if (JesterMod.EndCriteria.JesterVotedOut) return;
+			PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+			if (array[0] != null)
+			{
+				array[0].gameObject.transform.position -= new Vector3(1.5f, 0f, 0f);
+				array[0].SetFlipX(true);
+				array[0].NameText.Text = "[FF80D5FF]" + array[0].NameText.Text;
+			}
+
+			if (array[1] != null)
+			{
+				array[1].SetFlipX(false);
+				array[1].gameObject.transform.position = array[0].gameObject.transform.position + new Vector3(1.2f, 0f, 0f);
+				array[1].gameObject.transform.localScale *= 0.92f;
+				array[1].HatSlot.transform.position += new Vector3(0.1f, 0f, 0f);
+				array[1].NameText.Text = "[FF80D5FF]" + array[1].NameText.Text;
+			}
+			__instance.BackgroundBar.material.color = new Color(1f, 0.4f, 0.8f, 1f);
+			
+			text = Object.Instantiate(__instance.WinText);
+			text.Text = "Love couple wins";
+			text.Color = new Color(1f, 0.4f, 0.8f, 1f);
+			pos = __instance.WinText.transform.localPosition;
+			pos.y = 1.5f;
+			text.transform.position = pos;
+			text.scale = 1f;
+		}
+
+	}
+}
+
+
