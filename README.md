@@ -103,7 +103,7 @@ However, the Jester does not win if the Crewmates or Impostor wins.
 -----------------------
 ## Sheriff
 ### **Team: Crewmates**
-The Sheriff's aim is able to kill and their aim is to killl Impostors.\
+The Sheriff is able to kill and their aim is to kill Impostors.\
 However, if they attempt to kill a Crewmate or a Neutral character, they instead die themselves.
 
 ### Game Options
