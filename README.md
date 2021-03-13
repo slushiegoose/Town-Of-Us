@@ -184,8 +184,8 @@ To counteract this, The Swapper cannot fix Lights or Comms and cannot push the E
 -----------------------
 ## Investigator
 ### **Team: Crewmates**
-The Investigator can see the movement of players.\
-Every player leaves a footprint that only the Investigator can see, which disappears after some time.\
+The Investigator can see the movement of players.
+Every player leaves a footprint that only the Investigator can see, which disappears after some time.
 
 ### Game Options
 | Name | Description | Type | Default |
