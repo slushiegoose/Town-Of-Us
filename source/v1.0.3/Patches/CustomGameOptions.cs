@@ -12,6 +12,7 @@ namespace TownOfUs
         public static int ShifterOn => (int) TownOfUs.ShifterOn.GetValue();
         public static int InvestigatorOn => (int) TownOfUs.InvestigatorOn.GetValue();
         public static int TimeMasterOn => (int) TownOfUs.TimeMasterOn.GetValue();
+        public static int PresidentOn => (int) TownOfUs.PresidentOn.getVlue();
 
         public static bool BothLoversDie => TownOfUs.BothLoversDie.GetValue();
         public static bool ShowSheriff => TownOfUs.ShowSheriff.GetValue();
@@ -20,8 +21,9 @@ namespace TownOfUs
         public static float MayorVision => TownOfUs.MayorVision.GetValue();
         public static float EngineerVision => TownOfUs.EngineerVision.GetValue();
         public static int MayorVoteBank => (int) TownOfUs.MayorVoteBank.GetValue();
-        public static float ShifterCd => TownOfUs.ShifterCd.GetValue();
+        public static int PresidentVoteBank => (int) TownOfUs.PresidentVoteBank.getVlue();
         
+        public static float ShifterCd => TownOfUs.ShifterCd.GetValue();
         public static float FootprintSize => TownOfUs.FootprintSize.GetValue();
         public static float FootprintInterval => TownOfUs.FootprintInterval.GetValue();
         public static float FootprintDuration => TownOfUs.FootprintDuration.GetValue();
