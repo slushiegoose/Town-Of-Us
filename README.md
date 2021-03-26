@@ -13,10 +13,7 @@ There are 13 roles and 2 Modifiers
 - [Jester](#jester)
 - [Sheriff](#sheriff)
 - [Lovers](#lovers)
-- [Mafia](#mafia)
-  - Godfather
-  - Janitor
-  - Mafioso
+- [Janitor](#janitor)
 - [Engineer](#engineer)
 - [Swapper](#swapper)
 - [Shifter](#shifter)
@@ -38,13 +35,23 @@ Modifiers:
 - [Flash](#flash)
 
 
-Modifiers
+
+New in v1.2.0
+- [Snitch](#snitch)
+- [Arsonist](#arsonist)
+- [Swooper](#swopper)
+- [Miner](#miner)
+
+Modifiers:
+- [Tiebreaker](#tiebreaker)
+- [Drunk](#drunk)
 
 Roles might be added in the future
 
 # Releases :
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2021.3.5s | v1.2.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.2.0/TownOfUs-v1.2.0.zip) |
 | 2021.3.5s | v1.1.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2021.3.5s.zip) |
 | 2020.12.19s | v1.1.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2020.12.9s.zip) |
 | 2020.12.19s | v1.0.3 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.3/TownOfUs-v1.0.3.zip) |
@@ -55,7 +62,21 @@ Roles might be added in the future
 <details>
   <summary> Changelog </summary>
 
-  <h3> <b> v1.1.0 </b> </h3>
+  
+ <details>
+  <summary> v1.2.0 </summary>
+  <ul>
+    <li> New roles (see above)</a>
+    <li> New modifiers (see above)</li>
+    <li> Exporting and Importing game settings which sync between versions 1.2.0 and future versions</li>
+    <li> Disconnect fix </li>
+    <li> Mayor additions - Abstain button, Option for Mayor's extra votes to be anonymous </li>
+    <li> Option for dead to see the roles of everyone </li>
+    <li> Custom colours now work! </li>
+  </ul>
+  </details>
+  <details>
+  <summary> v1.1.0 </summary>
   <ul>
     <li> New roles (see above)</a>
     <li> New modifiers (see above)</li>
@@ -73,10 +94,11 @@ Roles might be added in the future
       <li> Changing colours would render you weirdly green in normal Among Us </li>
     </ul>
   </ul>
-  <hr>
+  </details>
 
 
-  <h3> <b> v1.0.3 </b> </h3>
+  <details>
+  <summary> v1.0.3 </summary>
   <p> Fixes: </p>
   <ul>
     <li> Engineer being able to Fix every sabotage </li>
@@ -87,8 +109,10 @@ Roles might be added in the future
     <li> Graphical Bug of Time Lord's name not being blue in Meetings </li>
     <li> Fixed Medbay Scan not working for custom colours </li>
   </ul>
-  <hr>
-  <h3> <b> v1.0.2 </b> </h3>
+  </details>
+
+  <details>
+  <summary> v1.0.2 </summary>
   <p> Fixes: </p>
   <ul>
     <li>  The Swapper being unable to vote </li>
@@ -100,8 +124,12 @@ Roles might be added in the future
     <li> Buttons being able to be used during meetings </li>
   </ul>
   <hr>
-  <h3> <b> v1.0.1 </b> </h3>
+  </details>
+
+  <details>
+  <summary> v1.0.1 </summary>
   <p> Fixes errors of not being able to launch. </p>
+  </details>
 </details>
 
 
@@ -115,7 +143,8 @@ Roles might be added in the future
 
 ![Install](https://i.imgur.com/pvBAyZN.png)
 
-# Roles
+# These Roles are outdated. For the most updated list, go to https://tinyurl.com/TownOfUsMod
+
 ## Mayor
 ### **Team: Crewmates**
 The Mayor is a role that can vote multiple times.\
