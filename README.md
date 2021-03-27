@@ -572,6 +572,6 @@ If you have any bugs or any need to contact me, join the [Discord server](https:
 [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Child and Spy roles.
 
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For created custom game options.\
-v1.0.3 uses [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) directly.
-v1.1.0 uses a modified version of Essentials that can be found [here]((https://github.com/slushiegoose/Reactor-Essentials))
-v1.2.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/v1.2.0/Patches/CustomOption)
+v1.0.3 uses [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) directly.\
+v1.1.0 uses a modified version of Essentials that can be found [here](https://github.com/slushiegoose/Reactor-Essentials).\
+v1.2.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/Patches/CustomOption).
