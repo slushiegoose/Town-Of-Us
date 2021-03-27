@@ -562,7 +562,6 @@ If you have any bugs or any need to contact me, join the [Discord server](https:
 # Credits & Resources
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
 [BepInEx](https://github.com/BepInEx) - For hooking game functions\
-[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For created custom game options.\
 [Among-Us-Sheriff-Mod](https://github.com/Woodi-dev/Among-Us-Sheriff-Mod) - For the Sheriff role.\
 [Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - For the inspiration of Lovers role.\
 [ExtraRolesAmongUs](https://github.com/NotHunter101/ExtraRolesAmongUs) - For the Engineer & Medic roles.\
@@ -571,3 +570,8 @@ If you have any bugs or any need to contact me, join the [Discord server](https:
 [XtraCube](https://github.com/XtraCube) - For the RainbowMod.\
 [PhasmoFireGod](https://twitch.tv/PhasmoFireGod) - Button Art.\
 [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Child and Spy roles.
+
+[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For created custom game options.\
+v1.0.3 uses [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) directly.
+v1.1.0 uses a modified version of Essentials that can be found [here]((https://github.com/slushiegoose/Reactor-Essentials))
+v1.2.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/v1.2.0/Patches/CustomOption)
