@@ -3,28 +3,26 @@ using UnityEngine;
 
 namespace TownOfUs.MafiaMod.Janitor
 {
-    [HarmonyPatch(typeof(KillButtonManager))]
+    [HarmonyPatch(typeof(KillButtonManager), nameof(KillButtonManager.SetTarget))]
     public class KillButtonTarget
     {
-        public static DeadBody CurrentTarget;
-        
-        [HarmonyPatch(nameof(KillButtonManager.SetTarget))]
         public static bool Prefix(KillButtonManager __instance)
         {
-            return !PlayerControl.LocalPlayer.isJanitor();
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor)) return true;
+            return CustomGameOptions.JanitorKill && Utils.IsLastImp(PlayerControl.LocalPlayer);
         }
 
-        public static void SetTarget(KillButtonManager __instance, DeadBody target)
+        public static void SetTarget(KillButtonManager __instance, DeadBody target, Roles.Janitor role)
         {
-            if (CurrentTarget && CurrentTarget != target)
+            if (role.CurrentTarget && role.CurrentTarget != target)
             {
-                CurrentTarget.GetComponent<SpriteRenderer>().material.SetFloat("_Outline", 0f);
+                role.CurrentTarget.GetComponent<SpriteRenderer>().material.SetFloat("_Outline", 0f);
             }
 
-            CurrentTarget = target;
-            if (CurrentTarget)
+            role.CurrentTarget = target;
+            if (role.CurrentTarget && __instance.enabled)
             {
-                var component = CurrentTarget.GetComponent<SpriteRenderer>();
+                var component = role.CurrentTarget.GetComponent<SpriteRenderer>();
                 component.material.SetFloat("_Outline", 1f);
                 component.material.SetColor("_OutlineColor", Color.red);
                 __instance.renderer.color = Palette.EnabledColor;

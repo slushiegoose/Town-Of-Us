@@ -1,18 +1,21 @@
 using System;
+using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUs.MafiaMod.Janitor
 {
     
-    [HarmonyPatch(typeof(ShipStatus))]
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
     public static class Start
     {
-        
-        [HarmonyPatch("Start")]
         public static void Postfix(ShipStatus __instance)
         {
-            PerformKillButton.LastCleaned = DateTime.UtcNow;
-            PerformKillButton.LastCleaned = PerformKillButton.LastCleaned.AddSeconds(-20.0);
+            foreach (var role in Roles.Role.GetRoles(RoleEnum.Janitor))
+            {
+                var janitor = (Roles.Janitor) role;
+                janitor.LastCleaned = DateTime.UtcNow;
+                janitor.LastCleaned = janitor.LastCleaned.AddSeconds(-20.0);
+            }
         }
     }
 }

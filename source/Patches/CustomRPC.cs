@@ -1,6 +1,6 @@
 namespace TownOfUs
 {
-    internal enum CustomRPC
+    public enum CustomRPC
     {
         SetJester = 43,
         SetCouple,
@@ -10,29 +10,52 @@ namespace TownOfUs
         SetSwapper,
         SetShifter,
         SetInvestigator,
-        SetTimeMaster,
+        SetTimeLord,
+        SetMedic,
+        SetSeer,
+        SetMorphling,
+        SetCamouflager,
+        SetExecutioner,
+        SetTarget,
+        SetChild,
+        SetSpy,
 
-        SetGodfather,
-        SetJanitor,
-        SetMafioso,
+        SetTorch,
+        SetDiseased,
+        SetFlash,
         
-        JesterWin,
+        SetMafia,
+        
         LoveWin,
+        GlitchWin,
         JesterLose,
+        ExecutionerLose,
         ShifterLose,
+        GlitchLose,
         NobodyWins,
-
-        LoveSuicide,
-        SheriffKill,
+        
         JanitorClean,
         FixLights,
-        SetArrows,
-        RemoveArrows,
+        EngineerFix,
         SetExtraVotes,
         SetSwaps,
         Shift,
+        Protect,
+        AttemptSound,
+        Investigate,
         Rewind,
         RewindRevive,
+        Morph,
+        Camouflage,
+
+        SetGlitch,
+        BypassKill,
+        SetMimic,
+        RpcResetAnim,
+        SetHacked,
+        
+        ExecutionerToJester,
+
 
         Start,
     }

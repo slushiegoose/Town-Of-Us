@@ -1,16 +1,39 @@
+using System;
+using System.IO;
 using HarmonyLib;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace TownOfUs.RainbowMod
 {
-    [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
     public class PlayerTabPatch
     {
-        public static void Postfix(PlayerTab __instance)
+
+        [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
+        public static class OnEnablePatch
         {
-            foreach (var chip in __instance.Field_8)
+            public static void Postfix(PlayerTab __instance)
             {
-                chip.transform.localScale *= 0.65f;
+                for (int i = 0; i < __instance.ColorChips.Count; i++)
+                {
+                    var chip = __instance.ColorChips[i];
+                    chip.transform.localScale *= 0.8f;
+                    chip.Button.OnClick.AddListener(Button(i));
+                }
+            }
+
+            private static Action Button(int i)
+            {
+                void Inner()
+                {
+                    SaveManager.BodyColor = (byte)(i < 12 ? i : 0);
+                }
+
+                return Inner;
             }
         }
+
     }
+    
+    
 }

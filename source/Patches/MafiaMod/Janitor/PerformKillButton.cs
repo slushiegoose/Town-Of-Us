@@ -10,37 +10,32 @@ namespace TownOfUs.MafiaMod.Janitor
     public class PerformKillButton
     
     {
-        
-        public static DateTime LastCleaned;
         public static bool Prefix(KillButtonManager __instance)
         {
-            var flag = PlayerControl.LocalPlayer.isJanitor();
+            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Janitor);
             if (!flag) return true;
+            var flag1 = CustomGameOptions.JanitorKill && Utils.IsLastImp(PlayerControl.LocalPlayer);
+            if (flag1) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
-            var flag2 = JanitorTimer() == 0f;
+            var role = Roles.Role.GetRole<Roles.Janitor>(PlayerControl.LocalPlayer);
+            var flag2 = role.JanitorTimer() == 0f;
             if (!flag2) return false;
+            if (!__instance.enabled) return false;
             var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-            if (Vector2.Distance(KillButtonTarget.CurrentTarget.TruePosition,
+            if (Vector2.Distance(role.CurrentTarget.TruePosition,
                 PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance) return false;
-            var playerId = KillButtonTarget.CurrentTarget.ParentId;
+            var playerId = role.CurrentTarget.ParentId;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                 (byte) CustomRPC.JanitorClean, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-            Coroutines.Start(Coroutine.CleanCoroutine(KillButtonTarget.CurrentTarget));
+            Coroutines.Start(Coroutine.CleanCoroutine(role.CurrentTarget, role));
             return false;
         }
         
-        public static float JanitorTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCleaned;
-            var num = CustomGameOptions.JanitorCleanCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
+        
     }
 }

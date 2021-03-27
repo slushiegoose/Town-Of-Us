@@ -7,14 +7,16 @@ namespace TownOfUs.MafiaMod.Mafioso
     {
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || !PlayerControl.LocalPlayer.isMafioso()) return;
+            if (PlayerControl.AllPlayerControls.Count <= 1 || !PlayerControl.LocalPlayer.Is(RoleEnum.Mafioso)) return;
+            var role = Roles.Role.GetRole<Roles.Mafioso>(PlayerControl.LocalPlayer);
             var killButton = __instance.KillButton;
-            if (!Utils.Godfather.Data.IsDead)
+            //System.Console.WriteLine(role.Godfather.Player.Data.IsDead ? "ISDEAD" : "ISNOTDEAD");
+            if (!role.Godfather.Player.Data.IsDead)
             {
                 killButton.gameObject.SetActive(false);
                 killButton.isActive = false;
             }
-            else if (!Utils.Mafioso.Data.IsDead)
+            else if (!role.Player.Data.IsDead)
             {
                 killButton.gameObject.SetActive(true);
                 killButton.isActive = true;

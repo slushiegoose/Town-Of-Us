@@ -1,17 +1,20 @@
 using System;
+using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUs.ShifterMod
 {
-    [HarmonyPatch(typeof(MeetingHud))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
     public static class HUDClose
     {
-        
-        [HarmonyPatch("Close")]
         public static void Postfix(HudManager __instance)
         {
-            Methods.LastShifted = DateTime.UtcNow;
-            Methods.LastShifted = Methods.LastShifted.AddSeconds(-10.0);
+            foreach (var role in Roles.Role.GetRoles(RoleEnum.Shifter))
+            {
+                var shifter = (Roles.Shifter) role;
+                shifter.LastShifted = DateTime.UtcNow;
+                shifter.LastShifted = shifter.LastShifted.AddSeconds(-10.0);
+            }
         }
     }
 }

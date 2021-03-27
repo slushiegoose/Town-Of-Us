@@ -3,29 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Reactor;
+using TownOfUs.Roles;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = System.Diagnostics.Debug;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.SwapperMod
 {
-    [HarmonyPatch(typeof(MeetingHud))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
         private static Sprite ActiveSprite => TownOfUs.SwapperSwitch;
         public static Sprite DisabledSprite => TownOfUs.SwapperSwitchDisabled;
-        public static readonly List<bool> ListOfActives = new List<bool>();
-        public static readonly List<GameObject> Buttons = new List<GameObject>();
         private static int _mostRecentId;
         
         
-        public static void GenButton(int index, bool isDead)
+        public static void GenButton(Swapper role, int index, bool isDead)
         {
 
             if (isDead)
             {
-                Buttons.Add(null);
-                ListOfActives.Add(false);
+                role.Buttons.Add(null);
+                role.ListOfActives.Add(false);
                 return;
             }
             
@@ -43,43 +43,49 @@ namespace TownOfUs.SwapperMod
             newButton.transform.parent = confirmButton.transform.parent.parent;
 
             passive.OnClick = new Button.ButtonClickedEvent();
-            passive.OnClick.AddListener(SetActive(index));
-            Buttons.Add(newButton);
-            ListOfActives.Add(false);
+            passive.OnClick.AddListener(SetActive(role, index));
+            role.Buttons.Add(newButton);
+            role.ListOfActives.Add(false);
 
         }
 
 
-        private static Action SetActive(int index)
+        private static Action SetActive(Swapper role, int index)
         {
             void Listener()
             {
-                if (ListOfActives.Count(x => x) == 2 &&
-                    Buttons[index].GetComponent<SpriteRenderer>().sprite == DisabledSprite) return;
+                if (role.ListOfActives.Count(x => x) == 2 &&
+                    role.Buttons[index].GetComponent<SpriteRenderer>().sprite == DisabledSprite) return;
                 
-                Buttons[index].GetComponent<SpriteRenderer>().sprite =
-                    ListOfActives[index] ? DisabledSprite : ActiveSprite;
+                role.Buttons[index].GetComponent<SpriteRenderer>().sprite =
+                    role.ListOfActives[index] ? DisabledSprite : ActiveSprite;
                 
-                ListOfActives[index] = !ListOfActives[index];
+                role.ListOfActives[index] = !role.ListOfActives[index];
 
                 _mostRecentId = index;
-                PluginSingleton<TownOfUs>.Instance.Log.LogMessage(string.Join(" ", ListOfActives));
+                PluginSingleton<TownOfUs>.Instance.Log.LogMessage(string.Join(" ", role.ListOfActives));
             }
 
             return Listener;
         }
-
-        [HarmonyPatch(nameof(MeetingHud.Start))]
+        
         public static void Postfix(MeetingHud __instance)
         {
-            ListOfActives.Clear();
-            Buttons.Clear();
+            
+            foreach(var role in Role.GetRoles(RoleEnum.Swapper))
+            {
+                var swapper = (Swapper) role;
+                swapper.ListOfActives.Clear();
+                swapper.Buttons.Clear();
+            }
 
-            if (!PlayerControl.LocalPlayer.isSwapper()) return;
+
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper)) return;
+            var swapperrole = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
-                GenButton(i, __instance.playerStates[i].isDead);
+                GenButton(swapperrole, i, __instance.playerStates[i].isDead);
             }
         }
     }

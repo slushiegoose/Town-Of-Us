@@ -2,13 +2,12 @@ using HarmonyLib;
 
 namespace TownOfUs.SheriffMod
 {
-    [HarmonyPatch(typeof(HudManager))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDKill
     {
 
         private static KillButtonManager KillButton;
         
-        [HarmonyPatch(nameof(HudManager.Update))]
         public static void Postfix(HudManager __instance)
         {
             UpdateKillButton(__instance);
@@ -20,11 +19,12 @@ namespace TownOfUs.SheriffMod
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
-            var flag7 = PlayerControl.AllPlayerControls.Count > 1 & Utils.Sheriff != null;
+            var flag7 = PlayerControl.AllPlayerControls.Count > 1;
             if (!flag7) return;
-            var flag8 = PlayerControl.LocalPlayer.isSheriff();
+            var flag8 = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             if (flag8)
             {
+                var role = Roles.Role.GetRole<Roles.Sheriff>(PlayerControl.LocalPlayer);
                 var isDead = PlayerControl.LocalPlayer.Data.IsDead;
                 if (isDead)
                 {
@@ -35,13 +35,13 @@ namespace TownOfUs.SheriffMod
                 {
                     KillButton.gameObject.SetActive(true);
                     KillButton.isActive = true;
-                    KillButton.SetCoolDown(Methods.SheriffKillTimer(), PlayerControl.GameOptions.KillCooldown + 15f);
-                    Methods.ClosestPlayer = Methods.getClosestPlayer(PlayerControl.LocalPlayer);
-                    var distBetweenPlayers = Methods.getDistBetweenPlayers(PlayerControl.LocalPlayer, Methods.ClosestPlayer);
+                    KillButton.SetCoolDown(role.SheriffKillTimer(), PlayerControl.GameOptions.KillCooldown + 15f);
+                    role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
+                    var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
                     var flag9 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-                    if (flag9)
+                    if (flag9 && KillButton.enabled)
                     {
-                        KillButton.SetTarget(Methods.ClosestPlayer);
+                        KillButton.SetTarget(role.ClosestPlayer);
                     }
                 }
             }

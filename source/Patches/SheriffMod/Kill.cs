@@ -6,39 +6,51 @@ using Il2CppSystem.Reflection;
 namespace TownOfUs.SheriffMod
 {
     
-    [HarmonyPatch(typeof(KillButtonManager))]
+    [HarmonyPatch(typeof(KillButtonManager), nameof(KillButtonManager.PerformKill))]
     public static class Kill
     {
-        
-        [HarmonyPatch( "PerformKill")]
-        private static bool Prefix(MethodBase __originalMethod)
+
+        [HarmonyPriority(Priority.First)]
+        private static bool Prefix(KillButtonManager __instance)
         {
-            var flag = PlayerControl.LocalPlayer.isSheriff();
+            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             if (!flag) return true;
+            var role = Roles.Role.GetRole<Roles.Sheriff>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
-            var flag2 = Methods.SheriffKillTimer() == 0f;
+            var flag2 = role.SheriffKillTimer() == 0f;
             if (!flag2) return false;
-            var distBetweenPlayers = Methods.getDistBetweenPlayers(PlayerControl.LocalPlayer, Methods.ClosestPlayer);
+            if (!__instance.enabled) return false;
+            var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
             var flag3 = distBetweenPlayers < (double)GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             if (!flag3) return false;
-            var flag4 = !Methods.ClosestPlayer.Data.IsImpostor;
-            if (flag4)
+            if(role.ClosestPlayer.isShielded()) {
+                if (CustomGameOptions.PlayerMurderIndicator)
+                {
+                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                        (byte) CustomRPC.AttemptSound, Hazel.SendOption.None, -1);
+                    writer1.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer1);
+                    MedicMod.StopKill.BreakShield(role.ClosestPlayer.PlayerId, false);
+                }
+
+                return false;
+            }
+
+            var flag4 = role.ClosestPlayer.Data.IsImpostor || role.ClosestPlayer.Is(RoleEnum.Glitch) ||
+                        role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.SheriffKillsJester;
+            if (!flag4)
             {
-                var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SheriffKill, SendOption.Reliable, -1);
-                messageWriter.Write(PlayerControl.LocalPlayer.PlayerId);
-                messageWriter.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
-                PlayerControl.LocalPlayer.MurderPlayer(PlayerControl.LocalPlayer);
+                if (CustomGameOptions.SheriffKillOther)
+                {
+                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
+                }
+                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
             }
             else
             {
-                var messageWriter2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SheriffKill, SendOption.Reliable, -1);
-                messageWriter2.Write(PlayerControl.LocalPlayer.PlayerId);
-                messageWriter2.Write(Methods.ClosestPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(messageWriter2);
-                PlayerControl.LocalPlayer.MurderPlayer(Methods.ClosestPlayer);
+                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
             }
-            Methods.LastKilled = DateTime.UtcNow;
+            role.LastKilled = DateTime.UtcNow;
 
             return false;
         }

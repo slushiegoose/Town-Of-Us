@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Hazel;
+using TownOfUs.Roles;
 
 namespace TownOfUs.JesterMod
 {
@@ -10,11 +11,17 @@ namespace TownOfUs.JesterMod
         {
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask) return true;
 
-            if (Utils.Jester == null) return true;
+            foreach (var role in Role.AllRoles)
+            {
+                if (role.RoleType == RoleEnum.Jester)
+                {
+                    ((Jester) role).Loses();
+                }
+            }
+            
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.JesterLose,
                 SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Utils.Jester.Data.IsImpostor = true;
 
             return true;
         }

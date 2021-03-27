@@ -1,53 +1,38 @@
 
+using System.Linq;
 using System.Text;
+using Essentials.Options;
 using HarmonyLib;
 using UnityEngine;
 
 namespace TownOfUs {
     
     [HarmonyPatch]
-    public static class GameSettings {
-        public static string GameSettingsText;
-        static float defaultBounds = 0f;
+    public static class GameSettings
+    {
 
-        [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.Method_24))]
-        [HarmonyBefore("com.comando.essentials")]
-        public static class GameSettingsPatch1
-        {
-          
-            
-            public static void Postfix(ref string __result)
-            {
-                
-
-                GameSettingsText = __result;
-
-            }
-        }
+        public static bool AllOptions = false;
         
-        [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.Method_24))]
-        [HarmonyAfter("com.comando.essentials")]
-        public static class GameSettingsPatch2
-        {
-            
-            public static void Postfix(ref string __result)
-            {
-
-                __result = GameSettingsText;
-            }
-        }
-
-
-
-        public static string StringBuild()
+        /*public static string StringBuild()
         {
             var builder = new StringBuilder("Roles:\n");
+            foreach (var option in TownOfUs.Roles)
+            {
+                builder.AppendLine($"     {option.Name}: {option}");
+            }
+
+            builder.AppendLine("Modifiers:");
+            foreach (var option in TownOfUs.Modifiers)
+            {
+                builder.AppendLine($"     {option.Name}: {option}");
+            }
+            
+            
             foreach (var option in TownOfUs.AllOptions)
             {
-                builder.AppendLine(option.StringFormat == TownOfUs.PercentFormat
-                    ? $"     {option.Name}: {option}"
-                    : $"{option.Name}: {option}");
+                builder.AppendLine($"{option.Name}: {option}");
             }
+            
 
             return builder.ToString();
         }
@@ -55,33 +40,12 @@ namespace TownOfUs {
         [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.FixedUpdate))]
         public static class LobbyFix
         {
-            private static bool _isCustom;
-            private static float _lastUpdated;
 
-            public static bool Prefix(LobbyBehaviour __instance)
+            public static bool Prefix()
             {
-                __instance.Field_6 += Time.deltaTime;
-                if (__instance.Field_6 < 0.25f) return false;
-                __instance.Field_6 = 0f;
-                if (PlayerControl.GameOptions == null) return false;
-                if (Time.time - _lastUpdated > 5.0)
-                {
-                    _lastUpdated = Time.time;
-                    _isCustom = !_isCustom;
-                }
                 
-                if (_isCustom)
-                {
-                    var numPlayers = GameData.Instance ? GameData.Instance.PlayerCount : 10;
-                    DestroyableSingleton<HudManager>.Instance.GameSettings.Text = PlayerControl.GameOptions.Method_24(numPlayers);
-                }
-                else
-                {
-                    DestroyableSingleton<HudManager>.Instance.GameSettings.Text = StringBuild();
-                }
+                DestroyableSingleton<HudManager>.Instance.GameSettings.Text = StringBuild();
                 DestroyableSingleton<HudManager>.Instance.GameSettings.gameObject.SetActive(true);
-
-                
                 return false;
             }
         }
@@ -93,22 +57,54 @@ namespace TownOfUs {
         {
             public static void Prefix(HudManager __instance)
             {
-                __instance.GameSettings.scale = 0.6f;
+                __instance.GameSettings.scale = 0.3f;
+            }
+        }*/
+
+        [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.Method_5))] //ToHudString
+        private static class GameOptionsDataPatch
+        {
+            private static void Postfix(ref string __result)
+            {
+                
+                
+                
+                StringBuilder builder = new StringBuilder(AllOptions ? __result : "");
+                foreach (CustomOption option in TownOfUs.AllOptions)
+                {
+
+                    if (option.Name == "Custom Game Settings" && !AllOptions) break;
+                    
+                    if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}[]");
+                    else if(option.Indent) builder.AppendLine($"     {option.Name}[]: {option}[]");
+                    else builder.AppendLine($"{option.Name}[]: {option}");
+                }
+
+
+                __result = builder.ToString();
+
+                if (CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 37)
+                    __result = __result.Insert(__result.IndexOf('\n'), " (Scroll for more)");
+                else __result = __result.Insert(__result.IndexOf('\n'), "Press Tab to see All Options");
             }
         }
-        
-        
-        [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
-        public static class Start {
-            public static void Postfix(ref GameOptionsMenu __instance) {
-                defaultBounds = __instance.GetComponentInParent<Scroller>().YBounds.max;
+
+        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.FixedUpdate))]
+        private static class LobbyBehaviourPatch
+        {
+            private static void Postfix()
+            {
+                if (Input.GetKeyInt(KeyCode.Tab))
+                {
+                    AllOptions = !AllOptions;
+                }
             }
         }
 
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
         public static class Update {
             public static void Postfix(ref GameOptionsMenu __instance) {
-                __instance.GetComponentInParent<Scroller>().YBounds.max = 20f;
+                __instance.GetComponentInParent<Scroller>().YBounds.max = 50f;
             }
         }
     }

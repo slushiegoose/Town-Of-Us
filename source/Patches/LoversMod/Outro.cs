@@ -1,19 +1,19 @@
+using System.Linq;
 using HarmonyLib;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs.LoversMod
 {
 	
-	[HarmonyPatch(typeof(EndGameManager))]
+	[HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
 	internal class Outro
 	{
-	
-		[HarmonyPatch("Start")]
 		public static void Postfix(EndGameManager __instance)
 		{
 			TextRenderer text;
 			Vector3 pos;
-			if (EndCriteria.NobodyWins)
+			if (Role.NobodyWins)
 			{
 				text = Object.Instantiate(__instance.WinText);
 				var color = __instance.WinText.Color;
@@ -27,8 +27,10 @@ namespace TownOfUs.LoversMod
 				return;
 			}
 
-			if (!EndCriteria.LoveCoupleWins) return;
-			if (JesterMod.EndCriteria.JesterVotedOut) return;
+			
+			
+			if (!Roles.Role.AllRoles.Where(x => x.RoleType == RoleEnum.Lover || x.RoleType == RoleEnum.LoverImpostor).Any(x => ((Lover) x).LoveCoupleWins)) return;
+			if (Roles.Role.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
 			PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 			if (array[0] != null)
 			{

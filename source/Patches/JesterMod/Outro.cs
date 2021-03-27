@@ -1,4 +1,6 @@
+using System.Linq;
 using HarmonyLib;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs.JesterMod
@@ -9,13 +11,16 @@ namespace TownOfUs.JesterMod
         
         public static void Postfix(EndGameManager __instance)
         {
-            if (!EndCriteria.JesterVotedOut) return;
+
+            
+            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Jester && ((Jester) x).VotedOut);
+            if (role == null) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
-            array[0].NameText.Text = "[FFBFCCFF]" + array[0].NameText.Text;
-            __instance.BackgroundBar.material.color = new Color(1f, 0.75f, 0.8f, 1f);
-            var text = UnityEngine.Object.Instantiate(__instance.WinText);
+            array[0].NameText.Text = role.ColorString + array[0].NameText.Text;
+            __instance.BackgroundBar.material.color = role.Color;
+            var text = Object.Instantiate(__instance.WinText);
             text.Text = "Jester wins";
-            text.Color = new Color(1f, 0.75f, 0.8f, 1f);
+            text.Color = role.Color;
             var pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;
             text.transform.position = pos;

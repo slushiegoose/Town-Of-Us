@@ -1,18 +1,22 @@
 using System;
+using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUs.SheriffMod
 {
     
-    [HarmonyPatch(typeof(ShipStatus))]
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
     public static class Start
     {
         
-        [HarmonyPatch("Start")]
         public static void Postfix(ShipStatus __instance)
         {
-            Methods.LastKilled = DateTime.UtcNow;
-            Methods.LastKilled = Methods.LastKilled.AddSeconds(-10.0);
+            foreach (var role in Roles.Role.GetRoles(RoleEnum.Sheriff))
+            {
+                var sheriff = (Roles.Sheriff) role;
+                sheriff.LastKilled = DateTime.UtcNow;
+                sheriff.LastKilled = sheriff.LastKilled.AddSeconds(-CustomGameOptions.SheriffKillCd + 8);
+            }
         }
     }
 }

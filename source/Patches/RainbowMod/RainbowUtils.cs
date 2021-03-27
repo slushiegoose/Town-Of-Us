@@ -52,7 +52,7 @@
 
 		public static bool IsRainbow(int id)
         {
-            return Palette.ShortColorNames[id] == "RNBOW";
+            return (int)Palette.ShortColorNames[id] == 999997;
         }
         /*public static bool IsGalaxy(int id)
         {

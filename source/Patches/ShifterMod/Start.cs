@@ -1,18 +1,21 @@
 using System;
+using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUs.ShifterMod
 {
     
-    [HarmonyPatch(typeof(ShipStatus))]
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
     public static class Start
     {
         
-        [HarmonyPatch("Start")]
         public static void Postfix(ShipStatus __instance)
         {
-            Methods.LastShifted = DateTime.UtcNow;
-            Methods.LastShifted = Methods.LastShifted.AddSeconds(-10.0);
+            foreach (var role in Roles.Role.GetRoles(RoleEnum.Shifter))
+            {
+                var shifter = (Roles.Shifter) role;
+                shifter.LastShifted = DateTime.UtcNow;
+            }
         }
     }
 }

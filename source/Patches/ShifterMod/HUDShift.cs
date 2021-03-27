@@ -2,11 +2,10 @@ using HarmonyLib;
 
 namespace TownOfUs.ShifterMod
 {
-    [HarmonyPatch(typeof(PlayerControl))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class HUDShift
     {
-
-        [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
+        
         public static void Postfix(PlayerControl __instance)
         {
             UpdateShiftButton(__instance);
@@ -17,13 +16,13 @@ namespace TownOfUs.ShifterMod
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
-            if (!PlayerControl.LocalPlayer.isShifter()) return;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Shifter)) return;
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var shiftButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
-            
+            var role = Roles.Role.GetRole<Roles.Shifter>(PlayerControl.LocalPlayer);
             
             
             if (isDead)
@@ -35,13 +34,13 @@ namespace TownOfUs.ShifterMod
             {
                 shiftButton.gameObject.SetActive(true);
                 shiftButton.isActive = true;
-                shiftButton.SetCoolDown(Methods.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
-                Methods.ClosestPlayer = Methods.getClosestPlayer(PlayerControl.LocalPlayer);
-                var distBetweenPlayers = Methods.getDistBetweenPlayers(PlayerControl.LocalPlayer, Methods.ClosestPlayer);
+                shiftButton.SetCoolDown(role.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
+                role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
+                var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 var flag9 = distBetweenPlayers < maxDistance;
-                if (flag9)
+                if (flag9 && __instance.enabled)
                 {
-                    shiftButton.SetTarget(Methods.ClosestPlayer);
+                    shiftButton.SetTarget(role.ClosestPlayer);
                 }
 
             }

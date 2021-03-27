@@ -1,4 +1,8 @@
+// This doesn't work in the new mappings cos of the weird override in classes so as soon as this works i'll add it back
+
+/*using System.Reflection;
 using HarmonyLib;
+using Reactor.Extensions;
 using UnityEngine;
 
 namespace TownOfUs
@@ -6,6 +10,10 @@ namespace TownOfUs
     [HarmonyPatch(typeof(KillOverlay.Nested_4), nameof(KillOverlay.Nested_4.MoveNext))]
     public class Flamed
     {
+        public static MethodBase TargetMethod()
+        {
+            typeof(KillOverlay).GetNestedType("NLJFBGBIAFG").GetMethod("MoveNext");
+        }
         public static void Prefix(KillOverlay.Nested_4 __instance)
         {
             var prefab = __instance.killAnimPrefab;
@@ -37,16 +45,23 @@ namespace TownOfUs
                         renderer.sprite = TownOfUs.GreyscaleKill;
                         renderer.color = new Color(1f, 0.4f, 0.8f);
                         break;
+                    case MurderEnum.Glitch:
+                        renderer.sprite = TownOfUs.GreyscaleKill;
+                        renderer.color = Color.green;
+                        break;
                 }
             }
         }
+        
 
         private static MurderEnum GetOption(GameData.PlayerInfo killer, GameData.PlayerInfo victim)
         {
-            if (killer.Object.isSheriff()) return MurderEnum.Sheriff;
-            if (victim.Object.isShifter() && (!killer.IsImpostor || killer.Object.isShifter())) return MurderEnum.Shifter;
+            if (victim.Object.Is(RoleEnum.Shifter) && (killer.Object.Is(RoleEnum.Shifter)))
+                return MurderEnum.Shifter;
+            if (killer.Object.Is(RoleEnum.Sheriff)) return MurderEnum.Sheriff;
             if (killer.Object.isLover() && victim.Object.isLover() && killer.PlayerId == victim.PlayerId) return MurderEnum.Lover;
+            if (killer.Object.Is(RoleEnum.Glitch)) return MurderEnum.Glitch;
             return MurderEnum.Normal;
-        }
+            }
     }
-}
+}*/

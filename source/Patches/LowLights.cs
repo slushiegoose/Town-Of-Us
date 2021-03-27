@@ -15,24 +15,17 @@ namespace TownOfUs.MayorMod
                 return false;
             }
             var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-            if (player.IsImpostor)
+            if (player.IsImpostor || player._object.Is(RoleEnum.Glitch))
             {
                 __result = __instance.MaxLightRadius * PlayerControl.GameOptions.ImpostorLightMod;
                 return false;
             }
             var t = switchSystem.Value / 255f;
+            if (player._object.Is(ModifierEnum.Torch))
+            {
+                t = 1;
+            }
             __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * PlayerControl.GameOptions.CrewLightMod;
-            if (player.Object.isMayor())
-            {
-                __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) *
-                           CustomGameOptions.MayorVision;
-            }
-            if (player.Object.isEngineer())
-            {
-                __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) *
-                           CustomGameOptions.EngineerVision;
-            }
-
             return false;
 
         }

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs.InvestigatorMod
 {
     public class Footprint
     {
-        public static List<Footprint> AllPrints = new List<Footprint>();
         public static float Duration => CustomGameOptions.FootprintDuration;
 
         public Color Color;
@@ -14,34 +14,32 @@ namespace TownOfUs.InvestigatorMod
         private GameObject _gameObject;
         private SpriteRenderer _spriteRenderer;
         public readonly PlayerControl Player;
+        public Investigator Role;
         private float _time;
 
-        public static void DestroyAll()
+        public static bool Grey =>
+            CustomGameOptions.AnonymousFootPrint || CamouflageMod.CamouflageUnCamouflage.IsCamoed;
+
+        public static void DestroyAll(Investigator role)
         {
-            while (AllPrints.Count != 0)
+            while (role.AllPrints.Count != 0)
             {
-                AllPrints[0].Destroy();
+                role.AllPrints[0].Destroy();
             }
         }
 
-        public Footprint(PlayerControl player)
+        public Footprint(PlayerControl player, Investigator role)
         {
+            Role = role;
             Position = player.transform.position;
             _velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
             
             Player = player;
             _time = (int)Time.time;
-
-            if (CustomGameOptions.AnonymousFootPrint)
-            {
-                Color = new Color(0.2f, 0.2f, 0.2f, 1f);
-            }
-            else
-            {
-                Color = Palette.PlayerColors[player.Data.ColorId];
-            }
-
+            Color = Color.black;
+            
             Start();
+            role.AllPrints.Add(this);
         }
 
 
@@ -59,13 +57,12 @@ namespace TownOfUs.InvestigatorMod
             
 
             _gameObject.SetActive(true);
-            AllPrints.Add(this);
         }
 
         private void Destroy()
         {
             Object.Destroy(_gameObject);
-            AllPrints.Remove(this);
+            Role.AllPrints.Remove(this);
         }
         
         public bool Update() {
@@ -75,9 +72,17 @@ namespace TownOfUs.InvestigatorMod
             if (alpha < 0 || alpha > 1)
                 alpha = 0;
 
-            if (RainbowUtils.IsRainbow(Player.Data.ColorId) & !CustomGameOptions.AnonymousFootPrint)
+            if (RainbowUtils.IsRainbow(Player.Data.ColorId) & !Grey)
             {
                 Color = RainbowUtils.Rainbow;
+            }
+            else if(Grey)
+            {
+                Color = new Color(0.2f, 0.2f, 0.2f, 1f);
+            }
+            else
+            {
+                Color = Palette.PlayerColors[Player.Data.ColorId];
             }
             
             Color = new Color(Color.r, Color.g, Color.b, alpha);

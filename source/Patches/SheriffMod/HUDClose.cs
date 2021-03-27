@@ -1,17 +1,22 @@
 using System;
+using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUs.SheriffMod
 {
-    [HarmonyPatch(typeof(MeetingHud))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
     public static class HUDClose
     {
         
-        [HarmonyPatch("Close")]
-        public static void Postfix(HudManager __instance)
+        public static void Postfix(MeetingHud __instance)
         {
-            Methods.LastKilled = DateTime.UtcNow;
-            Methods.LastKilled = Methods.LastKilled.AddSeconds(8.0);
+            foreach (var role in Roles.Role.GetRoles(RoleEnum.Sheriff))
+            {
+                var sheriff = (Roles.Sheriff) role;
+                sheriff.LastKilled = DateTime.UtcNow;
+                sheriff.LastKilled = sheriff.LastKilled.AddSeconds(8.0);
+            }
+            
         }
     }
 }

@@ -17,20 +17,23 @@ namespace TownOfUs.EngineerMod
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
-            if (!PlayerControl.LocalPlayer.isEngineer()) return;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Engineer)) return;
             if (__instance.KillButton == null) return;
+
+            var role = Roles.Role.GetRole<Roles.Engineer>(PlayerControl.LocalPlayer);
             
             __instance.KillButton.renderer.sprite = Sprite;
             __instance.KillButton.SetCoolDown(0f, 10f);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled);
 
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-            var specials = system.Field_2.ToArray();
-            var dummyActive = system.Field_4.BCKOBJLJEFE;
-            var sabActive = specials.Any(s => s.Property_0);
+            if (system == null) return;
+            var specials = system.specials.ToArray();
+            var dummyActive = system.dummy.IsActive;
+            var sabActive = specials.Any(s => s.IsActive);
             var renderer = __instance.KillButton.renderer;
-            if (sabActive & !dummyActive & !PerformKill.UsedThisRound)
+            if (sabActive & !dummyActive & !role.UsedThisRound & __instance.KillButton.enabled)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

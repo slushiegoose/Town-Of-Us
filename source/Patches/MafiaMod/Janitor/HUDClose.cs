@@ -1,17 +1,20 @@
 using System;
+using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUs.MafiaMod.Janitor
 {
-    [HarmonyPatch(typeof(MeetingHud))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
     public static class HUDClose
     {
-        
-        [HarmonyPatch("Close")]
         public static void Postfix(HudManager __instance)
         {
-            PerformKillButton.LastCleaned = DateTime.UtcNow;
-            PerformKillButton.LastCleaned = PerformKillButton.LastCleaned.AddSeconds(-20.0);
+            foreach (var role in Roles.Role.GetRoles(RoleEnum.Janitor))
+            {
+                var janitor = (Roles.Janitor) role;
+                janitor.LastCleaned = DateTime.UtcNow;
+                janitor.LastCleaned = janitor.LastCleaned.AddSeconds(-20.0);
+            }
         }
     }
 }

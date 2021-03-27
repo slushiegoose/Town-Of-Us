@@ -3,21 +3,17 @@ using UnityEngine;
 
 namespace TownOfUs.MafiaMod.Janitor
 { 
-    [HarmonyPatch(typeof(PlayerControl))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class PlayerControlUpdate
     {
-
-        private static DeadBody closestBody;
-        private static float closestDistance;
-        
-        [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
         public static void Postfix(PlayerControl __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
             if (PlayerControl.LocalPlayer == null) return;
             if (PlayerControl.LocalPlayer.Data == null) return;
             if (!__instance.AmOwner) return;
-            if (!PlayerControl.LocalPlayer.isJanitor()) return;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor)) return;
+            if (CustomGameOptions.JanitorKill && Utils.IsLastImp(PlayerControl.LocalPlayer)) return;
             var data = __instance.Data;
             var isDead = data.IsDead;
             var truePosition = __instance.GetTruePosition();
@@ -27,15 +23,15 @@ namespace TownOfUs.MafiaMod.Janitor
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, 
                 Constants.PlayersOnlyMask);
             var killButton = DestroyableSingleton<HudManager>.Instance.KillButton;
-            closestBody = null;
-            closestDistance = float.MaxValue;
+            DeadBody closestBody = null;
+            var closestDistance = float.MaxValue;
             
             foreach (var collider2D in allocs)
             {
                 if (!flag || isDead || collider2D.tag != "DeadBody") continue;
                 var component = collider2D.GetComponent<DeadBody>();
                 if (!(Vector2.Distance(truePosition, component.TruePosition) <=
-                      maxDistance) || PhysicsHelpers.Method_2(truePosition,
+                      maxDistance) || PhysicsHelpers.AnythingBetween(truePosition,
                     component.TruePosition, Constants.ShipAndObjectsMask, false)) continue;
 
                 var distance = Vector2.Distance(truePosition, component.TruePosition);
@@ -44,7 +40,9 @@ namespace TownOfUs.MafiaMod.Janitor
                 closestDistance = distance;
 
             }
-            KillButtonTarget.SetTarget(killButton, closestBody);
+
+            var role = Roles.Role.GetRole<Roles.Janitor>(PlayerControl.LocalPlayer);
+            KillButtonTarget.SetTarget(killButton, closestBody, role);
             
             if (isDead)
             {
@@ -55,7 +53,7 @@ namespace TownOfUs.MafiaMod.Janitor
             {
                 killButton.gameObject.SetActive(true);
                 killButton.isActive = true;
-                killButton.SetCoolDown(PerformKillButton.JanitorTimer(), CustomGameOptions.JanitorCleanCd);
+                killButton.SetCoolDown(role.JanitorTimer(), CustomGameOptions.JanitorCleanCd);
             }
         }
 
