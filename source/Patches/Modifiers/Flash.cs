@@ -13,7 +13,7 @@ namespace TownOfUs.Modifiers
                 {
                     if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                     {
-                        __instance.body.velocity *= 2;
+                        __instance.body.velocity *= 1.5f;
                     }
                 }
             }
@@ -30,7 +30,7 @@ namespace TownOfUs.Modifiers
                     {
                         if (__instance.gameObject.GetComponent<PlayerControl>().Is(ModifierEnum.Flash))
                         {
-                            __instance.body.velocity *= 2;
+                            __instance.body.velocity *= 1.5f;
                         }
                     }
                 }

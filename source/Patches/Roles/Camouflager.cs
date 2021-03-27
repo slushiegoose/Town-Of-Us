@@ -6,11 +6,22 @@ namespace TownOfUs.Roles
     public class Camouflager : Role
 
     {
-        public KillButtonManager CamouflageButton;
+        public KillButtonManager _camouflageButton;
         public bool Camouflaged => TimeRemaining > 0f;
         public float TimeRemaining = 0f;
         public DateTime LastCamouflaged;
         public bool Enabled;
+        
+        public KillButtonManager CamouflageButton
+        {
+            get { return _camouflageButton;}
+            set
+            {
+                _camouflageButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
 
         public Camouflager(PlayerControl player) : base(player)
         {

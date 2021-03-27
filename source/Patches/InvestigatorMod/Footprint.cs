@@ -53,7 +53,7 @@ namespace TownOfUs.InvestigatorMod
             _spriteRenderer = _gameObject.AddComponent<SpriteRenderer>();
             _spriteRenderer.sprite = TownOfUs.Footprint;
             _spriteRenderer.color = Color;
-            _spriteRenderer.size = new Vector2(1.2f, 1f) * (CustomGameOptions.FootprintSize / 10);
+            _gameObject.transform.localScale *= new Vector2(1.2f, 1f) * (CustomGameOptions.FootprintSize / 10);
             
 
             _gameObject.SetActive(true);

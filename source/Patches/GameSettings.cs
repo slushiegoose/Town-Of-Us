@@ -1,8 +1,8 @@
 
 using System.Linq;
 using System.Text;
-using Essentials.Options;
 using HarmonyLib;
+using TownOfUs.CustomOption;
 using UnityEngine;
 
 namespace TownOfUs {
@@ -70,11 +70,12 @@ namespace TownOfUs {
                 
                 
                 StringBuilder builder = new StringBuilder(AllOptions ? __result : "");
-                foreach (CustomOption option in TownOfUs.AllOptions)
+                
+                foreach (CustomOption.CustomOption option in CustomOption.CustomOption.AllOptions)
                 {
 
                     if (option.Name == "Custom Game Settings" && !AllOptions) break;
-                    
+                    if (option.Type == CustomOptionType.Button) continue;
                     if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}[]");
                     else if(option.Indent) builder.AppendLine($"     {option.Name}[]: {option}[]");
                     else builder.AppendLine($"{option.Name}[]: {option}");
@@ -83,7 +84,7 @@ namespace TownOfUs {
 
                 __result = builder.ToString();
 
-                if (CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 37)
+                if (CustomOption.CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 37)
                     __result = __result.Insert(__result.IndexOf('\n'), " (Scroll for more)");
                 else __result = __result.Insert(__result.IndexOf('\n'), "Press Tab to see All Options");
             }
@@ -98,13 +99,15 @@ namespace TownOfUs {
                 {
                     AllOptions = !AllOptions;
                 }
+
+                HudManager.Instance.GameSettings.scale = 0.5f;
             }
         }
 
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
         public static class Update {
             public static void Postfix(ref GameOptionsMenu __instance) {
-                __instance.GetComponentInParent<Scroller>().YBounds.max = 50f;
+                __instance.GetComponentInParent<Scroller>().YBounds.max = 60f;
             }
         }
     }

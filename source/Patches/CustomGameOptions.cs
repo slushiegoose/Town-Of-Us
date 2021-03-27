@@ -1,81 +1,112 @@
+using TownOfUs.CustomOption;
+
 namespace TownOfUs
 {
     public static class CustomGameOptions
     {
-        public static int MayorOn => (int) TownOfUs.MayorOn.GetValue();
-        public static int JesterOn => (int) TownOfUs.JesterOn.GetValue();
-        public static int LoversOn => (int) TownOfUs.LoversOn.GetValue();
-        public static int SheriffOn => (int) TownOfUs.SheriffOn.GetValue();
-        public static int MafiaOn => (int) TownOfUs.MafiaOn.GetValue();
-        public static int EngineerOn => (int) TownOfUs.EngineerOn.GetValue();
-        public static int SwapperOn => (int) TownOfUs.SwapperOn.GetValue();
-        public static int ShifterOn => (int) TownOfUs.ShifterOn.GetValue();
-        public static int InvestigatorOn => (int) TownOfUs.InvestigatorOn.GetValue();
-        public static int TimeLordOn => (int) TownOfUs.TimeLordOn.GetValue();
-        public static int MedicOn => (int) TownOfUs.MedicOn.GetValue();
-        public static int SeerOn => (int) TownOfUs.SeerOn.GetValue();
-        public static int GlitchOn => (int) TownOfUs.GlitchOn.GetValue();
-        public static int MorphlingOn => (int) TownOfUs.MorphlingOn.GetValue();
-        public static int CamouflagerOn => (int) TownOfUs.CamouflagerOn.GetValue();
-        public static int ExecutionerOn => (int) TownOfUs.ExecutionerOn.GetValue();
-        public static int ChildOn => (int) TownOfUs.ChildOn.GetValue(); 
-        public static int SpyOn => (int) TownOfUs.SpyOn.GetValue(); 
-            
-        public static int TorchOn => (int) TownOfUs.TorchOn.GetValue();
-        public static int DiseasedOn => (int) TownOfUs.DiseasedOn.GetValue();
-        public static int FlashOn => (int) TownOfUs.FlashOn.GetValue();
+        public static int MayorOn => (int) Generate.MayorOn.Get();
+        public static int JesterOn => (int) Generate.JesterOn.Get();
+        public static int LoversOn => (int) Generate.LoversOn.Get();
+        public static int SheriffOn => (int) Generate.SheriffOn.Get();
+        public static int JanitorOn => (int) Generate.JanitorOn.Get();
+        public static int EngineerOn => (int) Generate.EngineerOn.Get();
+        public static int SwapperOn => (int) Generate.SwapperOn.Get();
+        public static int ShifterOn => (int) Generate.ShifterOn.Get();
+        public static int InvestigatorOn => (int) Generate.InvestigatorOn.Get();
+        public static int TimeLordOn => (int) Generate.TimeLordOn.Get();
+        public static int MedicOn => (int) Generate.MedicOn.Get();
+        public static int SeerOn => (int) Generate.SeerOn.Get();
+        public static int GlitchOn => (int) Generate.GlitchOn.Get();
+        public static int MorphlingOn => (int) Generate.MorphlingOn.Get();
+        public static int CamouflagerOn => (int) Generate.CamouflagerOn.Get();
+        public static int ExecutionerOn => (int) Generate.ExecutionerOn.Get();
+        public static int ChildOn => (int) Generate.ChildOn.Get(); 
+        public static int SpyOn => (int) Generate.SpyOn.Get(); 
+        public static int SnitchOn => (int) Generate.SnitchOn.Get();
+        public static int MinerOn => (int) Generate.MinerOn.Get();
+        public static int SwooperOn => (int) Generate.SwooperOn.Get();
+        public static int ArsonistOn => (int) Generate.ArsonistOn.Get();
         
-        public static bool BothLoversDie => TownOfUs.BothLoversDie.GetValue();
-        public static bool ShowSheriff => TownOfUs.ShowSheriff.GetValue();
-        public static bool SheriffKillOther => TownOfUs.SheriffKillOther.GetValue();
-        public static bool SheriffKillsJester => TownOfUs.SheriffKillsJester.GetValue();
-        public static float SheriffKillCd => TownOfUs.SheriffKillCd.GetValue();
-        public static float JanitorCleanCd => TownOfUs.JanitorCleanCd.GetValue();
-        public static bool TwoMafia => TownOfUs.TwoMafia.GetValue();
-        public static bool JanitorKill => TownOfUs.JanitorKill.GetValue();
-        public static int MayorVoteBank => (int) TownOfUs.MayorVoteBank.GetValue();
-        public static float ShifterCd => TownOfUs.ShifterCd.GetValue();
+        public static int TorchOn => (int) Generate.TorchOn.Get();
+        public static int DiseasedOn => (int) Generate.DiseasedOn.Get();
+        public static int FlashOn => (int) Generate.FlashOn.Get();
+        public static int TiebreakerOn => (int) Generate.TiebreakerOn.Get();
+        public static int DrunkOn => (int) Generate.DrunkOn.Get();
         
-        public static float FootprintSize => TownOfUs.FootprintSize.GetValue();
-        public static float FootprintInterval => TownOfUs.FootprintInterval.GetValue();
-        public static float FootprintDuration => TownOfUs.FootprintDuration.GetValue();
-        public static bool AnonymousFootPrint => TownOfUs.AnonymousFootPrint.GetValue();
-        public static bool VentFootprintVisible => TownOfUs.VentFootprintVisible.GetValue();
+        public static bool BothLoversDie => Generate.BothLoversDie.Get();
+        public static bool ShowSheriff => Generate.ShowSheriff.Get();
+        public static bool SheriffKillOther => Generate.SheriffKillOther.Get();
+        public static bool SheriffKillsJester => Generate.SheriffKillsJester.Get();
+        public static bool SheriffKillsGlitch => Generate.SheriffKillsGlitch.Get();
+        public static bool SheriffKillsArsonist => Generate.SheriffKillsArsonist.Get();
+        public static float SheriffKillCd => Generate.SheriffKillCd.Get();
+        public static float JanitorCleanCd => Generate.JanitorCleanCd.Get();
+        public static bool JanitorKill => true;
+        public static int MayorVoteBank => (int) Generate.MayorVoteBank.Get();
+        public static bool MayorAnonymous => Generate.MayorAnonymous.Get();
+        public static float ShifterCd => Generate.ShifterCd.Get();
+
+        public static ShifterMod.ShiftEnum WhoShifts =>
+            (ShifterMod.ShiftEnum) Generate.WhoShifts.Get();
         
-        public static bool RewindRevive => TownOfUs.RewindRevive.GetValue();
-        public static float RewindDuration  => TownOfUs.RewindDuration.GetValue();
-        public static float RewindCooldown => TownOfUs.RewindCooldown.GetValue();
-        public static bool TimeLordVitals => TownOfUs.TimeLordVitals.GetValue();
-
-
-        public static MedicMod.ShieldOptions ShowShielded => (MedicMod.ShieldOptions) TownOfUs.ShowShielded.GetValue();
-
-        public static float MedicReportNameDuration => TownOfUs.MedicReportNameDuration.GetValue();
-        public static float MedicReportColorDuration => TownOfUs.MedicReportColorDuration.GetValue();
-        public static bool ShowReports => TownOfUs.MedicReportSwitch.GetValue();
-        public static bool PlayerMurderIndicator => TownOfUs.PlayerMurderIndicator.GetValue();
-
-        public static float SeerCd => TownOfUs.SeerCooldown.GetValue();
-        public static SeerMod.SeerInfo SeerInfo => (SeerMod.SeerInfo) TownOfUs.SeerInfo.GetValue();
-        public static SeerMod.SeeReveal SeeReveal => (SeerMod.SeeReveal) TownOfUs.SeeReveal.GetValue();
-        public static bool NeutralRed => TownOfUs.NeutralRed.GetValue();
-        public static float MimicCooldown => TownOfUs.MimicCooldownOption.GetValue();
-        public static float MimicDuration => TownOfUs.MimicDurationOption.GetValue();
-        public static float HackCooldown => TownOfUs.HackCooldownOption.GetValue();
-        public static float HackDuration => TownOfUs.HackDurationOption.GetValue();
-        public static float GlitchKillCooldown => TownOfUs.GlitchKillCooldownOption.GetValue();
-        public static float InitialGlitchKillCooldown => TownOfUs.InitialGlitchKillCooldownOption.GetValue();
-        public static int GlitchHackDistance => TownOfUs.GlitchHackDistanceOption.GetValue();
-
-        public static float MorphlingCd => TownOfUs.MorphlingCooldown.GetValue();
-        public static float MorphlingDuration => TownOfUs.MorphlingDuration.GetValue();
+        public static float FootprintSize => Generate.FootprintSize.Get();
+        public static float FootprintInterval => Generate.FootprintInterval.Get();
+        public static float FootprintDuration => Generate.FootprintDuration.Get();
+        public static bool AnonymousFootPrint => Generate.AnonymousFootPrint.Get();
+        public static bool VentFootprintVisible => Generate.VentFootprintVisible.Get();
         
-        public static float CamouflagerCd => TownOfUs.CamouflagerCooldown.GetValue();
-        public static float CamouflagerDuration => TownOfUs.CamouflagerDuration.GetValue();
-        public static bool ColourblindComms => TownOfUs.ColourblindComms.GetValue();
-        public static bool MeetingColourblind => TownOfUs.MeetingColourblind.GetValue();
+        public static bool RewindRevive => Generate.RewindRevive.Get();
+        public static float RewindDuration  => Generate.RewindDuration.Get();
+        public static float RewindCooldown => Generate.RewindCooldown.Get();
+        public static bool TimeLordVitals => Generate.TimeLordVitals.Get();
+
+
+        public static MedicMod.ShieldOptions ShowShielded => (MedicMod.ShieldOptions) Generate.ShowShielded.Get();
+
+        public static float MedicReportNameDuration => Generate.MedicReportNameDuration.Get();
+        public static float MedicReportColorDuration => Generate.MedicReportColorDuration.Get();
+        public static bool ShowReports => Generate.MedicReportSwitch.Get();
+        public static bool PlayerMurderIndicator => Generate.PlayerMurderIndicator.Get();
+
+        public static float SeerCd => Generate.SeerCooldown.Get();
+        public static SeerMod.SeerInfo SeerInfo => (SeerMod.SeerInfo) Generate.SeerInfo.Get();
+        public static SeerMod.SeeReveal SeeReveal => (SeerMod.SeeReveal) Generate.SeeReveal.Get();
+        public static bool NeutralRed => Generate.NeutralRed.Get();
+        public static float MimicCooldown => Generate.MimicCooldownOption.Get();
+        public static float MimicDuration => Generate.MimicDurationOption.Get();
+        public static float HackCooldown => Generate.HackCooldownOption.Get();
+        public static float HackDuration => Generate.HackDurationOption.Get();
+        public static float GlitchKillCooldown => Generate.GlitchKillCooldownOption.Get();
+        public static float InitialGlitchKillCooldown => Generate.InitialGlitchKillCooldownOption.Get();
+        public static int GlitchHackDistance => Generate.GlitchHackDistanceOption.Get();
+
+        public static float MorphlingCd => Generate.MorphlingCooldown.Get();
+        public static float MorphlingDuration => Generate.MorphlingDuration.Get();
+        
+        public static float CamouflagerCd => Generate.CamouflagerCooldown.Get();
+        public static float CamouflagerDuration => Generate.CamouflagerDuration.Get();
+        public static bool ColourblindComms => Generate.ColourblindComms.Get();
+        public static bool MeetingColourblind => Generate.MeetingColourblind.Get();
 
         public static ExecutionerMod.OnTargetDead OnTargetDead =>
-            (ExecutionerMod.OnTargetDead) TownOfUs.OnTargetDead.GetValue();
+            (ExecutionerMod.OnTargetDead) Generate.OnTargetDead.Get();
+
+        public static bool SnitchOnLaunch => Generate.SnitchOnLaunch.Get();
+
+        public static float MineCd => Generate.MineCooldown.Get();
+        public static float SwoopCd => Generate.SwoopCooldown.Get();
+        public static float SwoopDuration => Generate.SwoopDuration.Get();
+
+        public static bool ImpostorSeeRoles => Generate.ImpostorSeeRoles.Get();
+        public static bool DeadSeeRoles => Generate.DeadSeeRoles.Get();
+        
+        public static float DouseCd => Generate.DouseCooldown.Get();
+        public static bool ArsonistGameEnd => Generate.ArsonistGameEnd.Get();
+
+        public static int MaxImpostorRoles => (int) Generate.MaxImpostorRoles.Get();
+        public static int MaxNeutralRoles => (int) Generate.MaxNeutralRoles.Get();
+
+        public static EngineerMod.EngineerFixPer EngineerFixPer =>
+            (EngineerMod.EngineerFixPer) Generate.EngineerPer.Get();
     }
 }

@@ -17,13 +17,15 @@ namespace TownOfUs
         Executioner,
         Child,
         Spy,
-        
+        Snitch,
+        Arsonist,
+
+        Miner,
+        Swooper,
         Morphling,
         Camouflager,
-        Godfather,
         Janitor,
-        Mafioso,
-        
+
         Glitch,
         
         Crewmate,
@@ -36,5 +38,7 @@ namespace TownOfUs
         Torch,
         Diseased,
         Flash,
+        Tiebreaker,
+        Drunk,
     }
 }

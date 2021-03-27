@@ -26,7 +26,7 @@ namespace TownOfUs.Roles
         
         public void Wins()
         {
-            if (Player.Data.IsDead) return;
+            if (Player.Data.IsDead || Player.Data.Disconnected) return;
             TargetVotedOut = true;
 
 
@@ -44,6 +44,7 @@ namespace TownOfUs.Roles
             Color = new Color(0.55f, 0.25f, 0.02f, 1f);
             RoleType = RoleEnum.Executioner;
             Faction = Faction.Neutral;
+            Scale = 1.4f;
         }
     }
 }

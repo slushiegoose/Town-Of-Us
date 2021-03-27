@@ -27,7 +27,30 @@ namespace TownOfUs.Roles
             return base.Criteria() || GetRole(PlayerControl.LocalPlayer) == OtherLover;
         }
 
-
+        protected override string NameText(PlayerVoteArea player = null)
+        {
+            if (CamouflageMod.CamouflageUnCamouflage.IsCamoed && player == null)
+            {
+                return "";
+            }
+            if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer == Player)
+            {
+                return base.NameText(player);
+            }
+            if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding ||
+                                   MeetingHud.Instance.state == MeetingHud.VoteStates.Results)) return Player.name;
+            Player.nameText.transform.localPosition = new Vector3(0f, (Player.Data.HatId == 0U) ? 1.05f : 1.4f, -0.5f);
+            if (PlayerControl.LocalPlayer.Data.IsImpostor && RoleType == RoleEnum.LoverImpostor)
+            {
+                Player.nameText.Color = Palette.ImpostorRed;
+                if (player != null) player.NameText.Color = Palette.ImpostorRed;
+                return Player.name + "\n" + "Impostor";
+            }
+            
+            
+            return Player.name + "\n" + "Lover";
+        }
+        
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)
         {
             //System.Console.WriteLine("LOVER2");

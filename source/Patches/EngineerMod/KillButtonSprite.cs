@@ -27,6 +27,7 @@ namespace TownOfUs.EngineerMod
             __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled);
 
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (ShipStatus.Instance) return;
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             if (system == null) return;
             var specials = system.specials.ToArray();

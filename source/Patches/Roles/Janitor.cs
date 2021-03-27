@@ -4,28 +4,8 @@ namespace TownOfUs.Roles
 {
     public class Janitor : Role
     {
-        public Godfather Godfather {get; set;}
-        public Mafioso Mafioso {get; set;}
-
         public DateTime LastCleaned {get; set;}
         public DeadBody CurrentTarget {get; set;}
-        
-        protected internal override string NameText()
-        {
-            if (CamouflageMod.CamouflageUnCamouflage.IsCamoed && !MeetingHud.Instance)
-            {
-                return "";
-            }
-            return Player.name + " (J)";
-        }
-        
-        protected override bool Criteria()
-        {
-            var localPlayerRole = GetRole(PlayerControl.LocalPlayer);
-
-            return localPlayerRole == this || localPlayerRole == Godfather || !CustomGameOptions.TwoMafia && localPlayerRole == Mafioso;
-
-        }
         
         public Janitor(PlayerControl player) : base(player)
         {

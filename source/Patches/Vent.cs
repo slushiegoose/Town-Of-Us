@@ -14,7 +14,7 @@ namespace TownOfUs
         {
             var num = float.MaxValue;
             var localPlayer = pc.Object;
-            couldUse = (PlayerControl.LocalPlayer.Is(RoleEnum.Engineer) || localPlayer.Data.IsImpostor && !localPlayer.Is(RoleEnum.Morphling)) &&
+            couldUse = (PlayerControl.LocalPlayer.Is(RoleEnum.Engineer) || localPlayer.Data.IsImpostor && !localPlayer.Is(RoleEnum.Morphling)  && !localPlayer.Is(RoleEnum.Swooper)) &&
                        !localPlayer.Data.IsDead;
             canUse = couldUse;
     

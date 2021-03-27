@@ -4,12 +4,23 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
+using Reactor.Extensions;
+using Reactor.Net;
 using TownOfUs.JesterMod;
 using TownOfUs.LoversMod;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs.ShifterMod
 {
+
+    public enum ShiftEnum
+    {
+        NonImpostors,
+        RegularCrewmates,
+        Nobody
+    }
+    
     [HarmonyPatch(typeof(KillButtonManager), nameof(KillButtonManager.PerformKill))]
     [HarmonyPriority(Priority.Last)]
     public class PerformKillButton
@@ -94,6 +105,8 @@ namespace TownOfUs.ShifterMod
 
             var swapTasks = true;
             var lovers = false;
+            var resetShifter = false;
+            var snitch = false;
 
             Roles.Role newRole;
 
@@ -110,23 +123,57 @@ namespace TownOfUs.ShifterMod
                 case RoleEnum.TimeLord:
                 case RoleEnum.Medic:
                 case RoleEnum.Seer:
-                case RoleEnum.Child:
                 case RoleEnum.Executioner:
                 case RoleEnum.Spy:
-
+                case RoleEnum.Snitch:
+                case RoleEnum.Arsonist:
+                case RoleEnum.Crewmate:
+                    
                     if (role == RoleEnum.Investigator)
                     {
                         InvestigatorMod.Footprint.DestroyAll(Roles.Role.GetRole<Roles.Investigator>(other));
                     }
 
+                    
                     newRole = Roles.Role.GetRole(other);
                     newRole.Player = shifter;
+
+                    if (role == RoleEnum.Snitch)
+                    {
+                        SnitchMod.CompleteTask.Postfix(shifter);
+                    }
+
+                    var modifier = Modifier.GetModifier(other);
+                    var modifier2 = Modifier.GetModifier(shifter);
+                    if (modifier != null && modifier2 != null)
+                    {
+                        modifier.Player = shifter;
+                        modifier2.Player = other;
+                        Modifier.ModifierDictionary.Remove(other.PlayerId);
+                        Modifier.ModifierDictionary.Remove(shifter.PlayerId);
+                        Modifier.ModifierDictionary.Add(shifter.PlayerId, modifier);
+                        Modifier.ModifierDictionary.Add(other.PlayerId, modifier2);
+                    }
+                    else if (modifier2 != null)
+                    {
+                        modifier2.Player = other;
+                        Modifier.ModifierDictionary.Remove(shifter.PlayerId);
+                        Modifier.ModifierDictionary.Add(other.PlayerId, modifier2);
+                    }
+                    else if (modifier != null)
+                    {
+                        modifier.Player = shifter;
+                        Modifier.ModifierDictionary.Remove(other.PlayerId);
+                        Modifier.ModifierDictionary.Add(shifter.PlayerId, modifier);
+                    }
+                    
 
                     Roles.Role.RoleDictionary.Remove(shifter.PlayerId);
                     Roles.Role.RoleDictionary.Remove(other.PlayerId);
 
                     Roles.Role.RoleDictionary.Add(shifter.PlayerId, newRole);
                     lovers = role == RoleEnum.Lover;
+                    snitch = role == RoleEnum.Snitch;
 
                     foreach (var exeRole in Roles.Role.AllRoles.Where(x => x.RoleType == RoleEnum.Executioner))
                     {
@@ -134,34 +181,37 @@ namespace TownOfUs.ShifterMod
                         var target = executioner.target;
                         if (other == target)
                         {
+                            executioner.target.nameText.Color = Color.white;;
                             executioner.target = shifter;
+                            
                             executioner.RegenTask();
                         }
 
+                    }
+
+                    if (CustomGameOptions.WhoShifts == ShiftEnum.NonImpostors ||
+                        role == RoleEnum.Crewmate && CustomGameOptions.WhoShifts == ShiftEnum.RegularCrewmates)
+                    {
+                        resetShifter = true;
+                        shifterRole.Player = other;
+                        Roles.Role.RoleDictionary.Add(other.PlayerId, shifterRole);
+                        
                     }
 
 
 
                     break;
 
-
-
-                case RoleEnum.Crewmate:
-                    shifterRole.Player = other;
-
-                    Roles.Role.RoleDictionary.Add(other.PlayerId, shifterRole);
-                    Roles.Role.RoleDictionary.Remove(shifter.PlayerId);
-                    break;
-
+                case RoleEnum.Swooper:
+                case RoleEnum.Miner:
                 case RoleEnum.Morphling:
                 case RoleEnum.Camouflager:
-                case RoleEnum.Godfather:
                 case RoleEnum.Janitor:
-                case RoleEnum.Mafioso:
                 case RoleEnum.LoverImpostor:
                 case RoleEnum.Impostor:
                 case RoleEnum.Glitch:
                 case RoleEnum.Shifter:
+                case RoleEnum.Child:
                     shifter.Data.IsImpostor = true;
                     shifter.MurderPlayer(shifter);
                     shifter.Data.IsImpostor = false;
@@ -192,6 +242,28 @@ namespace TownOfUs.ShifterMod
                     var otherLover = lover.OtherLover;
                     otherLover.RegenTask();
                 }
+
+                if (snitch)
+                {
+                    var snitchRole = Roles.Role.GetRole<Snitch>(shifter);
+                    snitchRole.ImpArrows.DestroyAll();
+                    snitchRole.SnitchArrows.DestroyAll();
+                    snitchRole.SnitchTargets.Clear();
+                    SnitchMod.CompleteTask.Postfix(shifter);
+                    if (other.AmOwner)
+                    {
+                        foreach (var player in PlayerControl.AllPlayerControls)
+                        {
+                            player.nameText.Color = Color.white;
+                            
+                        }
+                    }
+                }
+                
+                if (resetShifter)
+                {
+                    shifterRole.RegenTask();
+                }
             }
 
             //System.Console.WriteLine(shifter.Is(RoleEnum.Sheriff));
@@ -199,6 +271,10 @@ namespace TownOfUs.ShifterMod
             //System.Console.WriteLine(Roles.Role.GetRole(shifter));
             if (shifter.AmOwner || other.AmOwner)
             {
+                if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)
+                {
+                    Roles.Role.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
+                }
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                 DestroyableSingleton<HudManager>.Instance.KillButton.isActive = false;
             }

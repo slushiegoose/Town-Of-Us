@@ -9,22 +9,13 @@ namespace TownOfUs.MedicMod
     public class StopKill
     {
 
-        public static IEnumerator FlashCoroutine()
-        {
-            var color = Color.cyan;
-            color.a = 0.3f;
-            var fullscreen = DestroyableSingleton<HudManager>.Instance.FullScreen;
-            fullscreen.enabled = true;
-            fullscreen.color = color;
-            yield return new WaitForSeconds(1f);
-            fullscreen.enabled = false;
-        }
+        
         
         public static void BreakShield(byte playerId, bool flag)
         {
             if (PlayerControl.LocalPlayer.PlayerId == playerId)
             {
-                Reactor.Coroutines.Start(FlashCoroutine());
+                Reactor.Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
             }
 
             if (!flag)

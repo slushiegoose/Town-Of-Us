@@ -2,17 +2,12 @@
   <PropertyGroup>
     <RootNamespace>TownOfUs</RootNamespace>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <GameVersion>2021.3.5s</GameVersion>
     <Mappings>NuclearPowered/Mappings:0.2.0</Mappings>
     <Description>TownOfUs Mod by Slushiegoose</Description>
     <Authors>slushiegoose</Authors>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Essentials">
-      <HintPath>$(AmongUs)\BepInEx\plugins\Essentials-$(GameVersion).dll</HintPath>
-    </Reference>
-  </ItemGroup>
   
   <ItemGroup>
     <Deobfuscate Include="$(AmongUs)\BepInEx\plugins\Reactor-$(GameVersion).dll" />
@@ -23,24 +18,7 @@
     <Copy SourceFiles="$(OutputPath)reobfuscated/$(AssemblyName)-$(GameVersion).dll" DestinationFolder="$(AmongUs)/BepInEx/plugins/" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Janitor.png" />
-    <EmbeddedResource Include="Resources\Engineer.png" />
-    <EmbeddedResource Include="Resources\EngineerArrow.png" />
-    <EmbeddedResource Include="Resources\SwapperSwitch.png" />
-    <EmbeddedResource Include="Resources\SwapperSwitchDisabled.png" />
-    <EmbeddedResource Include="Resources\Kill.png" />
-    <EmbeddedResource Include="Resources\Shift.png" />
-    <EmbeddedResource Include="Resources\Footprint.png" />
-    <EmbeddedResource Include="Resources\Rewind.png" />
-    <EmbeddedResource Include="Resources\NormalKill.png" />
-    <EmbeddedResource Include="Resources\GreyscaleKill.png" />
-    <EmbeddedResource Include="Resources\ShiftKill.png" />
-    <EmbeddedResource Include="Resources\Medic.png" />
-    <EmbeddedResource Include="Resources\Seer.png" />
-    <EmbeddedResource Include="Resources\Sample.png" />
-    <EmbeddedResource Include="Resources\Morph.png" />
-    <EmbeddedResource Include="Resources\UseButton.png" />
-    <EmbeddedResource Include="Resources\Camouflage.png" />
-    <EmbeddedResource Include="Resources\Admin.png" />
+    <EmbeddedResource Include="Resources\*" />
+    <EmbeddedResource Include="Resources\Hats\*" />
   </ItemGroup>
 </Project>

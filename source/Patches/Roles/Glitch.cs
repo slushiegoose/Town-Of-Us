@@ -56,9 +56,9 @@ namespace TownOfUs.Roles
 
             protected override bool CheckEndCriteria(ShipStatus __instance)
             {
-                if (Player.Data.IsDead) return true;
+                if (Player.Data.IsDead || Player.Data.Disconnected) return true;
 
-                if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead) == 1)
+                if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 1)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(
                         PlayerControl.LocalPlayer.NetId,
@@ -81,12 +81,6 @@ namespace TownOfUs.Roles
             {
                 //System.Console.WriteLine("Reached Here - Glitch Edition");
                 GlitchWins = true;
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    player.Data.IsImpostor = player.PlayerId == Player.PlayerId;
-                }
-
-                
             }
             
             public void Loses()
@@ -175,10 +169,10 @@ namespace TownOfUs.Roles
                                 HudManager.Instance.ReportButton.SetActive(false);
                             }
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Morphling))
+                            var role = Roles.Role.GetRole(PlayerControl.LocalPlayer);
+                            if (role != null)
                             {
-                                var morphling = Roles.Role.GetRole<Roles.Morphling>(PlayerControl.LocalPlayer);
-                                if (morphling.MorphButton != null)
+                                if (role.ExtraButtons.Count > 0)
                                 {
                                     if (lockImg[3] == null)
                                     {
@@ -186,33 +180,17 @@ namespace TownOfUs.Roles
                                         SpriteRenderer lockImgR = lockImg[3].AddComponent<SpriteRenderer>();
                                         lockImgR.sprite = LockSprite;
                                     }
-                                    lockImg[3].transform.position = new Vector3(morphling.MorphButton.transform.position.x, morphling.MorphButton.transform.position.y, -50f);
+
+                                    lockImg[3].transform.position = new Vector3(
+                                        role.ExtraButtons[0].transform.position.x,
+                                        role.ExtraButtons[0].transform.position.y, -50f);
                                     lockImg[3].layer = 5;
-                                    morphling.MorphButton.enabled = false;
-                                    morphling.MorphButton.renderer.color = Palette.DisabledColor;
-                                    morphling.MorphButton.renderer.material.SetFloat("_Desat", 1f);
+                                    role.ExtraButtons[0].enabled = false;
+                                    role.ExtraButtons[0].renderer.color = Palette.DisabledColor;
+                                    role.ExtraButtons[0].renderer.material.SetFloat("_Desat", 1f);
                                 }
                             }
-                            
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager))
-                            {
-                                var camouflager = Roles.Role.GetRole<Roles.Camouflager>(PlayerControl.LocalPlayer);
-                                if (camouflager.CamouflageButton != null)
-                                {
-                                    if (lockImg[3] == null)
-                                    {
-                                        lockImg[3] = new GameObject();
-                                        SpriteRenderer lockImgR = lockImg[3].AddComponent<SpriteRenderer>();
-                                        lockImgR.sprite = LockSprite;
-                                    }
-                                    lockImg[3].transform.position = new Vector3(camouflager.CamouflageButton.transform.position.x, camouflager.CamouflageButton.transform.position.y, -50f);
-                                    lockImg[3].layer = 5;
-                                    camouflager.CamouflageButton.enabled = false;
-                                    camouflager.CamouflageButton.renderer.color = Palette.DisabledColor;
-                                    camouflager.CamouflageButton.renderer.material.SetFloat("_Desat", 1f);
-                                }
-                            }
-                                
+
                             if (Minigame.Instance)
                             {
                                 Minigame.Instance.Close();
@@ -239,19 +217,15 @@ namespace TownOfUs.Roles
                                 HudManager.Instance.KillButton.enabled = true;
                                 HudManager.Instance.UseButton.UseButton.color = Palette.EnabledColor;
                                 HudManager.Instance.UseButton.UseButton.material.SetFloat("_Desat", 0f);
-                                if (PlayerControl.LocalPlayer.Is(RoleEnum.Morphling))
+                                var role = Roles.Role.GetRole(PlayerControl.LocalPlayer);
+                                if (role != null)
                                 {
-                                    var morphling = Roles.Role.GetRole<Roles.Morphling>(PlayerControl.LocalPlayer);
-                                    morphling.MorphButton.enabled = true;
-                                    morphling.MorphButton.renderer.color = Palette.EnabledColor;
-                                    morphling.MorphButton.renderer.material.SetFloat("_Desat", 0f);
-                                }
-                                if (PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager))
-                                {
-                                    var camouflager = Roles.Role.GetRole<Roles.Camouflager>(PlayerControl.LocalPlayer);
-                                    camouflager.CamouflageButton.enabled = true;
-                                    camouflager.CamouflageButton.renderer.color = Palette.EnabledColor;
-                                    camouflager.CamouflageButton.renderer.material.SetFloat("_Desat", 0f);
+                                    if (role.ExtraButtons.Count > 0)
+                                    {
+                                        role.ExtraButtons[0].enabled = true;
+                                        role.ExtraButtons[0].renderer.color = Palette.EnabledColor;
+                                        role.ExtraButtons[0].renderer.material.SetFloat("_Desat", 0f);
+                                    }
                                 }
                             }
                             tickDictionary.Remove(hackPlayer.PlayerId);

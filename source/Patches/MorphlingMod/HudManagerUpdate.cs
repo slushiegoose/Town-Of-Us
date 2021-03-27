@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUs.MafiaMod.Janitor;
 using UnityEngine;
 
 namespace TownOfUs.MorphlingMod
@@ -47,6 +46,10 @@ namespace TownOfUs.MorphlingMod
                 {
                     role.MorphButton.SetTarget(role.closestPlayer);
                     __instance.KillButton.SetTarget(role.closestPlayer);
+                }
+                else
+                {
+                    role.MorphButton.SetTarget(null);
                 }
             }
             else

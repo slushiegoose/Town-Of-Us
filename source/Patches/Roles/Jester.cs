@@ -19,7 +19,7 @@ namespace TownOfUs.Roles
 
         protected override bool CheckEndCriteria(ShipStatus __instance)
         {
-            if (!VotedOut || !Player.Data.IsDead) return true;
+            if (!VotedOut || !Player.Data.IsDead && !Player.Data.Disconnected) return true;
             ShipStatus.RpcEndGame(GameOverReason.ImpostorByVote, false);
             return false;
         }

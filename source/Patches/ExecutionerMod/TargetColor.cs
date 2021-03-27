@@ -38,8 +38,8 @@ namespace TownOfUs.ExecutionerMod
 
             role.target.nameText.Color = Color.black;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead) return;
-            if (!role.target.Data.IsDead) return;
+            if (PlayerControl.LocalPlayer.Data.IsDead)   return;
+            if (!role.target.Data.IsDead && !role.target.Data.Disconnected) return;
             if (role.TargetVotedOut) return;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
@@ -66,6 +66,10 @@ namespace TownOfUs.ExecutionerMod
                 task.Text =
                     $"{jester.ColorString}Role: {jester.Name}\nYour target was killed. Now you get voted out!\nFake Tasks:[]";
                 player.myTasks.Insert(0, task);
+            }
+            else
+            {
+                new Roles.Crewmate(player);
             }
         }
 

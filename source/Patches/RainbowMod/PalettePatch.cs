@@ -1,3 +1,4 @@
+using Assets.CoreScripts;
 using UnityEngine;
 
 namespace TownOfUs.RainbowMod
@@ -111,6 +112,7 @@ namespace TownOfUs.RainbowMod
 		    Palette.PlayerColors = array2;
 		    Palette.ShadowColors = array3;
 		    MedScanMinigame.ColorNames = array4;
+		    Telemetry.ColorNames = array4;
 	    }
     }
 }

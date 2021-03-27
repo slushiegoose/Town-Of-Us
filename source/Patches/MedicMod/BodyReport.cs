@@ -10,6 +10,7 @@ namespace TownOfUs.MedicMod
         static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
         {
             //System.Console.WriteLine("Report Body!");
+            if (info == null) return;
             var matches = Murder.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
             DeadPlayer killer = null;
 

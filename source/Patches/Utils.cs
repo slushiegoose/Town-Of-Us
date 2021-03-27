@@ -357,13 +357,43 @@ namespace TownOfUs
                 };
 
                 Murder.KilledPlayers.Add(deadBody);
-                ChildMod.Murder.CheckChild(target);
+                if (!killer.Is(RoleEnum.Glitch) && !killer.Is(RoleEnum.Arsonist))
+                {
+                    ChildMod.Murder.CheckChild(target);
+                }
+
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
                     var glitch = Roles.Role.GetRole<Roles.Glitch>(killer);
                     glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
                     glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * 3);
                 }
+            }
+        }
+        
+        public static IEnumerator FlashCoroutine(Color color)
+        {
+            color.a = 0.3f;
+            var fullscreen = DestroyableSingleton<HudManager>.Instance.FullScreen;
+            fullscreen.enabled = true;
+            fullscreen.color = color;
+            yield return new WaitForSeconds(1f);
+            fullscreen.enabled = false;
+        }
+
+        public static IEnumerable<(T1, T2)> Zip<T1, T2>(List<T1> first, List<T2> second)
+        {
+            return Enumerable.Zip(first, second, (x, y) => (x, y));
+        }
+        
+        public static void DestroyAll(this IEnumerable<Component> listie)
+        {
+            foreach (var item in listie)
+            {
+                if (item == null) continue;
+                Object.Destroy(item);
+                if (item.gameObject == null) return;
+                Object.Destroy(item.gameObject);
             }
         }
 

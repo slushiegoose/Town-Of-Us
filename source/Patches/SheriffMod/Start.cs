@@ -15,7 +15,7 @@ namespace TownOfUs.SheriffMod
             {
                 var sheriff = (Roles.Sheriff) role;
                 sheriff.LastKilled = DateTime.UtcNow;
-                sheriff.LastKilled = sheriff.LastKilled.AddSeconds(-CustomGameOptions.SheriffKillCd + 8);
+                sheriff.LastKilled = sheriff.LastKilled.AddSeconds(-8.0);
             }
         }
     }

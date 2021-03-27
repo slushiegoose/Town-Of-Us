@@ -7,6 +7,13 @@ namespace TownOfUs.Roles
     {
         public List<byte> ExtraVotes = new List<byte>();
         public int VoteBank { get; set;}
+        public bool SelfVote { get; set; }
+        
+        public bool VotedOnce { get; set; }
+        
+        public PlayerVoteArea Abstain { get; set; }
+
+        public bool CanVote => VoteBank > 0 && !SelfVote;
 
         public Mayor(PlayerControl player) : base(player)
         {

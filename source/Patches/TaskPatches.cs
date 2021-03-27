@@ -18,7 +18,9 @@ namespace TownOfUs
                     if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object &&
                         (PlayerControl.GameOptions.GhostsDoTasks || !playerInfo.IsDead) && !playerInfo.IsImpostor &&
                         !(
-                            playerInfo._object.Is(RoleEnum.Jester) || playerInfo._object.Is(RoleEnum.Shifter) || playerInfo._object.Is(RoleEnum.Glitch)
+                            playerInfo._object.Is(RoleEnum.Jester) || playerInfo._object.Is(RoleEnum.Shifter) ||
+                            playerInfo._object.Is(RoleEnum.Glitch) || playerInfo._object.Is(RoleEnum.Executioner) ||
+                            playerInfo._object.Is(RoleEnum.Arsonist)
                         ))
                     {
                         for (int j = 0; j < playerInfo.Tasks.Count; j++)
@@ -35,7 +37,7 @@ namespace TownOfUs
                 return false;
             }
         }
-        
+
         [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
         class Console_CanUse
         {
@@ -45,8 +47,9 @@ namespace TownOfUs
                 PlayerControl @object = __0.Object;
 
                 var flag = @object.Is(RoleEnum.Glitch) || @object.Is(RoleEnum.Jester) ||
-                           @object.Is(RoleEnum.Shifter) || @object.Is(RoleEnum.Executioner);
-                
+                           @object.Is(RoleEnum.Shifter) || @object.Is(RoleEnum.Executioner) || 
+                           @object.Is(RoleEnum.Arsonist);
+
                 Vector2 truePosition = @object.GetTruePosition();
                 Vector3 position = __instance.transform.position;
                 __2 = ((!__0.IsDead || (PlayerControl.GameOptions.GhostsDoTasks && !__instance.GhostsIgnored)) &&
@@ -71,6 +74,7 @@ namespace TownOfUs
 
 
         }
+
         class MethodRewrites
         {
             public static bool InRoom(Console __instance, Vector2 truePos)
@@ -80,6 +84,7 @@ namespace TownOfUs
                 {
                     return false;
                 }
+
                 bool result;
                 try
                 {
@@ -89,6 +94,7 @@ namespace TownOfUs
                 {
                     result = false;
                 }
+
                 return result;
             }
 
@@ -102,6 +108,7 @@ namespace TownOfUs
                         return playerTask;
                     }
                 }
+
                 return null;
             }
         }

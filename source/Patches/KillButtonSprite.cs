@@ -12,6 +12,7 @@ namespace TownOfUs
         private static Sprite Rewind => TownOfUs.Rewind;
         private static Sprite Medic => TownOfUs.MedicSprite;
         private static Sprite Seer => TownOfUs.SeerSprite;
+        private static Sprite Douse => TownOfUs.DouseSprite;
 
         private static Sprite Kill => TownOfUs.Kill;
 
@@ -49,6 +50,11 @@ namespace TownOfUs
                 __instance.KillButton.renderer.sprite = Medic;
                 flag = true;
             }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
+            {
+                __instance.KillButton.renderer.sprite = Douse;
+                flag = true;
+            }
             else
             {
                 __instance.KillButton.renderer.sprite = Kill;
@@ -56,7 +62,7 @@ namespace TownOfUs
             }
 
             var keyInt = Input.GetKeyInt(KeyCode.Q);
-            if (keyInt && __instance.KillButton != null && flag)
+            if (keyInt && __instance.KillButton != null && flag && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 __instance.KillButton.PerformKill();
             }

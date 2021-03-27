@@ -36,8 +36,10 @@ namespace TownOfUs.SheriffMod
                 return false;
             }
 
-            var flag4 = role.ClosestPlayer.Data.IsImpostor || role.ClosestPlayer.Is(RoleEnum.Glitch) ||
-                        role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.SheriffKillsJester;
+            var flag4 = role.ClosestPlayer.Data.IsImpostor ||
+                        role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.SheriffKillsJester ||
+                        role.ClosestPlayer.Is(RoleEnum.Glitch) && CustomGameOptions.SheriffKillsGlitch ||
+                        role.ClosestPlayer.Is(RoleEnum.Arsonist) && CustomGameOptions.SheriffKillsArsonist;
             if (!flag4)
             {
                 if (CustomGameOptions.SheriffKillOther)

@@ -11,7 +11,7 @@ namespace TownOfUs {
         {
             var text = __instance.text;
             //text.Text += "\nloaded [FFBFCCFF]T[FF80D5FF]o[FFCC00FF]w[704FA8FF]n[FF0000FF] of[CC4D00FF] Us [FFFFFFFF]by [00FF00FF]slushiegoose[FFFFFFFF] ";
-            text.Text += "\n\n\n\n\n\n\n\n\n[00FF00FF]loaded TownOfUs Mod v1.1.0 by slushiegoose[]";
+            text.Text += "\n\n\n\n\n\n\n\n\n[00FF00FF]loaded TownOfUs Mod v1.2.0 by slushiegoose[]";
         }
     }
 }

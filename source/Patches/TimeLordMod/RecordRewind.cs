@@ -58,6 +58,7 @@ namespace TownOfUs.TimeLordMod
             }
             //System.Console.WriteLine("Rewinding...");
             //System.Console.Write(points.Count);
+
             if (points.Count > 2)
             {
                 //PlayerControl.LocalPlayer.Physics.ExitAllVents

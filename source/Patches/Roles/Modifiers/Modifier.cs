@@ -88,5 +88,12 @@ namespace TownOfUs.Roles
             return GetModifier(player) as T;
         }
         
+        public static Modifier GetModifier(PlayerVoteArea area)
+        {
+            var player = PlayerControl.AllPlayerControls.ToArray()
+                .FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
+            return player == null ? null : GetModifier(player);
+        }
+        
     }
 }

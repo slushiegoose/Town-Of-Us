@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Essentials.Options;
 using HarmonyLib;
 using Hazel;
 //using Il2CppSystem;
 using Reactor;
+using Reactor.Extensions;
 using TownOfUs.Roles;
 using UnhollowerBaseLib;
 using UnityEngine;
+using Coroutine = TownOfUs.JanitorMod.Coroutine;
 
 namespace TownOfUs
 {
@@ -17,12 +18,11 @@ namespace TownOfUs
         //public static readonly System.Random Rand = new System.Random();
 
         private static readonly List<(Type, CustomRPC)> CrewmateRoles = new List<(Type, CustomRPC)>();
+        private static readonly List<(Type, CustomRPC)> NeutralRoles = new List<(Type, CustomRPC)>();
         private static readonly List<(Type, CustomRPC)> ImpostorRoles = new List<(Type, CustomRPC)>();
-        private static readonly List<(Type, CustomRPC)> ModifiersToAdd = new List<(Type, CustomRPC)>();
+        private static readonly List<(Type, CustomRPC)> CrewmateModifiers = new List<(Type, CustomRPC)>();
+        private static readonly List<(Type, CustomRPC)> GlobalModifiers = new List<(Type, CustomRPC)>();
         private static bool LoversOn = false;
-        private static bool MafiaOn = false;
-        private static bool FlashOn = false;
-        private static bool ExecutionerOn = false;
 
 
 
@@ -58,23 +58,8 @@ namespace TownOfUs
                         break;
 
 
-                    case CustomRPC.SetMafia:
-                        var godfather = Utils.PlayerById(reader.ReadByte());
-                        var janitor = Utils.PlayerById(reader.ReadByte());
-                        var g = new Roles.Godfather(godfather);
-                        var j = new Roles.Janitor(janitor);
-                        g.Janitor = j;
-                        j.Godfather = g;
-
-                        if (!CustomGameOptions.TwoMafia)
-                        {
-                            var mafioso = Utils.PlayerById(reader.ReadByte());
-                            var m = new Roles.Mafioso(mafioso);
-                            g.Mafioso = m;
-                            j.Mafioso = m;
-                            m.Godfather = g;
-                            m.Janitor = j;
-                        }
+                    case CustomRPC.SetJanitor:
+                        new Roles.Janitor(Utils.PlayerById(reader.ReadByte()));
 
                         break;
 
@@ -209,7 +194,7 @@ namespace TownOfUs
                         {
                             if (body.ParentId == readByte)
                             {
-                                Coroutines.Start(MafiaMod.Janitor.Coroutine.CleanCoroutine(body, janitorRole));
+                                Coroutines.Start(Coroutine.CleanCoroutine(body, janitorRole));
                             }
                         }
 
@@ -361,6 +346,75 @@ namespace TownOfUs
                     case CustomRPC.ExecutionerToJester:
                         ExecutionerMod.TargetColor.ExeToJes(Utils.PlayerById(reader.ReadByte()));
                         break;
+                    case CustomRPC.SetSnitch:
+                        new Roles.Snitch(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.SetMiner:
+                        new Roles.Miner(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.Mine:
+                        var ventId = reader.ReadInt32();
+                        var miner = Utils.PlayerById(reader.ReadByte());
+                        var minerRole = Roles.Role.GetRole<Roles.Miner>(miner);
+                        var pos = reader.ReadVector2();
+                        var zAxis = reader.ReadSingle();
+                        MinerMod.PerformKill.SpawnVent(ventId, minerRole, pos, zAxis);
+                        break;
+                    case CustomRPC.SetSwooper:
+                        new Roles.Swooper(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.Swoop:
+                        var swooper = Utils.PlayerById(reader.ReadByte());
+                        var swooperRole = Role.GetRole<Swooper>(swooper);
+                        swooperRole.TimeRemaining = CustomGameOptions.SwoopDuration;
+                        swooperRole.Swoop();
+                        break;
+                    case CustomRPC.SetTiebreaker:
+                        new Tiebreaker(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.SetDrunk:
+                        new Drunk(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.SetArsonist:
+                        new Arsonist(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.Douse:
+                        var arsonist = Utils.PlayerById(reader.ReadByte());
+                        var douseTarget = Utils.PlayerById(reader.ReadByte());
+                        var arsonistRole = Roles.Role.GetRole<Roles.Arsonist>(arsonist);
+                        arsonistRole.DousedPlayers.Add(douseTarget.PlayerId);
+                        arsonistRole.LastDoused = DateTime.UtcNow;
+                        
+                        break;
+                    case CustomRPC.Ignite:
+                        var theArsonist = Utils.PlayerById(reader.ReadByte());
+                        var theArsonistRole = Roles.Role.GetRole<Roles.Arsonist>(theArsonist);
+                        ArsonistMod.PerformKill.Ignite(theArsonistRole);
+                        break;
+
+                    case CustomRPC.ArsonistWin:
+                        var theArsonistTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist);
+                        ((Roles.Arsonist) theArsonistTheRole)?.Wins();
+                        break;
+                    case CustomRPC.ArsonistLose:
+                        foreach (var role in Role.AllRoles)
+                        {
+                            if (role.RoleType == RoleEnum.Arsonist)
+                            {
+                                ((Arsonist) role).Loses();
+                            }
+                        }
+
+                        break;
+                    case CustomRPC.SetImpostor:
+                        new Impostor(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.SetCrewmate:
+                        new Crewmate(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.SyncCustomSettings:
+                        CustomOption.Rpc.ReceiveRpc(reader);
+                        break;
                 }
             }
         }
@@ -378,11 +432,14 @@ namespace TownOfUs
             public static void Prefix([HarmonyArgument(0)] Il2CppReferenceArray<GameData.PlayerInfo> infected)
             {
                 //System.Console.WriteLine("REACHED HERE");
-
+                
                 Role.NobodyWins = false;
                 CrewmateRoles.Clear();
+                NeutralRoles.Clear();
                 ImpostorRoles.Clear();
-                ModifiersToAdd.Clear();
+                CrewmateModifiers.Clear();
+                GlobalModifiers.Clear();
+                
 
 
                 //TODO - Instantiate role-specific stuff
@@ -399,13 +456,11 @@ namespace TownOfUs
 
 
                 LoversOn = Check(CustomGameOptions.LoversOn);
-                MafiaOn = Check(CustomGameOptions.MafiaOn);
-                FlashOn = Check(CustomGameOptions.FlashOn);
-                ExecutionerOn = Check(CustomGameOptions.ExecutionerOn);
+                
 
                 if (Check(CustomGameOptions.MayorOn)) CrewmateRoles.Add((typeof(Mayor), CustomRPC.SetMayor));
 
-                if (Check(CustomGameOptions.JesterOn)) CrewmateRoles.Add((typeof(Jester), CustomRPC.SetJester));
+                if (Check(CustomGameOptions.JesterOn)) NeutralRoles.Add((typeof(Jester), CustomRPC.SetJester));
 
                 if (Check(CustomGameOptions.SheriffOn)) CrewmateRoles.Add((typeof(Sheriff), CustomRPC.SetSheriff));
 
@@ -413,7 +468,7 @@ namespace TownOfUs
 
                 if (Check(CustomGameOptions.SwapperOn)) CrewmateRoles.Add((typeof(Swapper), CustomRPC.SetSwapper));
 
-                if (Check(CustomGameOptions.ShifterOn)) CrewmateRoles.Add((typeof(Shifter), CustomRPC.SetShifter));
+                if (Check(CustomGameOptions.ShifterOn)) NeutralRoles.Add((typeof(Shifter), CustomRPC.SetShifter));
 
                 if (Check(CustomGameOptions.InvestigatorOn))
                     CrewmateRoles.Add((typeof(Investigator), CustomRPC.SetInvestigator));
@@ -423,13 +478,13 @@ namespace TownOfUs
 
                 if (Check(CustomGameOptions.MedicOn)) CrewmateRoles.Add((typeof(Medic), CustomRPC.SetMedic));
 
-                if (Check(CustomGameOptions.GlitchOn)) CrewmateRoles.Add((typeof(Glitch), CustomRPC.SetGlitch));
+                if (Check(CustomGameOptions.GlitchOn)) NeutralRoles.Add((typeof(Glitch), CustomRPC.SetGlitch));
 
                 if (Check(CustomGameOptions.SeerOn)) CrewmateRoles.Add((typeof(Seer), CustomRPC.SetSeer));
 
-                if (Check(CustomGameOptions.TorchOn)) ModifiersToAdd.Add((typeof(Torch), CustomRPC.SetTorch));
+                if (Check(CustomGameOptions.TorchOn)) CrewmateModifiers.Add((typeof(Torch), CustomRPC.SetTorch));
 
-                if (Check(CustomGameOptions.DiseasedOn)) ModifiersToAdd.Add((typeof(Diseased), CustomRPC.SetDiseased));
+                if (Check(CustomGameOptions.DiseasedOn)) CrewmateModifiers.Add((typeof(Diseased), CustomRPC.SetDiseased));
 
                 if (Check(CustomGameOptions.MorphlingOn))
                     ImpostorRoles.Add((typeof(Morphling), CustomRPC.SetMorphling));
@@ -440,8 +495,55 @@ namespace TownOfUs
                 
                 if (Check(CustomGameOptions.SpyOn)) CrewmateRoles.Add((typeof(Spy), CustomRPC.SetSpy));
                 
+                if (Check(CustomGameOptions.SnitchOn)) CrewmateRoles.Add((typeof(Snitch), CustomRPC.SetSnitch));
+                
+                if (Check(CustomGameOptions.MinerOn)) ImpostorRoles.Add((typeof(Miner), CustomRPC.SetMiner));
+                
+                if (Check(CustomGameOptions.SwooperOn)) ImpostorRoles.Add((typeof(Swooper), CustomRPC.SetSwooper));
+                
+                if (Check(CustomGameOptions.TiebreakerOn)) GlobalModifiers.Add((typeof(Tiebreaker), CustomRPC.SetTiebreaker));
+                
+                if (Check(CustomGameOptions.FlashOn)) GlobalModifiers.Add((typeof(Flash), CustomRPC.SetFlash));
+                
+                if (Check(CustomGameOptions.JanitorOn)) ImpostorRoles.Add((typeof(Janitor), CustomRPC.SetJanitor));
+                
+                if (Check(CustomGameOptions.DrunkOn)) GlobalModifiers.Add((typeof(Drunk), CustomRPC.SetDrunk));
+                
+                if (Check(CustomGameOptions.ArsonistOn)) NeutralRoles.Add((typeof(Arsonist), CustomRPC.SetArsonist));
+                
+                if (Check(CustomGameOptions.ExecutionerOn)) NeutralRoles.Add((typeof(Executioner), CustomRPC.SetExecutioner));
+                
                 GenEachRole(infected.ToList());
 
+            }
+        }
+
+
+        private static void GenExe(List<GameData.PlayerInfo> infected, List<PlayerControl> crewmates)
+        {
+            PlayerControl pc;
+            var targets = Utils.getCrewmates(infected).Where(x =>
+            {
+                var role = Role.GetRole(x);
+                if (role == null) return true;
+                return role.Faction == Faction.Crewmates && !x.Is(RoleEnum.Child);
+            }).ToList();
+            if (targets.Count != 0)
+            {
+                var rand = HashRandom.Method_1(targets.Count);
+                pc = targets[rand];
+                var role = Role.Gen(typeof(Executioner), crewmates.Where(x => x.PlayerId != pc.PlayerId).ToList(),
+                    CustomRPC.SetExecutioner);
+                if (role != null)
+                {
+                    crewmates.Remove(role.Player);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                        (byte) CustomRPC.SetTarget, SendOption.Reliable, -1);
+                    writer.Write(role.Player.PlayerId);
+                    writer.Write(pc.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    ((Executioner) role).target = pc;
+                }
             }
         }
 
@@ -450,67 +552,44 @@ namespace TownOfUs
             
             //System.Console.WriteLine("REACHED HERE - GEN ROLES");
             CrewmateRoles.Shuffle();
-            ModifiersToAdd.Shuffle();
+            NeutralRoles.Shuffle();
+            var neutralRoles = NeutralRoles.Take(CustomGameOptions.MaxNeutralRoles).ToList();
+            var crewAndNeutRoles = neutralRoles;
+            crewAndNeutRoles.AddRange(CrewmateRoles);
+            crewAndNeutRoles.Shuffle();
+            
+            CrewmateModifiers.Shuffle();
+            GlobalModifiers.Shuffle();
+            
             ImpostorRoles.Shuffle();
+            var impRoles = ImpostorRoles.Take(CustomGameOptions.MaxImpostorRoles);
 
             var crewmates = Utils.getCrewmates(infected);
             var impostors = Utils.getImpostors(infected);
-            var targets = Utils.getCrewmates(infected);
+
+            var executionerOn = false;
             
-            
-            foreach (var (role, rpc) in CrewmateRoles)
+            foreach (var (role, rpc) in crewAndNeutRoles)
             {
+
+                if (rpc == CustomRPC.SetExecutioner)
+                {
+                    executionerOn = true;
+                    continue;
+                }
 
                 //System.Console.WriteLine(role);
                 //System.Console.WriteLine(rpc);
                 Role.Gen(role, crewmates, rpc);
             }
 
-            if (ExecutionerOn)
+            if (executionerOn)
             {
-                var foundTarget = true;
-                PlayerControl pc;
-                while (true)
-                {
-                    
-                    var rand = HashRandom.Method_1(targets.Count);
-                    pc = targets[rand];
-                    var pcRole = Role.GetRole(pc);
-                    if (pcRole == null)
-                    {
-
-                        if (crewmates.Count != 1) break;
-                    }
-                    else
-                    {
-                        if (pcRole.Faction == Faction.Crewmates && !pc.Is(RoleEnum.Child)) break;
-                    }
-                    targets.Remove(pc);
-                    if (targets.Count == 0)
-                    {
-                        foundTarget = false;
-                        break;
-                    };
-                }
-
-                if (foundTarget)
-                {
-                    var role = Role.Gen(typeof(Executioner), crewmates.Where(x => x != pc).ToList(), CustomRPC.SetExecutioner);
-                    if (role != null)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.SetTarget, SendOption.Reliable, -1);
-                        writer.Write(role.Player.PlayerId);
-                        writer.Write(pc.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        ((Executioner) role).target = pc;
-                    }
-                }
-
+                GenExe(infected, crewmates);
             }
+       
             
-            
-            foreach (var (role, rpc) in ImpostorRoles)
+            foreach (var (role, rpc) in impRoles)
             {
                 //System.Console.WriteLine(role);
                 //System.Console.WriteLine(rpc);
@@ -518,31 +597,36 @@ namespace TownOfUs
             }
 
             var crewmates2 = Utils.getCrewmates(infected).Where(x => !x.Is(RoleEnum.Glitch)).ToList();
-            foreach (var (modifier, rpc) in ModifiersToAdd)
+            foreach (var (modifier, rpc) in CrewmateModifiers)
             {
                 //System.Console.WriteLine(modifier);
                 //System.Console.WriteLine(rpc);
                 Modifier.Gen(modifier, crewmates2, rpc);
             }
-            
-            if (MafiaOn)
-            {
-                //System.Console.WriteLine("MAFIA");
-                Godfather.Gen(impostors);
-            }
 
+            var global = PlayerControl.AllPlayerControls.ToArray().Where(x => Modifier.GetModifier(x) == null).ToList();
+            foreach (var (modifier, rpc) in GlobalModifiers)
+            {
+                Modifier.Gen(modifier, global, rpc);
+            }
+            
             if (LoversOn)
             {
                 //System.Console.WriteLine("LOVER1");
                 Lover.Gen(crewmates, impostors);
             }
 
-            if (FlashOn)
+            while (true)
             {
-                //System.Console.WriteLine("Flash");
-                Modifier.Gen(typeof(Flash),
-                    PlayerControl.AllPlayerControls.ToArray().Where(x => Modifier.GetModifier(x) == null).ToList(),
-                    CustomRPC.SetFlash);
+                if (crewmates.Count == 0) break;
+                Role.Gen(typeof(Crewmate), crewmates, CustomRPC.SetCrewmate);
+            }
+
+            while (true)
+            {
+                if (impostors.Count == 0) break;
+                Role.Gen(typeof(Impostor), impostors, CustomRPC.SetImpostor);
+
             }
 
 

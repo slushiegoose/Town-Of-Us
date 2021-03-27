@@ -19,7 +19,7 @@ namespace TownOfUs.MayorMod
                 var role = Roles.Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 if (PlayerControl.LocalPlayer.Data.IsDead) return false;
                 if (__instance.isDead) return false;
-                if (role.VoteBank <= 0 || !__instance.Parent.Select(__instance.TargetPlayerId)) return false;
+                if (!role.CanVote || !__instance.Parent.Select(__instance.TargetPlayerId)) return false;
                 __instance.Buttons.SetActive(true);
                 return false;
             }
@@ -38,8 +38,16 @@ namespace TownOfUs.MayorMod
                     return false;
                 }
 
-                if (role.VoteBank <= 0) return false;
-                role.VoteBank--;
+                if (!role.CanVote) return false;
+                if (__instance != role.Abstain)
+                {
+                    role.VoteBank--;
+                    role.VotedOnce = true;
+                }
+                else
+                {
+                    role.SelfVote = true;
+                }
                 __instance.Parent.Confirm(__instance.TargetPlayerId);
                 return false;
             }

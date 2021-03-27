@@ -19,19 +19,31 @@ namespace TownOfUs
         SetTarget,
         SetChild,
         SetSpy,
+        SetSnitch,
+        SetMiner,
+        SetSwooper,
+        SetJanitor,
+        SetArsonist,
 
         SetTorch,
         SetDiseased,
         SetFlash,
+        SetTiebreaker,
+        SetDrunk,
         
-        SetMafia,
+        SetCrewmate,
+        SetImpostor,
+        
+       
         
         LoveWin,
         GlitchWin,
+        ArsonistWin,
         JesterLose,
         ExecutionerLose,
         ShifterLose,
         GlitchLose,
+        ArsonistLose,
         NobodyWins,
         
         JanitorClean,
@@ -47,6 +59,10 @@ namespace TownOfUs
         RewindRevive,
         Morph,
         Camouflage,
+        Mine,
+        Swoop,
+        Douse,
+        Ignite,
 
         SetGlitch,
         BypassKill,
@@ -58,5 +74,6 @@ namespace TownOfUs
 
 
         Start,
+        SyncCustomSettings
     }
 }

@@ -9,7 +9,7 @@ namespace TownOfUs {
         public static void Postfix(PingTracker __instance)
         {
             //__instance.text.Text += "\n> [FFBFCCFF]T[FF80D5FF]o[FFCC00FF]w[704FA8FF]n[FF0000FF] of[CC4D00FF] Us [FFFFFFFF] <\nBy [00FF00FF]slushiegoose[FFFFFFFF]";
-            __instance.text.Text += "\n[00FF00FF]TownOfUs Mod\nv1.1.0\nBy slushiegoose []";
+            __instance.text.Text += "\n[00FF00FF]TownOfUs Mod\nv1.2.0\nBy slushiegoose []";
             __instance.text.Text += "\nButton Art by PhasmoFireGod";
         }
         

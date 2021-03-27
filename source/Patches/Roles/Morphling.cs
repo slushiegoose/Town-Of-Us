@@ -9,7 +9,17 @@ namespace TownOfUs.Roles
     {
 
         public PlayerControl SampledPlayer;
-        public KillButtonManager MorphButton;
+        public KillButtonManager _morphButton;
+        public KillButtonManager MorphButton
+        {
+            get { return _morphButton;}
+            set
+            {
+                _morphButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
         public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
         public PlayerControl closestPlayer;

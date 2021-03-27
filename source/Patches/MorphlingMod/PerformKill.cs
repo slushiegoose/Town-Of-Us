@@ -17,7 +17,7 @@ namespace TownOfUs.MorphlingMod
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             var role = Roles.Role.GetRole<Roles.Morphling>(PlayerControl.LocalPlayer);
-            var target = DestroyableSingleton<HudManager>.Instance.KillButton.CurrentTarget;
+            var target = role.closestPlayer;
             if (__instance == role.MorphButton)
             {
                 
@@ -28,6 +28,7 @@ namespace TownOfUs.MorphlingMod
                     role.SampledPlayer = target;
                     role.MorphButton.renderer.sprite = MorphSprite;
                     role.MorphButton.SetTarget(null);
+                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
                     if (role.MorphTimer() < 5f)
                     {
                         role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
@@ -50,7 +51,7 @@ namespace TownOfUs.MorphlingMod
                 return false;
             }
 
-            return !target.Data.IsImpostor;
+            return true;
         }
     }
 }

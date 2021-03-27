@@ -69,6 +69,26 @@ namespace TownOfUs
                 return;
             }
 
+            var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch) x).GlitchWins);
+            if (glitch != null)
+            {
+                var winners = Utils.potentialWinners.Where(x => x.Name == glitch.PlayerName).ToList();
+                TempData.winners = new List<WinningPlayerData>();
+                foreach(var win in winners) TempData.winners.Add(win);
+                return;
+                
+            }
+            
+            var arsonist = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
+            if (arsonist != null)
+            {
+                var winners = Utils.potentialWinners.Where(x => x.Name == arsonist.PlayerName).ToList();
+                TempData.winners = new List<WinningPlayerData>();
+                foreach(var win in winners) TempData.winners.Add(win);
+                return;
+                
+            }
+
 
         }
     }

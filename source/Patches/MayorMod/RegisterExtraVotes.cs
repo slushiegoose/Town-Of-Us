@@ -22,12 +22,13 @@ namespace TownOfUs.MayorMod
                 __instance.state = MeetingHud.VoteStates.NotVoted;
                 return true;
             }
-            
+
+            [HarmonyPriority(Priority.First)]
             public static void Postfix(MeetingHud __instance)
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
                 var role = Roles.Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-                if (role.VoteBank > 0)
+                if (role.VoteBank > 0 && !role.SelfVote)
                 {
                     __instance.SkipVoteButton.gameObject.SetActive(true);
                 }
@@ -52,13 +53,15 @@ namespace TownOfUs.MayorMod
         {
             if (area.didVote)
             {
-                role.ExtraVotes.Add((byte)(suspectPlayerId + 1));
+                role.ExtraVotes.Add((byte) (suspectPlayerId + 1));
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor))
                 {
                     role.VoteBank--;
                 }
+
                 return false;
             }
+
             area.didVote = true;
             area.votedFor = suspectPlayerId;
             area.Flag.enabled = true;
@@ -73,7 +76,7 @@ namespace TownOfUs.MayorMod
             var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
             __instance.TimerText.Text = "Can Vote: " + role.VoteBank + " time(s) | " + __instance.TimerText.Text;
         }
-        
+
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CalculateVotes))] //CalculateVotes
         public static class CalculateVotes
         {
@@ -93,6 +96,30 @@ namespace TownOfUs.MayorMod
                     foreach (var number in ((Mayor) role).ExtraVotes)
                     {
                         array[number] += 1;
+                    }
+                }
+
+                var structArray = (Il2CppStructArray<byte>) array;
+
+                var maxIdx = Extensions.IndexOfMax(
+                    structArray,
+                    (Func<byte, int>) (p => (int) p),
+                    out var tie
+                ) - 1;
+                
+                if (tie)
+                {
+                    foreach (var player in __instance.playerStates)
+                    {
+                        if (!player.didVote) continue;
+                        var modifier = Modifier.GetModifier(player);
+                        if (modifier == null) continue;
+                        if (modifier.ModifierType == ModifierEnum.Tiebreaker)
+                        {
+                            var num = (int) (player.votedFor + 1);
+                            if (num < 0 || num >= array.Length) continue;
+                            array[num] += 1;
+                        }
                     }
                 }
 
@@ -167,20 +194,23 @@ namespace TownOfUs.MayorMod
                 var mayor = (Mayor) role;
                 mayor.ExtraVotes.Clear();
                 mayor.VoteBank++;
+                mayor.SelfVote = false;
+                mayor.VotedOnce = false;
             }
-            
+
         }
-        
-        
-        
+
+
+
         private static void Vote(MeetingHud __instance, PlayerVoteArea area2, int num,
-           Component origin)
+            Component origin, bool isMayor = false)
         {
             ////System.Console.WriteLine(PlayerControl.GameOptions.AnonymousVotes);
             var playerById = GameData.Instance.GetPlayerById((byte) area2.TargetPlayerId);
             var renderer =
                 UnityEngine.Object.Instantiate(__instance.PlayerVotePrefab);
-            if (PlayerControl.GameOptions.AnonymousVotes) //Should be AnonymousVotes but weird
+            if (PlayerControl.GameOptions.AnonymousVotes || CustomGameOptions.MayorAnonymous && isMayor
+            ) //Should be AnonymousVotes but weird
             {
                 //System.Console.WriteLine("ANONS");
                 PlayerControl.SetPlayerMaterialColors(Palette.DisabledGrey, renderer);
@@ -201,7 +231,8 @@ namespace TownOfUs.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
-        public static class PopulateResults {
+        public static class PopulateResults
+        {
             public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] byte[] statess)
             {
                 var joined = string.Join(",", statess);
@@ -249,7 +280,7 @@ namespace TownOfUs.MayorMod
                         var votedFor = (int) extraVote - 1;
                         if (votedFor == -1)
                         {
-                            Vote(__instance, area2, num, __instance.SkippedVoting);
+                            Vote(__instance, area2, num, __instance.SkippedVoting, true);
                             num++;
                         }
                         else
@@ -258,7 +289,7 @@ namespace TownOfUs.MayorMod
                             {
                                 var area = __instance.playerStates[i];
                                 if (votedFor != area.TargetPlayerId) continue;
-                                Vote(__instance, area2, allnums[i], area);
+                                Vote(__instance, area2, allnums[i], area, true);
                                 allnums[i]++;
                             }
                         }

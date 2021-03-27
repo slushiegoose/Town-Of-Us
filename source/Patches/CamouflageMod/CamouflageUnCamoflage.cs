@@ -27,45 +27,44 @@ namespace TownOfUs.CamouflageMod
                 }
                 
             }
-
+            
             if (CustomGameOptions.ColourblindComms)
             {
-                var commsActive = false;
-                if (!ShipStatus.Instance) return;
-                switch (ShipStatus.Instance.Type)
+                if (ShipStatus.Instance != null)
                 {
-                    case ShipStatus.MapType.Ship:
-                    case ShipStatus.MapType.Pb:
-                        var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-                        if (comms1.IsActive)
-                        {
-                            CommsEnabled = true;
-                            commsActive = true;
-                            Utils.Camouflage();
-                            return;
-                        }
 
-                        break;
-                    case ShipStatus.MapType.Hq:
-                        var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
-                        if (comms2.IsActive)
-                        {
-                            CommsEnabled = true;
-                            commsActive = true;
-                            Utils.Camouflage();
-                            return;
-                        }
+                    switch (ShipStatus.Instance.Type)
+                    {
+                        case ShipStatus.MapType.Ship:
+                        case ShipStatus.MapType.Pb:
+                            var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
+                            if (comms1.IsActive)
+                            {
+                                CommsEnabled = true;
+                                Utils.Camouflage();
+                                return;
+                            }
 
-                        break;
+                            break;
+                        case ShipStatus.MapType.Hq:
+                            var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
+                            if (comms2.IsActive)
+                            {
+                                CommsEnabled = true;
+                                Utils.Camouflage();
+                                return;
+                            }
 
+                            break;
+
+                    }
                 }
 
-                if (!commsActive && CommsEnabled)
+                if (CommsEnabled)
                 {
                     CommsEnabled = false;
                     Utils.UnCamouflage();
                 }
-                
             }
         }
     }

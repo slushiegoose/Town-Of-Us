@@ -12,6 +12,7 @@ namespace TownOfUs.GlitchMod
         {
             var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch) x).GlitchWins);
             if (role == null) return;
+            if (Roles.Role.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
             array[0].NameText.Text = role.ColorString + array[0].NameText.Text;
             __instance.BackgroundBar.material.color = role.Color;
