@@ -596,7 +596,7 @@ namespace TownOfUs
                 Role.Gen(role, impostors, rpc);
             }
 
-            var crewmates2 = Utils.getCrewmates(infected).Where(x => !x.Is(RoleEnum.Glitch)).ToList();
+            var crewmates2 = Utils.getCrewmates(infected).Where(x => !x.Is(RoleEnum.Glitch) || !x.Is(RoleEnum.Morphling)).ToList();
             foreach (var (modifier, rpc) in CrewmateModifiers)
             {
                 //System.Console.WriteLine(modifier);
