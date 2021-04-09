@@ -22,7 +22,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Child](#child)
 - [Spy](#spy)
 - [Snitch](#snitch)
-- Altruist (description coming soon)
+- [Altruist](#altruist)
 
 **Neutral Roles**
 - [Jester](#jester)
@@ -44,15 +44,16 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Flash](#flash)
 - [Tiebreaker](#tiebreaker)
 - [Drunk](#drunk)
-- Giant (description coming soon)
-- Button Barry (description coming soon)
+- [Giant](#giant)
+- [Button Barry](#button-barry)
 
 
 
+-----------------------
 # Releases :
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2021.3.31.3s | v2.2.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.0/TownOfUs-v2.0.0.zip) |
+| 2021.3.31.3s | v2.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.0/TownOfUs-v2.0.0.zip) |
 | 2021.3.5s | v1.2.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.2.0/TownOfUs-v1.2.0.zip) |
 | 2021.3.5s | v1.1.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2021.3.5s.zip) |
 | 2020.12.19s | v1.1.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2020.12.9s.zip) |
@@ -147,6 +148,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 </details>
 
 
+-----------------------
 # Installation
 **Download the zip file on the right side of Github.**  
 1. Find the folder of your game, for steams players you can right click in steam, on the game, a menu will appear proposing you to go to the folders.
@@ -157,6 +159,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 ![Install](https://i.imgur.com/pvBAyZN.png)
 
+-----------------------
 # Roles
 # Crewmate Roles
 ## Mayor
@@ -205,6 +208,7 @@ However, if they kill a Crewmate or a Neutral player they can't kill, they inste
 | Sheriff Kills The Glitch | Whether the Sheriff is able to kill The Glitch | Toggle | False |
 | Sheriff Kills Arsonist | Whether the Sheriff is able to kill the Arsonist | Toggle | False |
 | Sheriff Kill Cooldown | The cooldown on the Sheriff's kill button | Time | 25s |
+| Sheriff can report who they've killed | Whether the Sheriff is able to report their own kills | Toggle | True |
 
 -----------------------
 ## Engineer
@@ -250,7 +254,8 @@ Every footprint disappears after a set amount of time.
 ### **Team: Crewmates**
 The Time Lord is a Crewmate that can rewind time and reverse the positions of all players.\
 If enabled, any players killed during this time will be revived.\
-Nothing but movements and kills are affected.
+Nothing but movements and kills are affected.\
+If enabled, the Time Lord can't use Vitals to make things more balanced.
 
 ### Game Options
 | Name | Description | Type | Default |
@@ -287,16 +292,18 @@ A report can contain the name of the killer or the color type (Darker/Lighter)
 - Beige - Darker
 - Hot Pink - Lighter
 - Turquoise - Lighter
+- Lilac - Lighter
 - Rainbow - Lighter
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Medic | The percentage probability of the Medic appearing | Percentage | 0% |
 | Show Shielded Player | Who should be able to see who is Shielded | Self / Medic / Self + Medic / Everyone | Self |
-| Murder Attempt Indicator for Shielded Player | Whether the Shielded player gets an indicator when someone tries to Shift into, Hack or Kill them | Toggle | False |
 | Show Medic Reports | Whether the Medic should get information when reporting a body | Toggle | True |
 | Time Where Medic Reports Will Have Name | If a body has been dead for shorter than this amount, the Medic's report will contain the killer's name | Time | 0s |
 | Time Where Medic Reports Will Have Color Type | If a body has been dead for shorter than this amount, the Medic's report will have the type of color | Time | 15s |
+| Who gets murder attempt indicator | Who will receive an indicator when someone tries to Shift into, Hack or Kill them | Medic / Shielded / Everyone / Nobody | Medic |
+| Shield breaks on murder attempt | Whether the Shield breaks when someone attempts to Shift into, Hack or Kill them | Toggle | False |
 
 -----------------------
 ## Seer
@@ -350,6 +357,21 @@ However, when they only have a single task left, the Impostors get an arrow poin
 |----------|:-------------:|:------:|:------:|
 | Snitch | The percentage probability of the Snitch appearing | Percentage | 0% |
 | Snitch knows who they are on Game Start | Whether the Snitch knows their role at the start of a game | Toggle | False |
+
+-----------------------
+## Altruist
+### **Team: Crewmates**
+
+The Altruist is a Crewmate that is capable of reviving dead players.\
+Upon finding a dead body, the Altruist can hit their revive button, risking sacrificing themselves for the revival of another player.\
+If enabled, the dead body disappears, so only they Altruist's body remains at the scene.\
+After a set period of time, both players will be resurrected, if the revival isn't interrupted.
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Altruist | The percentage probability of the Altruist appearing | Percentage | 0% |
+| Altruist Revive Duration | The time it takes for the Altruist to revive a dead body | Time | 10s |
+| Target's body disappears on beginning of revive | Whether the dead body of the player the Altruist is reviving disappears upon revival | Toggle | False |
 
 -----------------------
 # Neutral Roles
@@ -436,13 +458,12 @@ Upon Igniting every player, they win the game.
 ## Janitor
 ### **Team: Impostors**
 The Janitor is an Impostor that can clean up bodies.\
-They can, however, not kill until they are the last Impostor remaining.
+Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want to use.
 
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Janitor | The percentage probability of the Janitor appearing | Percentage | 0% |
-| Janitor Clean Cooldown | The cooldown of the Janitor's Clean button | Time | 25s |
 
 -----------------------
 ## Morphling
@@ -552,6 +573,25 @@ The Drunk's controls are inverted.
 | Drunk | The percentage probability of the Drunk appearing | Percentage | 0% |
 
 -----------------------
+## Giant
+### **Applied to: All**
+The Giant is a gigantic Crewmate, that has a decreased walk speed.
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Giant | The percentage probability of the Giant appearing | Percentage | 0% |
+
+-----------------------
+## Button Barry
+### **Applied to: All**
+Button Barry has the ability to call a meeting from anywhere on the map.
+They have the same amount of meetings as a regular player.
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Button Barry | The percentage probability of Button Barry appearing | Percentage | 0% |
+
+-----------------------
 # Custom Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
@@ -561,20 +601,25 @@ The Drunk's controls are inverted.
 | Dead can see everyone's roles | Whether dead players are able to see the roles of everyone else | Toggle | False |
 | Max Impostor Roles | The maximum number of custom Impostor roles a game can have | Number | 1 |
 | Max Neutral Roles | The maximum number of Neutral roles a game can have | Number | 1 |
+| Role Appears Under Name | Whether your own role appears under your name | Toggle | True |
+| Probability of a completely vanilla game | The percentage probability of a vanilla Among Us game happening | Percentage | 0% |
 
 -----------------------
-## Extras
-### New Colors!
-New colors are added for crewmates to pick from: watermelon, chocolate, sky blue, beige, hot pink and turquoise.
-### Rainbow Color!
+# Extras
+## New Colors!
+New colors are added for crewmates to pick from: watermelon, chocolate, sky blue, beige, hot pink, turquoise and lilac.
+## Rainbow Color!
 A rainbow color has also been added. Anyone who equips this color will constantly switch between the colors of the rainbow.
+## Custom Hats!
+Custom hats have been added, made by some very talented artists. These are mostly hats for streamers.
 
 
 
-
+-----------------------
 # Bug / Suggestions
 If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/bYSaT74KzT) or create a ticket on GitHub
 
+-----------------------
 # Credits & Resources
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
 [BepInEx](https://github.com/BepInEx) - For hooking game functions\
