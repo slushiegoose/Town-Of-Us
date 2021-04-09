@@ -34,8 +34,8 @@ namespace TownOfUs.MedicMod
             }
             else
             {
-                protectButton.gameObject.SetActive(true);
-                protectButton.isActive = true;
+                protectButton.gameObject.SetActive(!MeetingHud.Instance);
+                protectButton.isActive = !MeetingHud.Instance;
                 protectButton.SetCoolDown(0f, 1f);
                 role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
                 var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);

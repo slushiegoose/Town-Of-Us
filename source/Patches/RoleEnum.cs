@@ -19,6 +19,7 @@ namespace TownOfUs
         Spy,
         Snitch,
         Arsonist,
+        Altruist,
 
         Miner,
         Swooper,
@@ -40,5 +41,7 @@ namespace TownOfUs
         Flash,
         Tiebreaker,
         Drunk,
+        BigBoi,
+        ButtonBarry,
     }
 }

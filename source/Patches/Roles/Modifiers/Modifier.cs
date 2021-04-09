@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using Reactor.Extensions;
-using TownOfUs.Roles;
 using UnityEngine;
 
-namespace TownOfUs.Roles
+namespace TownOfUs.Roles.Modifiers
 {
     public abstract class Modifier
     {
@@ -57,7 +56,7 @@ namespace TownOfUs.Roles
             //System.Console.WriteLine(nameof(rpc));
             //System.Console.WriteLine(crewmates.Count);
             if (crewmates.Count <= 0) return;
-            var rand = HashRandom.Method_1(crewmates.Count);
+            var rand = UnityEngine.Random.RandomRangeInt(0, crewmates.Count);
             //var rand = 0;
             var pc = crewmates[rand];
 

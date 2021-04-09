@@ -8,7 +8,7 @@ namespace TownOfUs.CamouflageMod
     {
         private static void Postfix(MeetingHud __instance)
         {
-            if (CamouflageMod.CamouflageUnCamouflage.CommsEnabled && CustomGameOptions.MeetingColourblind)
+            if (CustomGameOptions.MeetingColourblind)
             {
                 foreach (var state in __instance.playerStates)
                 {
@@ -19,7 +19,7 @@ namespace TownOfUs.CamouflageMod
                     };
                     PlayerControl.SetPlayerMaterialColors(Color.grey, state.PlayerIcon.Body);
                     state.PlayerIcon.HatSlot.SetHat(0, 0);
-                    SkinData skinById = DestroyableSingleton<HatManager>.Instance.AllSkins[0];
+                    SkinData skinById = DestroyableSingleton<HatManager>.Instance.AllSkins.ToArray()[0];
                     state.PlayerIcon.SkinSlot.sprite = skinById.IdleFrame;
                 }
             }

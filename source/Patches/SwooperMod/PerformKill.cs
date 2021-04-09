@@ -17,6 +17,7 @@ namespace TownOfUs.SwooperMod
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Swooper);
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var role = Roles.Role.GetRole<Roles.Swooper>(PlayerControl.LocalPlayer);
             if (__instance == role.SwoopButton)
             {

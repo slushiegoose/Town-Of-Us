@@ -1,9 +1,12 @@
 
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using HarmonyLib;
 using TownOfUs.CustomOption;
 using UnityEngine;
+using Reactor.Extensions;
 
 namespace TownOfUs {
     
@@ -61,9 +64,15 @@ namespace TownOfUs {
             }
         }*/
 
-        [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.Method_5))] //ToHudString
+        [HarmonyPatch] //ToHudString
         private static class GameOptionsDataPatch
         {
+            
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                return typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
+            }
+
             private static void Postfix(ref string __result)
             {
                 
@@ -107,7 +116,7 @@ namespace TownOfUs {
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
         public static class Update {
             public static void Postfix(ref GameOptionsMenu __instance) {
-                __instance.GetComponentInParent<Scroller>().YBounds.max = 60f;
+                __instance.GetComponentInParent<Scroller>().YBounds.max = 70f;
             }
         }
     }

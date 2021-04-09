@@ -8,7 +8,7 @@ namespace TownOfUs.SpyMod
 
     public class Admin
     {
-        public static Dictionary<SystemTypes, List<byte>> AllRooms = new Dictionary<SystemTypes, List<byte>>();
+        public static Dictionary<SystemTypes, List<int>> AllRooms = new Dictionary<SystemTypes, List<int>>();
 
         [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
         public static class MapCountOverlay_Update
@@ -23,7 +23,7 @@ namespace TownOfUs.SpyMod
                 }
 
                 __instance.timer = 0f;
-                AllRooms = new Dictionary<SystemTypes, List<byte>>();
+                AllRooms = new Dictionary<SystemTypes, List<int>>();
                 var task = PlayerControl.LocalPlayer.myTasks.ToArray()
                     .FirstOrDefault(x => x.TaskType == TaskTypes.FixComms);
                 var flag = task != null;
@@ -43,7 +43,7 @@ namespace TownOfUs.SpyMod
                 for (int i = 0; i < __instance.CountAreas.Length; i++)
                 {
                     CounterArea counterArea = __instance.CountAreas[i];
-                    var colourList = new List<byte>();
+                    var colourList = new List<int>();
                     AllRooms.Add(counterArea.RoomType, colourList);
 
                     if (!PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(PlayerControl.LocalPlayer))
@@ -101,7 +101,7 @@ namespace TownOfUs.SpyMod
                 var list = AllRooms[__instance.RoomType];
                 for (int i = 0; i < __instance.myIcons.Count; i++)
                 {
-                    var poolable = __instance.myIcons[i];
+                    var poolable = __instance.myIcons.ToArray()[i];
                     var rend = poolable.GetComponent<SpriteRenderer>();
                     if (rend != null && list.Count > i)
                     {

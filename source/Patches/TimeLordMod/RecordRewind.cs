@@ -27,17 +27,31 @@ namespace TownOfUs.TimeLordMod
             }
 
             if (PlayerControl.LocalPlayer == null) return;
+
+            Vector3 position;
+            Vector2 velocity;
+            if (!PlayerControl.LocalPlayer.moveable && points.Count > 0)
+            {
+                position = points[0].position;
+                velocity = Vector2.zero;
+            }
+            else
+            {
+                position = PlayerControl.LocalPlayer.transform.position;
+                velocity = PlayerControl.LocalPlayer.gameObject.GetComponent<Rigidbody2D>().velocity;
+            }
+            
             
             points.Insert(0, new PointInTime(
-                PlayerControl.LocalPlayer.transform.position,
-                PlayerControl.LocalPlayer.gameObject.GetComponent<Rigidbody2D>().velocity,
+                position,
+                velocity,
                 Time.time
             ));
 
             if (PlayerControl.LocalPlayer.Data.IsDead && !isDead)
             {
                 isDead = true;
-                deadTime = TempData.LastDeathReason == DeathReason.Exile
+                deadTime = TempData.LastDeathReason == DeathReason.Exile || PlayerControl.LocalPlayer.Is(RoleEnum.Altruist)
                     ? 0
                     : Time.time;
             }
@@ -61,11 +75,27 @@ namespace TownOfUs.TimeLordMod
 
             if (points.Count > 2)
             {
+                points.RemoveAt(0);
+                points.RemoveAt(0);
                 //PlayerControl.LocalPlayer.Physics.ExitAllVents
                 if (!PlayerControl.LocalPlayer.inVent)
                 {
-                    points.RemoveAt(0);
-                    points.RemoveAt(0);
+
+                    if (!PlayerControl.LocalPlayer.Collider.enabled)
+                    {
+                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
+                        PlayerControl.LocalPlayer.Collider.enabled = true;
+                        PlayerControl.LocalPlayer.moveable = true;
+                        PlayerControl.LocalPlayer.NetTransform.enabled = true;
+
+                
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                            (byte) CustomRPC.FixAnimation, SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+                    
+                    
                     var currentPoint = points[0];
 
                     PlayerControl.LocalPlayer.transform.position = currentPoint.position;
@@ -97,6 +127,8 @@ namespace TownOfUs.TimeLordMod
         public static void ReviveBody(PlayerControl player)
         {
             player.Revive();
+            MedicMod.Murder.KilledPlayers.Remove(
+                MedicMod.Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
             var body = Object.FindObjectsOfType<DeadBody>()
                 .FirstOrDefault(b => b.ParentId == player.PlayerId);
 

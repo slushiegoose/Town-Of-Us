@@ -24,12 +24,15 @@ namespace TownOfUs
         SetSwooper,
         SetJanitor,
         SetArsonist,
+        SetAltruist,
+        SetButtonBarry,
 
         SetTorch,
         SetDiseased,
         SetFlash,
         SetTiebreaker,
         SetDrunk,
+        SetBigBoi,
         
         SetCrewmate,
         SetImpostor,
@@ -63,6 +66,8 @@ namespace TownOfUs
         Swoop,
         Douse,
         Ignite,
+        AltruistRevive,
+        BarryButton,
 
         SetGlitch,
         BypassKill,
@@ -74,6 +79,7 @@ namespace TownOfUs
 
 
         Start,
-        SyncCustomSettings
+        SyncCustomSettings,
+        FixAnimation
     }
 }

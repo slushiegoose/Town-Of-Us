@@ -1,6 +1,9 @@
+using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
+using Reactor.Extensions;
 
 namespace TownOfUs.GlitchMod
 {

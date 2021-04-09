@@ -22,6 +22,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Child](#child)
 - [Spy](#spy)
 - [Snitch](#snitch)
+- Altruist (description coming soon)
 
 **Neutral Roles**
 - [Jester](#jester)
@@ -43,6 +44,8 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Flash](#flash)
 - [Tiebreaker](#tiebreaker)
 - [Drunk](#drunk)
+- Giant (description coming soon)
+- Button Barry (description coming soon)
 
 
 
@@ -60,6 +63,18 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 <details>
   <summary> Changelog </summary>
 
+ <details>
+  <summary> v2.0.0 </summary>
+  <ul>
+   <li> Airship support! </li>
+   <li> New role - Altruist </li>
+   <li> New modifiers - Giant & Button Barry </li>
+   <li> Airship comms fix built-in </li>
+   <li> Bug fixes with Lovers, Time Lord etc. </li>
+   <li> New hats based on streamers! </li>
+   <li> Investigator cannot spawn on airship due to too much lag with handling footprints </li>
+  </ul>
+ </details>
   
  <details>
   <summary> v1.2.0 </summary>
@@ -72,8 +87,8 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
     <li> Option for dead to see the roles of everyone </li>
     <li> Custom colours now work! </li>
   </ul>
-  </details>
-  <details>
+ </details>
+ <details>
   <summary> v1.1.0 </summary>
   <ul>
     <li> New roles (see above)</a>

@@ -10,9 +10,11 @@ namespace TownOfUs.EngineerMod
     {
         public static bool Prefix(KillButtonManager __instance)
         {
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Engineer);
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (!__instance.enabled) return false;
             var role = Roles.Role.GetRole<Roles.Engineer>(PlayerControl.LocalPlayer);
             if (role.UsedThisRound) return false;
@@ -23,9 +25,10 @@ namespace TownOfUs.EngineerMod
             if (!sabActive | dummyActive) return false;
             role.UsedThisRound = true;
 
-            switch (ShipStatus.Instance.Type)
+            switch (PlayerControl.GameOptions.MapId)
             {
-                case ShipStatus.MapType.Ship:
+                case 0:
+                case 3:
                     var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
                     if (comms1.IsActive) return FixComms();
                     var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
@@ -36,7 +39,7 @@ namespace TownOfUs.EngineerMod
                     if (lights1.IsActive) return FixLights(lights1);
                     
                     break;
-                case ShipStatus.MapType.Hq:
+                case 1:
                     var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
                     if (comms2.IsActive) return FixMiraComms();
                     var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
@@ -47,13 +50,21 @@ namespace TownOfUs.EngineerMod
                     if (lights2.IsActive) return FixLights(lights2);
                     break;
                     
-                case ShipStatus.MapType.Pb:
+                case 2:
                     var comms3 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
                     if (comms3.IsActive) return FixComms();
                     var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
                     if (seismic.IsActive) return FixReactor(SystemTypes.Laboratory);
                     var lights3 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                     if (lights3.IsActive) return FixLights(lights3);
+                    break;
+                case 4:
+                    var comms4 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
+                    if (comms4.IsActive) return FixComms();
+                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                    if (reactor.IsActive) return FixAirshipReactor();
+                    var lights4 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+                    if (lights4.IsActive) return FixLights(lights4);
                     break;
 
             }
@@ -78,7 +89,14 @@ namespace TownOfUs.EngineerMod
             ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
             return false;
         }
-        
+
+        private static bool FixAirshipReactor()
+        {
+            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 0);
+            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 1);
+            return false;
+        }
+
         private static bool FixReactor(SystemTypes system)
         {
             ShipStatus.Instance.RpcRepairSystem(system, 16);

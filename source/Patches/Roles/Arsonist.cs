@@ -38,7 +38,7 @@ namespace TownOfUs.Roles
             Faction = Faction.Neutral;
         }
 
-        protected override bool CheckEndCriteria(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             
 
@@ -53,7 +53,7 @@ namespace TownOfUs.Roles
                 writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                ShipStatus.RpcEndGame(GameOverReason.ImpostorByVote, false);
+                Utils.EndGame();
                 return false;
 
             }
@@ -87,7 +87,7 @@ namespace TownOfUs.Roles
             return true;
         }
         
-        protected override void IntroPrefix(IntroCutscene.CoBegin__d __instance)
+        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
         {
             var arsonistTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             arsonistTeam.Add(PlayerControl.LocalPlayer);

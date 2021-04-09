@@ -3,6 +3,7 @@ using HarmonyLib;
 namespace TownOfUs.SwooperMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPriority(Priority.Last)]
     public class SwoopUnswoop
     {
         [HarmonyPriority(Priority.Last)]

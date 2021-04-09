@@ -59,7 +59,7 @@ namespace TownOfUs.Roles
             Player.HatRenderer.SetHat(0, 0);
             Player.nameText.Text = "";
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
-                .AllSkins[0].ProdId)
+                .AllSkins.ToArray()[0].ProdId)
             {
                 Player.MyPhysics.SetSkin(0);
             }
@@ -67,6 +67,12 @@ namespace TownOfUs.Roles
             {
                 UnityEngine.Object.Destroy(Player.CurrentPet.gameObject);
             }
+            Player.CurrentPet =
+                UnityEngine.Object.Instantiate(
+                    DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[0]);
+            Player.CurrentPet.transform.position = Player.transform.position;
+            Player.CurrentPet.Source = Player;
+            Player.CurrentPet.Visible = Player.Visible;
         }
         
 

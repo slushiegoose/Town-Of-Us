@@ -1,9 +1,13 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using Hazel;
 using UnhollowerBaseLib;
 using UnityEngine;
 using UnityEngine.UI;
+using Reactor.Extensions;
 
 namespace TownOfUs.SwapperMod
 {
@@ -58,35 +62,76 @@ namespace TownOfUs.SwapperMod
             }
         }
 
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CalculateVotes))] //CalculateVotes
-        public static class CalculateVotes
+        public static byte[] CalculateVotes(MeetingHud __instance)
         {
-            public static void Postfix(MeetingHud __instance, ref Il2CppStructArray<byte> __result)
+            var self = MayorMod.RegisterExtraVotes.CalculateAllVotes(__instance);
+            var array = new byte[Mathf.Max(PlayerControl.AllPlayerControls.Count + 1, 11)];
+            for (var i = 0; i < array.Length; i++)
             {
-                if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null) return;
-
-                var array = new byte[Mathf.Max(PlayerControl.AllPlayerControls.Count + 1, 11)];
-                for (var i = 0; i < array.Length; i++)
+                if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
-                    if (i == SwapVotes.Swap1.TargetPlayerId + 1)
+                    array[i] = self[i];
+                    continue;
+                }
+                    
+                if (i == SwapVotes.Swap1.TargetPlayerId + 1)
+                {
+                    array[SwapVotes.Swap2.TargetPlayerId + 1] = self[i];
+                }
+                else if (i == SwapVotes.Swap2.TargetPlayerId + 1)
+                {
+                    array[SwapVotes.Swap1.TargetPlayerId + 1] = self[i];
+                }
+                else
+                {
+                    array[i] = self[i];
+                }
+            }
+
+            return array;
+
+        }
+
+        public static void RpcVotingComplete(MeetingHud __instance, byte[] states, GameData.PlayerInfo exiled, bool tie)
+        {
+            if (AmongUsClient.Instance.AmClient)
+            {
+                __instance.VotingComplete(states, exiled, tie);
+            }
+            var messageWriter = AmongUsClient.Instance.StartRpc(__instance.NetId, 23, SendOption.Reliable);
+            messageWriter.WriteBytesAndSize(states);
+            messageWriter.Write(exiled?.PlayerId ?? byte.MaxValue);
+            messageWriter.Write(tie);
+            messageWriter.EndMessage();
+        }
+        
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
+        public static class CheckForEndVoting
+        {
+            public static bool Prefix(MeetingHud __instance)
+            {
+                if (__instance.playerStates.All((ps) => ps.isDead || ps.didVote))
+                {
+                    var self = CalculateVotes(__instance);
+                    Il2CppStructArray<byte> selfIl2 = self;
+                    bool tie;
+
+
+                    var maxIdx = Extensions.IndexOfMax(selfIl2, (Func<byte, int>) ((p) => (int) p), out tie) - 1;
+                    var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => (int)v.PlayerId == maxIdx);
+                    var array = new byte[10];
+                    foreach (var playerVoteArea in __instance.playerStates)
                     {
-                        array[SwapVotes.Swap2.TargetPlayerId + 1] = __result[i];
+                        array[(int)playerVoteArea.TargetPlayerId] = playerVoteArea.GetState();
                     }
-                    else if (i == SwapVotes.Swap2.TargetPlayerId + 1)
-                    {
-                        array[SwapVotes.Swap1.TargetPlayerId + 1] = __result[i];
-                    }
-                    else
-                    {
-                        array[i] = __result[i];
-                    }
+                    RpcVotingComplete(__instance, array, exiled, tie);
                 }
 
-                __result = array;
-
-
+                return false;
             }
         }
+        
 
 
 

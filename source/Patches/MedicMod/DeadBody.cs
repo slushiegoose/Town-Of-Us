@@ -15,6 +15,7 @@ namespace TownOfUs.MedicMod
     {
         public PlayerControl Killer { get; set; }
         public PlayerControl Reporter { get; set; }
+        public PlayerControl Body { get; set; }
         public float KillAge { get; set; }
 
         public static string ParseBodyReport(BodyReport br)
@@ -26,13 +27,19 @@ namespace TownOfUs.MedicMod
                     $"Body Report: The corpse is too old to gain information from. (Killed {Math.Round(br.KillAge / 1000)}s ago)";
             }
 
+            if (br.Killer.PlayerId == br.Body.PlayerId)
+            {
+                return
+                    $"Body Report: The kill appears to have been a suicide! (Killed {Math.Round(br.KillAge / 1000)}s ago)";
+            }
+            
             if (br.KillAge < CustomGameOptions.MedicReportNameDuration * 1000)
             {
                 return
                     $"Body Report: The killer appears to be {br.Killer.Data.PlayerName}! (Killed {Math.Round(br.KillAge / 1000)}s ago)";
             }
 
-            var colors = new Dictionary<byte, string>()
+            var colors = new Dictionary<int, string>()
             {
                 {0, "darker"},
                 {1, "darker"},
@@ -53,6 +60,7 @@ namespace TownOfUs.MedicMod
                 {16, "lighter"},
                 {17, "lighter"},
                 {18, "lighter"},
+                {19, "lighter"},
                 
             };
             var typeOfColor = colors[br.Killer.Data.ColorId];

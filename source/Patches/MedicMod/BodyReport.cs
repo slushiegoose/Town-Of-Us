@@ -40,6 +40,7 @@ namespace TownOfUs.MedicMod
             {
                 Killer = Utils.PlayerById(killer.KillerId),
                 Reporter = __instance,
+                Body = Utils.PlayerById(killer.PlayerId),
                 KillAge = (float) (DateTime.UtcNow - killer.KillTime).TotalMilliseconds,
             };
             

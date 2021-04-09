@@ -31,8 +31,8 @@ namespace TownOfUs.TimeLordMod
             }
             else
             {
-                rewindButton.gameObject.SetActive(true);
-                rewindButton.isActive = true;
+                rewindButton.gameObject.SetActive(!MeetingHud.Instance);
+                rewindButton.isActive = !MeetingHud.Instance;
                 rewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
             }
             
@@ -44,7 +44,7 @@ namespace TownOfUs.TimeLordMod
                 return;
             }
 
-            renderer.color = Palette.DisabledColor;
+            renderer.color = Palette.DisabledClear;
             renderer.material.SetFloat("_Desat", 1f);
         }
     }

@@ -7,11 +7,21 @@ namespace TownOfUs.CustomOption
 {
     public static class Rpc
     {
-        public static void SendRpc()
+        public static void SendRpc(CustomOption optionn = null)
         {
+            List<CustomOption> options;
+            if (optionn != null)
+            {
+                options = new List<CustomOption> {optionn};
+            }
+            else
+            {
+                options = CustomOption.AllOptions;
+            }
+            
             var writer = AmongUsClient.Instance.StartRpc(PlayerControl.LocalPlayer.NetId,
                 (byte) CustomRPC.SyncCustomSettings, SendOption.Reliable);
-            foreach (var option in CustomOption.AllOptions)
+            foreach (var option in options)
             {
                 writer.Write(option.ID);
                 if (option.Type == CustomOptionType.Toggle) writer.Write((bool)option.Value);

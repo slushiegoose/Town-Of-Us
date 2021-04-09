@@ -37,6 +37,12 @@ namespace TownOfUs.ChildMod
                         return;
                     }
                 }
+                
+                if (player.Is(ModifierEnum.BigBoi))
+                {
+                    player.transform.localScale = new Vector3(1f, 1f, 1f);
+                    return;
+                }
                 player.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
             }
         }

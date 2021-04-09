@@ -9,6 +9,7 @@ using Reactor.Net;
 using TownOfUs.JesterMod;
 using TownOfUs.LoversMod;
 using TownOfUs.Roles;
+using TownOfUs.Roles.Modifiers;
 using UnityEngine;
 
 namespace TownOfUs.ShifterMod
@@ -29,10 +30,12 @@ namespace TownOfUs.ShifterMod
 
         public static bool Prefix(KillButtonManager __instance)
         {
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Shifter);
             if (!flag) return true;
             var role = Roles.Role.GetRole<Roles.Shifter>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var flag2 = role.ShifterShiftTimer() == 0f;
             if (!flag2) return false;
             if (!__instance.enabled) return false;
@@ -43,16 +46,20 @@ namespace TownOfUs.ShifterMod
             var playerId = role.ClosestPlayer.PlayerId;
             if (role.ClosestPlayer.isShielded())
             {
-                if (CustomGameOptions.PlayerMurderIndicator)
-                {
+                var medic = role.ClosestPlayer.getMedic().Player.PlayerId;
+
                     var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.AttemptSound, Hazel.SendOption.None, -1);
+                        (byte) CustomRPC.AttemptSound, Hazel.SendOption.Reliable, -1);
+                    writer1.Write(medic);
                     writer1.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer1);
-                    MedicMod.StopKill.BreakShield(role.ClosestPlayer.PlayerId, false);
-                }
+                    if (CustomGameOptions.ShieldBreaks)
+                    {
+                        role.LastShifted = DateTime.UtcNow;
+                    }
+                    MedicMod.StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
 
-                return false;
+                    return false;
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
@@ -83,7 +90,7 @@ namespace TownOfUs.ShifterMod
             yield return new WaitForLerp(0.16666667f,
                 delegate(float t) { overlay.flameParent.transform.localScale = new Vector3(1f, 1f - t, 1f); });
             overlay.flameParent.SetActive(false);
-            overlay.Field_6 = null;
+            overlay.showAll = null;
             renderer.sprite = TownOfUs.NormalKill;
             yield break;
 
@@ -128,7 +135,8 @@ namespace TownOfUs.ShifterMod
                 case RoleEnum.Snitch:
                 case RoleEnum.Arsonist:
                 case RoleEnum.Crewmate:
-                    
+                case RoleEnum.Altruist:
+
                     if (role == RoleEnum.Investigator)
                     {
                         InvestigatorMod.Footprint.DestroyAll(Roles.Role.GetRole<Roles.Investigator>(other));
@@ -196,6 +204,10 @@ namespace TownOfUs.ShifterMod
                         shifterRole.Player = other;
                         Roles.Role.RoleDictionary.Add(other.PlayerId, shifterRole);
                         
+                    }
+                    else
+                    {
+                        new Roles.Crewmate(other);
                     }
 
 

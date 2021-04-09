@@ -20,15 +20,15 @@ namespace TownOfUs.Roles
             Dead = true;
 
         }
-        
-        protected override bool CheckEndCriteria(ShipStatus __instance)
+
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             //System.Console.WriteLine("REACHES HERE2.75");
             if (!Dead) return true;
             //System.Console.WriteLine("REACHES HERE3");
             if (!Player.Data.IsDead) return false;
             //System.Console.WriteLine("REACHES HERE4");
-            ShipStatus.RpcEndGame(GameOverReason.ImpostorByVote, false);
+            Utils.EndGame();
             return false;
 
         }

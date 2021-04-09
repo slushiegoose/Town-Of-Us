@@ -22,7 +22,7 @@ namespace TownOfUs.MorphlingMod
             var role = Roles.Role.GetRole<Roles.Morphling>(PlayerControl.LocalPlayer);
             if (role.MorphButton == null)
             {
-                role.MorphButton = Object.Instantiate(__instance.KillButton);
+                role.MorphButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
                 role.MorphButton.renderer.enabled = true;
                 role.MorphButton.renderer.sprite = SampleSprite;
             }
@@ -32,10 +32,10 @@ namespace TownOfUs.MorphlingMod
                 role.MorphButton.renderer.sprite = SampleSprite;
             }
 
-            role.MorphButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead);
-            var position = __instance.KillButton.transform.position;
-            role.MorphButton.transform.position = new Vector3(position.x,
-                __instance.ReportButton.transform.position.y, position.z);
+            role.MorphButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            var position = __instance.KillButton.transform.localPosition;
+            role.MorphButton.transform.localPosition = new Vector3(position.x,
+                __instance.ReportButton.transform.localPosition.y, position.z);
             if (role.MorphButton.renderer.sprite == SampleSprite)
             {
                 role.MorphButton.SetCoolDown(0f, 1f);

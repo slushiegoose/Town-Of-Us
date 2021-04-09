@@ -32,8 +32,8 @@ namespace TownOfUs.ShifterMod
             }
             else
             {
-                shiftButton.gameObject.SetActive(true);
-                shiftButton.isActive = true;
+                shiftButton.gameObject.SetActive(!MeetingHud.Instance);
+                shiftButton.isActive = !MeetingHud.Instance;
                 shiftButton.SetCoolDown(role.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
                 role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
                 var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);

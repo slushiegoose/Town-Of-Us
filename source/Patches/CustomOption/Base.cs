@@ -55,7 +55,7 @@ namespace TownOfUs.CustomOption
 
             if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc)
             {
-                Rpc.SendRpc();
+                Rpc.SendRpc(this);
             }
 
             try
@@ -70,7 +70,7 @@ namespace TownOfUs.CustomOption
                 {
                     float newValue = (float) Value;
 
-                    number.Value = number.Field_3 = newValue;
+                    number.Value = number.oldValue = newValue;
                     number.ValueText.Text = ToString();
                 }
                 else if (Setting is StringOption str)

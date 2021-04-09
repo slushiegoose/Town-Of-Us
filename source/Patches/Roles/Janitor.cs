@@ -6,6 +6,19 @@ namespace TownOfUs.Roles
     {
         public DateTime LastCleaned {get; set;}
         public DeadBody CurrentTarget {get; set;}
+
+        public KillButtonManager _cleanButton;
+
+        public KillButtonManager CleanButton
+        {
+            get => _cleanButton;
+            set
+            {
+                _cleanButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
         
         public Janitor(PlayerControl player) : base(player)
         {
@@ -15,16 +28,6 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Janitor;
             Faction = Faction.Impostors;
-        }
-        
-        public float JanitorTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCleaned;
-            var num = CustomGameOptions.JanitorCleanCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

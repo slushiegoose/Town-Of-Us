@@ -10,7 +10,7 @@ namespace TownOfUs
         }*/
     }
 
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
+    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
     [HarmonyPriority(Priority.Last)]
     public static class EndGameManagerPatch {
         /*public static bool Prefix(EndGameManager __instance) {

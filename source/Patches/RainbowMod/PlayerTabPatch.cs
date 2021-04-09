@@ -16,13 +16,13 @@ namespace TownOfUs.RainbowMod
             {
                 for (int i = 0; i < __instance.ColorChips.Count; i++)
                 {
-                    var chip = __instance.ColorChips[i];
+                    var chip = __instance.ColorChips.ToArray()[i];
                     chip.transform.localScale *= 0.8f;
                     chip.Button.OnClick.AddListener(Button(i));
                 }
             }
 
-            private static Action Button(int i)
+            private static System.Action Button(int i)
             {
                 void Inner()
                 {

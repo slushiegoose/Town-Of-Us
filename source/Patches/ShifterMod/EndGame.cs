@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using Hazel;
+using Reactor.Extensions;
 
 namespace TownOfUs.ShifterMod
 {

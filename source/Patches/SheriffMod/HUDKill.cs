@@ -33,8 +33,8 @@ namespace TownOfUs.SheriffMod
                 }
                 else
                 {
-                    KillButton.gameObject.SetActive(true);
-                    KillButton.isActive = true;
+                    KillButton.gameObject.SetActive(!MeetingHud.Instance);
+                    KillButton.isActive = !MeetingHud.Instance;
                     KillButton.SetCoolDown(role.SheriffKillTimer(), PlayerControl.GameOptions.KillCooldown + 15f);
                     role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
                     var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
@@ -57,8 +57,8 @@ namespace TownOfUs.SheriffMod
                 }
                 else
                 {
-                    __instance.KillButton.gameObject.SetActive(true);
-                    __instance.KillButton.isActive = true;
+                    __instance.KillButton.gameObject.SetActive(!MeetingHud.Instance);
+                    __instance.KillButton.isActive = !MeetingHud.Instance;
                 }
             }
 

@@ -18,7 +18,7 @@ namespace TownOfUs
         }
     }
 
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
+    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
     public class EndGameManager_SetEverythingUp
     {
         public static void Prefix()

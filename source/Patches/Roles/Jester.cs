@@ -10,17 +10,17 @@ namespace TownOfUs.Roles
 
         public bool VotedOut = false;
 
-        protected override void IntroPrefix(IntroCutscene.CoBegin__d __instance)
+        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
         {
             var jesterTeam = new List<PlayerControl>();
             jesterTeam.Add(PlayerControl.LocalPlayer);
             __instance.yourTeam = jesterTeam;
         }
 
-        protected override bool CheckEndCriteria(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (!VotedOut || !Player.Data.IsDead && !Player.Data.Disconnected) return true;
-            ShipStatus.RpcEndGame(GameOverReason.ImpostorByVote, false);
+            Utils.EndGame();
             return false;
         }
 

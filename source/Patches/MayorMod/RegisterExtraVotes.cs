@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using Hazel;
 using InnerNet;
 using TownOfUs.Roles;
 using UnhollowerBaseLib;
 using UnityEngine;
+using Reactor.Extensions;
+using TownOfUs.Roles.Modifiers;
 
 namespace TownOfUs.MayorMod
 {
@@ -73,61 +77,57 @@ namespace TownOfUs.MayorMod
         public static void Postfix(MeetingHud __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (__instance.TimerText.Text.Contains("Can Vote")) return;
             var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
             __instance.TimerText.Text = "Can Vote: " + role.VoteBank + " time(s) | " + __instance.TimerText.Text;
         }
 
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CalculateVotes))] //CalculateVotes
-        public static class CalculateVotes
+
+        public static byte[] CalculateAllVotes(MeetingHud __instance)
         {
-            public static bool Prefix(MeetingHud __instance, ref Il2CppStructArray<byte> __result)
+            var array = new byte[Mathf.Max(PlayerControl.AllPlayerControls.Count + 1, 11)];
+            foreach (var player in __instance.playerStates)
             {
-                var array = new byte[Mathf.Max(PlayerControl.AllPlayerControls.Count + 1, 11)];
+                if (!player.didVote) continue;
+                var num = (int) (player.votedFor + 1);
+                if (num < 0 || num >= array.Length) continue;
+                array[num] += 1;
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+            {
+                foreach (var number in ((Mayor) role).ExtraVotes)
+                {
+                    array[number] += 1;
+                }
+            }
+
+            var structArray = (Il2CppStructArray<byte>) array;
+
+            var maxIdx = Extensions.IndexOfMax(
+                structArray,
+                (Func<byte, int>) (p => (int) p),
+                out var tie
+            ) - 1;
+                
+            if (tie)
+            {
                 foreach (var player in __instance.playerStates)
                 {
                     if (!player.didVote) continue;
-                    var num = (int) (player.votedFor + 1);
-                    if (num < 0 || num >= array.Length) continue;
-                    array[num] += 1;
-                }
-
-                foreach (var role in Role.GetRoles(RoleEnum.Mayor))
-                {
-                    foreach (var number in ((Mayor) role).ExtraVotes)
+                    var modifier = Modifier.GetModifier(player);
+                    if (modifier == null) continue;
+                    if (modifier.ModifierType == ModifierEnum.Tiebreaker)
                     {
-                        array[number] += 1;
+                        var num = (int) (player.votedFor + 1);
+                        if (num < 0 || num >= array.Length) continue;
+                        array[num] += 1;
                     }
                 }
-
-                var structArray = (Il2CppStructArray<byte>) array;
-
-                var maxIdx = Extensions.IndexOfMax(
-                    structArray,
-                    (Func<byte, int>) (p => (int) p),
-                    out var tie
-                ) - 1;
-                
-                if (tie)
-                {
-                    foreach (var player in __instance.playerStates)
-                    {
-                        if (!player.didVote) continue;
-                        var modifier = Modifier.GetModifier(player);
-                        if (modifier == null) continue;
-                        if (modifier.ModifierType == ModifierEnum.Tiebreaker)
-                        {
-                            var num = (int) (player.votedFor + 1);
-                            if (num < 0 || num >= array.Length) continue;
-                            array[num] += 1;
-                        }
-                    }
-                }
-
-
-
-                __result = array;
-                return false;
             }
+
+            return array;
         }
 
 

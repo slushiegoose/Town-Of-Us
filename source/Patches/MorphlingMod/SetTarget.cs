@@ -17,7 +17,7 @@ namespace TownOfUs.MorphlingMod
             {
                 if (target.Data.IsImpostor)
                 {
-                    __instance.renderer.color = Palette.DisabledColor;
+                    __instance.renderer.color = Palette.DisabledClear;
                     __instance.renderer.material.SetFloat("_Desat", 1f);
                 }
             }

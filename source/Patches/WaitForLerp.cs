@@ -7,7 +7,7 @@ namespace TownOfUs
     public class WaitForLerp : IEnumerator
     {
         // Token: 0x06000139 RID: 313 RVA: 0x00007A6E File Offset: 0x00005C6E
-        public WaitForLerp(float seconds, Action<float> act)
+        public WaitForLerp(float seconds, System.Action<float> act)
         {
             this.duration = seconds;
             this.act = act;
@@ -44,6 +44,6 @@ namespace TownOfUs
         private float timer;
 
         // Token: 0x04000119 RID: 281
-        private Action<float> act;
+        private System.Action<float> act;
     }
 }

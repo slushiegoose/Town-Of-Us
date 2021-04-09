@@ -43,17 +43,17 @@ namespace TownOfUs.ArsonistMod
             
             if (role.IgniteButton == null)
             {
-                role.IgniteButton = Object.Instantiate(__instance.KillButton);
+                role.IgniteButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
                 role.IgniteButton.renderer.enabled = true;
             }
-
-            var position = __instance.KillButton.transform.position;
+            
             role.IgniteButton.renderer.sprite = IgniteSprite;
-            role.IgniteButton.transform.position = new Vector3(position.x,
-                __instance.ReportButton.transform.position.y, position.z);
+            var position = __instance.KillButton.transform.localPosition;
+            role.IgniteButton.transform.localPosition = new Vector3(position.x,
+                __instance.ReportButton.transform.localPosition.y, position.z);
 
-            role.IgniteButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead);
+            role.IgniteButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
             role.IgniteButton.SetCoolDown(0f, 1f);
             __instance.KillButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.DouseCd);
             role.closestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
@@ -76,7 +76,7 @@ namespace TownOfUs.ArsonistMod
                 role.IgniteButton.renderer.material.SetFloat("_Desat", 0f);
                 return;
             }
-            role.IgniteButton.renderer.color = Palette.DisabledColor;
+            role.IgniteButton.renderer.color = Palette.DisabledClear;
             role.IgniteButton.renderer.material.SetFloat("_Desat", 1f);
 
             

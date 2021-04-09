@@ -7,8 +7,10 @@ using Hazel;
 using Reactor;
 using Reactor.Extensions;
 using TownOfUs.Roles;
+using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;
 using UnityEngine;
+using UnityEngine.UI;
 using Coroutine = TownOfUs.JanitorMod.Coroutine;
 
 namespace TownOfUs
@@ -85,15 +87,15 @@ namespace TownOfUs
 
                     case CustomRPC.SetTorch:
                         readByte = reader.ReadByte();
-                        new Roles.Torch(Utils.PlayerById(readByte));
+                        new Torch(Utils.PlayerById(readByte));
                         break;
                     case CustomRPC.SetDiseased:
                         readByte = reader.ReadByte();
-                        new Roles.Diseased(Utils.PlayerById(readByte));
+                        new Diseased(Utils.PlayerById(readByte));
                         break;
                     case CustomRPC.SetFlash:
                         readByte = reader.ReadByte();
-                        new Roles.Flash(Utils.PlayerById(readByte));
+                        new Flash(Utils.PlayerById(readByte));
                         break;
 
                     case CustomRPC.SetMedic:
@@ -179,9 +181,11 @@ namespace TownOfUs
                         EngineerMod.PerformKill.UsedThisRound = false;
                         EngineerMod.PerformKill.SabotageTime = DateTime.UtcNow.AddSeconds(-100);
                         */
+                        Utils.ShowDeadBodies = false;
                         MedicMod.Murder.KilledPlayers.Clear();
                         Role.NobodyWins = false;
                         TimeLordMod.RecordRewind.points.Clear();
+                        AltruistMod.KillButtonTarget.DontRevive = byte.MaxValue;
                         break;
 
                     case CustomRPC.JanitorClean:
@@ -261,8 +265,9 @@ namespace TownOfUs
                         TimeLordMod.RecordRewind.ReviveBody(Utils.PlayerById(readByte));
                         break;
                     case CustomRPC.AttemptSound:
+                        var medicId = reader.ReadByte();
                         readByte = reader.ReadByte();
-                        MedicMod.StopKill.BreakShield(readByte, false);
+                        MedicMod.StopKill.BreakShield(medicId, readByte, CustomGameOptions.ShieldBreaks);
                         break;
                     case CustomRPC.SetGlitch:
                         byte GlitchId = reader.ReadByte();
@@ -415,14 +420,68 @@ namespace TownOfUs
                     case CustomRPC.SyncCustomSettings:
                         CustomOption.Rpc.ReceiveRpc(reader);
                         break;
+                    case CustomRPC.SetAltruist:
+                        new Altruist(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.SetBigBoi:
+                        new BigBoi(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.AltruistRevive:
+                        readByte1 = reader.ReadByte();
+                        var altruistPlayer = Utils.PlayerById(readByte1);
+                        var altruistRole = Roles.Role.GetRole<Roles.Altruist>(altruistPlayer);
+                        readByte = reader.ReadByte();
+                        var theDeadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+                        foreach (var body in theDeadBodies)
+                        {
+                            if (body.ParentId == readByte)
+                            {
+                                if (body.ParentId == PlayerControl.LocalPlayer.PlayerId)
+                                {
+                                    Coroutines.Start(Utils.FlashCoroutine(altruistRole.Color, CustomGameOptions.ReviveDuration, 0.5f));
+                                }
+
+                                Coroutines.Start(AltruistMod.Coroutine.AltruistRevive(body, altruistRole));
+                            }
+                        }
+
+                        break;
+                    case CustomRPC.FixAnimation:
+                        var player = Utils.PlayerById(reader.ReadByte());
+                        player.MyPhysics.ResetMoveState(true);
+                        player.Collider.enabled = true;
+                        player.moveable = true;
+                        player.NetTransform.enabled = true;
+                        break;
+                    case CustomRPC.SetButtonBarry:
+                        new ButtonBarry(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    case CustomRPC.BarryButton:
+                        var buttonBarry = Utils.PlayerById(reader.ReadByte());
+                        if (AmongUsClient.Instance.AmHost)
+                        {
+                            MeetingRoomManager.Instance.reporter = buttonBarry;
+                            MeetingRoomManager.Instance.target = null;
+                            AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
+                            if (ShipStatus.Instance.CheckTaskCompletion())
+                            {
+                                return;
+                            }
+                            DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(buttonBarry);
+                            buttonBarry.RpcStartMeeting(null);
+                        }
+
+                        break;
+                        
+                        
                 }
             }
         }
 
-        private static bool Check(int probability)
+        internal static bool Check(int probability)
         {
             //System.Console.WriteLine("Check");
-            var num = HashRandom.Method_1( 101) + 1;
+            var num = UnityEngine.Random.RandomRangeInt(0,  101) + 1;
             return num <= probability;
         }
 
@@ -432,14 +491,14 @@ namespace TownOfUs
             public static void Prefix([HarmonyArgument(0)] Il2CppReferenceArray<GameData.PlayerInfo> infected)
             {
                 //System.Console.WriteLine("REACHED HERE");
-                
+                Utils.ShowDeadBodies = false;
                 Role.NobodyWins = false;
                 CrewmateRoles.Clear();
                 NeutralRoles.Clear();
                 ImpostorRoles.Clear();
                 CrewmateModifiers.Clear();
                 GlobalModifiers.Clear();
-                
+
 
 
                 //TODO - Instantiate role-specific stuff
@@ -447,6 +506,7 @@ namespace TownOfUs
                 EngineerMod.PerformKill.SabotageTime = DateTime.UtcNow.AddSeconds(-100);*/
                 TimeLordMod.RecordRewind.points.Clear();
                 MedicMod.Murder.KilledPlayers.Clear();
+                AltruistMod.KillButtonTarget.DontRevive = byte.MaxValue;
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte) CustomRPC.Start, SendOption.Reliable, -1);
@@ -470,7 +530,7 @@ namespace TownOfUs
 
                 if (Check(CustomGameOptions.ShifterOn)) NeutralRoles.Add((typeof(Shifter), CustomRPC.SetShifter));
 
-                if (Check(CustomGameOptions.InvestigatorOn))
+                if (Check(CustomGameOptions.InvestigatorOn) && PlayerControl.GameOptions.MapId != 4)
                     CrewmateRoles.Add((typeof(Investigator), CustomRPC.SetInvestigator));
 
                 if (Check(CustomGameOptions.TimeLordOn))
@@ -513,6 +573,12 @@ namespace TownOfUs
                 
                 if (Check(CustomGameOptions.ExecutionerOn)) NeutralRoles.Add((typeof(Executioner), CustomRPC.SetExecutioner));
                 
+                if (Check(CustomGameOptions.AltruistOn)) CrewmateRoles.Add((typeof(Altruist), CustomRPC.SetAltruist));
+                
+                if (Check(CustomGameOptions.BigBoiOn)) GlobalModifiers.Add((typeof(BigBoi), CustomRPC.SetBigBoi));
+                
+                if (Check(CustomGameOptions.ButtonBarryOn)) GlobalModifiers.Add((typeof(ButtonBarry), CustomRPC.SetButtonBarry));
+                
                 GenEachRole(infected.ToList());
 
             }
@@ -528,9 +594,9 @@ namespace TownOfUs
                 if (role == null) return true;
                 return role.Faction == Faction.Crewmates && !x.Is(RoleEnum.Child);
             }).ToList();
-            if (targets.Count != 0)
+            if (targets.Count > 1)
             {
-                var rand = HashRandom.Method_1(targets.Count);
+                var rand = UnityEngine.Random.RandomRangeInt(0, targets.Count);
                 pc = targets[rand];
                 var role = Role.Gen(typeof(Executioner), crewmates.Where(x => x.PlayerId != pc.PlayerId).ToList(),
                     CustomRPC.SetExecutioner);
@@ -562,10 +628,22 @@ namespace TownOfUs
             GlobalModifiers.Shuffle();
             
             ImpostorRoles.Shuffle();
-            var impRoles = ImpostorRoles.Take(CustomGameOptions.MaxImpostorRoles);
+            
+            if (Check(CustomGameOptions.VanillaGame))
+            {
+                CrewmateRoles.Clear();
+                NeutralRoles.Clear();
+                CrewmateModifiers.Clear();
+                GlobalModifiers.Clear();
+                LoversOn = false;
+                ImpostorRoles.Clear();
+                crewAndNeutRoles.Clear();
+            }
 
             var crewmates = Utils.getCrewmates(infected);
             var impostors = Utils.getImpostors(infected);
+            var impRoles = ImpostorRoles.Take(CustomGameOptions.MaxImpostorRoles);
+            
 
             var executionerOn = false;
             
@@ -604,7 +682,7 @@ namespace TownOfUs
                 Modifier.Gen(modifier, crewmates2, rpc);
             }
 
-            var global = PlayerControl.AllPlayerControls.ToArray().Where(x => Modifier.GetModifier(x) == null).ToList();
+            var global = PlayerControl.AllPlayerControls.ToArray().Where(x => Modifier.GetModifier(x) == null && !x.Is(RoleEnum.Glitch)).ToList();
             foreach (var (modifier, rpc) in GlobalModifiers)
             {
                 Modifier.Gen(modifier, global, rpc);

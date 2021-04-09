@@ -5,8 +5,8 @@ namespace TownOfUs.CustomOption
     public class CustomButtonOption : CustomOption
     {
 
-        protected internal Action Do;
-        protected internal CustomButtonOption(int id, string name, Action toDo = null) : base(id, name, CustomOptionType.Button, 0)
+        protected internal System.Action Do;
+        protected internal CustomButtonOption(int id, string name, System.Action toDo = null) : base(id, name, CustomOptionType.Button, 0)
         {
             Do = toDo ?? BaseToDo;
         }

@@ -9,7 +9,7 @@
         private static readonly int VisorColor = Shader.PropertyToID("_VisorColor");
 
         
-        public static Color Rainbow => new HSBColor(PP(0, 1, 0.8f), 1, 1).ToColor();
+        public static Color Rainbow => new HSBColor(PP(0, 1, 0.3f), 1, 1).ToColor();
         public static Color RainbowShadow => Shadow(Rainbow);
         
         /*public static Color Galaxy => new HSBColor(PP(0.5f, 0.87f, 0.4f), 1, 1).ToColor();
@@ -52,7 +52,14 @@
 
 		public static bool IsRainbow(int id)
         {
-            return (int)Palette.ShortColorNames[id] == 999997;
+            try
+            {
+                return (int) Palette.ShortColorNames[id] == 999997;
+            }
+            catch
+            {
+                return false;
+            }
         }
         /*public static bool IsGalaxy(int id)
         {

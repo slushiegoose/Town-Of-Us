@@ -8,10 +8,12 @@ namespace TownOfUs.MedicMod
     {
         public static bool Prefix(KillButtonManager __instance)
         {
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Medic);
             if (!flag) return true;
             var role = Roles.Role.GetRole<Roles.Medic>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (role.UsedAbility) return false;
             
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,

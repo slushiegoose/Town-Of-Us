@@ -30,6 +30,7 @@ namespace TownOfUs.RainbowMod
 			    (StringNames)999994,//"BEIGE",
 			    (StringNames)999995,//"LTPINK",
 			    (StringNames)999996,//"TURQ",
+			    (StringNames)999999,//"LILAC",
 			    (StringNames)999997,//"RNBOW",
 			    /*"GLXY",
 			    "FIRE",*/
@@ -56,6 +57,7 @@ namespace TownOfUs.RainbowMod
 			    new Color32(240, 211, 165, byte.MaxValue),
 			    new Color32(236, 61, 255, byte.MaxValue),
 			    new Color32(61, 255, 181, byte.MaxValue),
+			    new Color32(186, 161, 255, byte.MaxValue),
 			    new Color32(0, 0, 0, byte.MaxValue),
 			    /*new Color32(0, 0, 0, byte.MaxValue),
 			    new Color32(0, 0, 0, byte.MaxValue),*/
@@ -81,6 +83,7 @@ namespace TownOfUs.RainbowMod
 			    new Color32(120, 106, 83, byte.MaxValue),
 			    new Color32(118, 31, 128, byte.MaxValue),
 			    new Color32(31, 128, 91, byte.MaxValue),
+			    new Color32(93, 81, 128, byte.MaxValue),
 			    new Color32(0, 0, 0, byte.MaxValue),
 			    /*new Color32(0, 0, 0, byte.MaxValue),
 			    new Color32(0, 0, 0, byte.MaxValue),*/
@@ -106,6 +109,7 @@ namespace TownOfUs.RainbowMod
 			    (StringNames)999984,//"Beige",
 			    (StringNames)999985,//"Hot Pink",
 			    (StringNames)999986,//"Turquoise",
+			    (StringNames)999989,//"Lilac",
 			    (StringNames)999987,//"Rainbow"
 		    };
 		    Palette.ShortColorNames = array;

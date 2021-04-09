@@ -5,14 +5,12 @@ using TownOfUs.Roles;
 
 namespace TownOfUs.ExecutionerMod
 {
-    [HarmonyPatch(typeof(UnityEngine.Object), nameof(UnityEngine.Object.Destroy), new Type[] { typeof(UnityEngine.Object) })]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
     class MeetingExiledEnd
     {
-        static void Prefix(UnityEngine.Object obj)
+        static void Postfix(ExileController __instance)
         {
-            if (ExileController.Instance != null && obj == ExileController.Instance.gameObject)
-            {
-                var exiled = ExileController.Instance.exiled;
+                var exiled = __instance.exiled;
                 if (exiled == null) return;
                 var player = exiled.Object;
 
@@ -23,7 +21,6 @@ namespace TownOfUs.ExecutionerMod
                         ((Executioner) role).Wins();
                     }
                 }
-            }
         }
     }
 }

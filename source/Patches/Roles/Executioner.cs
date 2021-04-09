@@ -9,18 +9,18 @@ namespace TownOfUs.Roles
         public bool TargetVotedOut = false;
         public PlayerControl target;
         
-        protected override void IntroPrefix(IntroCutscene.CoBegin__d __instance)
+        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
         {
             var executionerteam = new List<PlayerControl>();
             executionerteam.Add(PlayerControl.LocalPlayer);
             __instance.yourTeam = executionerteam;
         }
 
-        protected override bool CheckEndCriteria(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (Player.Data.IsDead) return true;
             if (!TargetVotedOut || !target.Data.IsDead) return true;
-            ShipStatus.RpcEndGame(GameOverReason.ImpostorByVote, false);
+            Utils.EndGame();
             return false;
         }
         

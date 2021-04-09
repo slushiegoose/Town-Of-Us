@@ -32,8 +32,8 @@ namespace TownOfUs.SeerMod
             }
             else
             {
-                investigateButton.gameObject.SetActive(true);
-                investigateButton.isActive = true;
+                investigateButton.gameObject.SetActive(!MeetingHud.Instance);
+                investigateButton.isActive = !MeetingHud.Instance;
                 investigateButton.SetCoolDown(role.SeerTimer(), CustomGameOptions.SeerCd);
                 role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer,
                     PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList());

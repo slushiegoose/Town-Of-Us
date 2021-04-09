@@ -4,6 +4,7 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using Reactor.Extensions;
+using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -91,13 +92,18 @@ namespace TownOfUs.Roles
 
         protected virtual bool Criteria()
         {
-            Player.nameText.transform.localPosition = new Vector3(0f, (Player.Data.HatId == 0U) ? 0.7f : 1.05f, -0.5f);
-            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeRoles) return true;
+            Player.nameText.transform.localPosition = new Vector3(
+                0f,
+                Player.Data.HatId == 0U ? 0.7f :
+                CustomHats.HatCreation.TallIds.Contains(Player.Data.HatId) ? 1.2f : 1.05f,
+                -0.5f
+            );
+            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeRoles) return Utils.ShowDeadBodies;
             if (Faction == Faction.Impostors && PlayerControl.LocalPlayer.Data.IsImpostor && CustomGameOptions.ImpostorSeeRoles) return true;
             return GetRole(PlayerControl.LocalPlayer) == this;
         }
 
-        protected virtual void IntroPrefix(IntroCutscene.CoBegin__d __instance)
+        protected virtual void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
         {
         }
 
@@ -107,7 +113,7 @@ namespace TownOfUs.Roles
             Role.NobodyWins = true;
         }
 
-        protected static bool NobodyEndCriteria(ShipStatus __instance)
+        internal static bool NobodyEndCriteria(ShipStatus __instance)
         {
             bool CheckNoImpsNoCrews()
             {
@@ -134,14 +140,14 @@ namespace TownOfUs.Roles
                 AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
 
                 NobodyWinsFunc();
-                ShipStatus.RpcEndGame((GameOverReason) 2, false);
+                Utils.EndGame();
                 return false;
             }
 
             return true;
         }
 
-        protected virtual bool CheckEndCriteria(ShipStatus __instance)
+        internal virtual bool CheckEndCriteria(ShipStatus __instance)
         {
 
 
@@ -162,7 +168,15 @@ namespace TownOfUs.Roles
 
             if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding ||
                 MeetingHud.Instance.state == MeetingHud.VoteStates.Results)) return Player.name;
-            Player.nameText.transform.localPosition = new Vector3(0f, (Player.Data.HatId == 0U) ? 1.05f : 1.4f, -0.5f);
+
+            if (!CustomGameOptions.RoleUnderName && player == null) return Player.name;
+            
+            Player.nameText.transform.localPosition = new Vector3(
+                0f,
+                (Player.Data.HatId == 0U) ? 1.05f :
+                CustomHats.HatCreation.TallIds.Contains(Player.Data.HatId) ? 1.6f : 1.4f,
+                -0.5f
+            );
             return Player.name + "\n" + Name;
         }
         
@@ -183,7 +197,7 @@ namespace TownOfUs.Roles
             bool createTask;
             try
             {
-                var firstText = Player.myTasks[0].Cast<ImportantTextTask>();
+                var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
                 createTask = !firstText.Text.Contains(Name);
             }
             catch (InvalidCastException)
@@ -200,14 +214,14 @@ namespace TownOfUs.Roles
                 return;
             }
 
-            Player.myTasks[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText()}[]";
+            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText()}[]";
         }
 
         public static Role Gen(Type T, List<PlayerControl> crewmates, CustomRPC rpc)
         {
 
             if (crewmates.Count <= 0) return null;
-            var rand = HashRandom.Method_1(crewmates.Count); //TODO - change
+            var rand = UnityEngine.Random.RandomRangeInt(0, crewmates.Count); //TODO - change
             var pc = crewmates[rand];
 
             var role = Activator.CreateInstance(T, new object[] {pc});
@@ -250,14 +264,13 @@ namespace TownOfUs.Roles
         {
             return AllRoles.Where(x => x.RoleType == roletype);
         }
-
         public static class IntroCutScenePatch
         {
             public static TextRenderer ModifierText;
 
             public static float Scale;
 
-            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
+            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.HMLCOCAJBGM))]
             public static class IntroCutscene_BeginCrewmate
             {
                 public static void Postfix(IntroCutscene __instance)
@@ -277,7 +290,7 @@ namespace TownOfUs.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginImpostor))]
+            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.DLGJDGFGAEA))]
             public static class IntroCutscene_BeginImpostor
             {
                 public static void Postfix(IntroCutscene __instance)
@@ -298,12 +311,12 @@ namespace TownOfUs.Roles
             }
 
 
-            [HarmonyPatch(typeof(IntroCutscene.CoBegin__d), nameof(IntroCutscene.CoBegin__d.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__11), nameof(IntroCutscene._CoBegin_d__11.MoveNext))]
             public static class IntroCutscene_CoBegin__d_MoveNext
             {
                 public static float TestScale;
 
-                public static void Prefix(IntroCutscene.CoBegin__d __instance)
+                public static void Prefix(IntroCutscene._CoBegin_d__11 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -317,7 +330,7 @@ namespace TownOfUs.Roles
                 }
 
 
-                public static void Postfix(IntroCutscene.CoBegin__d __instance)
+                public static void Postfix(IntroCutscene._CoBegin_d__11 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
                     var alpha = __instance.__this.Title.Color.a;
@@ -333,14 +346,14 @@ namespace TownOfUs.Roles
                         __instance.__this.Title.scale = TestScale / role.Scale;
 
                     }
-                    else if (!__instance.isImpostor)
+                    /*else if (!__instance.isImpostor)
                     {
                         __instance.__this.ImpostorText.Text = "Haha imagine being a boring old crewmate";
-                    }
+                    }*/
 
                     if (ModifierText != null)
                     {
-                        var modifier = Roles.Modifier.GetModifier(PlayerControl.LocalPlayer);
+                        var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
                         ModifierText.Text = "Modifier: " + modifier.Name;
                         ModifierText.Color = modifier.Color;
                         ModifierText.scale = Scale / 3f;
@@ -352,35 +365,61 @@ namespace TownOfUs.Roles
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetTasks))]
+            
+
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__78), nameof(PlayerControl._CoSetTasks_d__78.MoveNext))]
         public static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl __instance)
+            public static void Postfix(PlayerControl._CoSetTasks_d__78 __instance)
             {
                 if (__instance == null) return;
-                var role = GetRole(__instance);
-                var modifier = Modifier.GetModifier(__instance);
+                var player = __instance.__this;
+                var role = GetRole(player);
+                var modifier = Modifier.GetModifier(player);
 
 
                 if (modifier != null)
                 {
                     var modTask = new GameObject(modifier.Name + "Task").AddComponent<ImportantTextTask>();
-                    modTask.transform.SetParent(__instance.transform, false);
+                    modTask.transform.SetParent(player.transform, false);
                     modTask.Text =
                         $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText()}[]";
-                    __instance.myTasks.Insert(0, modTask);
+                    player.myTasks.Insert(0, modTask);
                 }
 
                 if (role == null || role.Hidden) return;
                 if (role.RoleType == RoleEnum.Shifter && role.Player != PlayerControl.LocalPlayer) return;
                 var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(__instance.transform, false);
+                task.transform.SetParent(player.transform, false);
                 task.Text = $"{role.ColorString}Role: {role.Name}\n{role.TaskText()}[]";
-                __instance.myTasks.Insert(0, task);
+                player.myTasks.Insert(0, task);
 
             }
         }
 
+        /*[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+        public static class ButtonsFix
+        {
+            public static void Postfix(PlayerControl __instance)
+            {
+                if (__instance != PlayerControl.LocalPlayer) return;
+
+                var role = GetRole(PlayerControl.LocalPlayer);
+                if (role == null) return;
+                var instance = DestroyableSingleton<HudManager>.Instance;
+                var position = instance.KillButton.transform.position;
+                foreach (var button in role.ExtraButtons)
+                {
+                    button.transform.position = new Vector3(position.x,
+                        instance.ReportButton.transform.position.y, position.z);
+                }
+
+            }
+        }*/
+        
+        
+        
+        
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
         public static class ShipStatus_CheckEndCriteria
         {
@@ -408,7 +447,7 @@ namespace TownOfUs.Roles
 
                 if (__instance.Systems.ContainsKey(SystemTypes.Reactor))
                 {
-                    var reactorSystemType = __instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var reactorSystemType = __instance.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
                     if (reactorSystemType.Countdown < 0f)
                     {
                         return true;
@@ -493,14 +532,24 @@ namespace TownOfUs.Roles
         {
             private static void UpdateMeeting(MeetingHud __instance)
             {
+
                 foreach (var player in __instance.playerStates)
                 {
                     var role = GetRole(player);
-                    if (role == null) continue;
-                    if (role.Criteria())
+                    if (role != null && role.Criteria())
                     {
                         player.NameText.Color = role.Color;
                         player.NameText.Text = role.NameText(player);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            player.NameText.Text = role.Player.name;
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
             }
@@ -519,7 +568,7 @@ namespace TownOfUs.Roles
 
                     if (!(player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor))
                     {
-                        player.nameText.Text = player.Data.PlayerName;
+                        player.nameText.Text = player.name;
                         player.nameText.Color = Color.white;
                     }
 

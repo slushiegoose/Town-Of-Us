@@ -14,7 +14,7 @@ namespace TownOfUs.InvestigatorMod
             }
         }
 
-        [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
+        [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
         public static class EndGameManagerPatch {
             public static bool Prefix(EndGameManager __instance) {
                 Reset();

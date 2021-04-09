@@ -13,7 +13,7 @@ namespace TownOfUs.SpyMod
             for(int i=0; i<__instance.vitals.Count; i++)
             {;
                 var panel = __instance.vitals[i];
-                var info = GameData.Instance.AllPlayers[i];
+                var info = GameData.Instance.AllPlayers.ToArray()[i];
                 if (!panel.IsDead) continue;
                 var deadBody = MedicMod.Murder.KilledPlayers.First(x => x.PlayerId == info.PlayerId);
                 var num = (float) (DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;

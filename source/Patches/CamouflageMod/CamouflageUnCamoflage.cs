@@ -12,6 +12,7 @@ namespace TownOfUs.CamouflageMod
         
         public static void Postfix(HudManager __instance)
         {
+            CamouflagerEnabled = false;
             foreach (var role in Roles.Role.GetRoles(RoleEnum.Camouflager))
             {
                 
@@ -33,10 +34,12 @@ namespace TownOfUs.CamouflageMod
                 if (ShipStatus.Instance != null)
                 {
 
-                    switch (ShipStatus.Instance.Type)
+                    switch (PlayerControl.GameOptions.MapId)
                     {
-                        case ShipStatus.MapType.Ship:
-                        case ShipStatus.MapType.Pb:
+                        case 0:
+                        case 2:
+                        case 3:
+                        case 4:
                             var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
                             if (comms1.IsActive)
                             {
@@ -46,7 +49,7 @@ namespace TownOfUs.CamouflageMod
                             }
 
                             break;
-                        case ShipStatus.MapType.Hq:
+                        case 1:
                             var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
                             if (comms2.IsActive)
                             {

@@ -18,15 +18,15 @@ namespace TownOfUs.MinerMod
             var role = Roles.Role.GetRole<Roles.Miner>(PlayerControl.LocalPlayer);
             if (role.MineButton == null)
             {
-                role.MineButton = Object.Instantiate(__instance.KillButton);
+                role.MineButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
                 role.MineButton.renderer.enabled = true;
                 
             }
             role.MineButton.renderer.sprite = MineSprite;
-            role.MineButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead);
-            var position = __instance.KillButton.transform.position;
-            role.MineButton.transform.position = new Vector3(position.x,
-                __instance.ReportButton.transform.position.y, position.z);
+            role.MineButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            var position = __instance.KillButton.transform.localPosition;
+            role.MineButton.transform.localPosition = new Vector3(position.x,
+                __instance.ReportButton.transform.localPosition.y, position.z);
             role.MineButton.SetCoolDown(role.MineTimer(), CustomGameOptions.MineCd);
             
             var hits = Physics2D.OverlapBoxAll(PlayerControl.LocalPlayer.transform.position, role.VentSize, 0);
@@ -39,7 +39,7 @@ namespace TownOfUs.MinerMod
             }
             else
             {
-                role.MineButton.renderer.color = Palette.DisabledColor;
+                role.MineButton.renderer.color = Palette.DisabledClear;
                 role.MineButton.renderer.material.SetFloat("_Desat", 1f);
                 role.CanPlace = false;
             }

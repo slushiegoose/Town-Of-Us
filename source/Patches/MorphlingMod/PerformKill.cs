@@ -16,6 +16,7 @@ namespace TownOfUs.MorphlingMod
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Morphling);
             if (!flag) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var role = Roles.Role.GetRole<Roles.Morphling>(PlayerControl.LocalPlayer);
             var target = role.closestPlayer;
             if (__instance == role.MorphButton)

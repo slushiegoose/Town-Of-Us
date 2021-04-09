@@ -26,13 +26,17 @@ namespace TownOfUs
         public static int MinerOn => (int) Generate.MinerOn.Get();
         public static int SwooperOn => (int) Generate.SwooperOn.Get();
         public static int ArsonistOn => (int) Generate.ArsonistOn.Get();
+        public static int AltruistOn => (int) Generate.AltruistOn.Get();
+        public static int ButtonBarryOn => (int) Generate.ButtonBarryOn.Get();
         
         public static int TorchOn => (int) Generate.TorchOn.Get();
         public static int DiseasedOn => (int) Generate.DiseasedOn.Get();
         public static int FlashOn => (int) Generate.FlashOn.Get();
         public static int TiebreakerOn => (int) Generate.TiebreakerOn.Get();
         public static int DrunkOn => (int) Generate.DrunkOn.Get();
+        public static int BigBoiOn => (int) Generate.BigBoiOn.Get();
         
+        public static int VanillaGame => (int) Generate.VanillaGame.Get();
         public static bool BothLoversDie => Generate.BothLoversDie.Get();
         public static bool ShowSheriff => Generate.ShowSheriff.Get();
         public static bool SheriffKillOther => Generate.SheriffKillOther.Get();
@@ -40,8 +44,6 @@ namespace TownOfUs
         public static bool SheriffKillsGlitch => Generate.SheriffKillsGlitch.Get();
         public static bool SheriffKillsArsonist => Generate.SheriffKillsArsonist.Get();
         public static float SheriffKillCd => Generate.SheriffKillCd.Get();
-        public static float JanitorCleanCd => Generate.JanitorCleanCd.Get();
-        public static bool JanitorKill => true;
         public static int MayorVoteBank => (int) Generate.MayorVoteBank.Get();
         public static bool MayorAnonymous => Generate.MayorAnonymous.Get();
         public static float ShifterCd => Generate.ShifterCd.Get();
@@ -63,10 +65,14 @@ namespace TownOfUs
 
         public static MedicMod.ShieldOptions ShowShielded => (MedicMod.ShieldOptions) Generate.ShowShielded.Get();
 
+        public static MedicMod.NotificationOptions NotificationShield =>
+            (MedicMod.NotificationOptions) Generate.WhoGetsNotification.Get();
+
+        public static bool ShieldBreaks => Generate.ShieldBreaks.Get();
+
         public static float MedicReportNameDuration => Generate.MedicReportNameDuration.Get();
         public static float MedicReportColorDuration => Generate.MedicReportColorDuration.Get();
         public static bool ShowReports => Generate.MedicReportSwitch.Get();
-        public static bool PlayerMurderIndicator => Generate.PlayerMurderIndicator.Get();
 
         public static float SeerCd => Generate.SeerCooldown.Get();
         public static SeerMod.SeerInfo SeerInfo => (SeerMod.SeerInfo) Generate.SeerInfo.Get();
@@ -106,7 +112,14 @@ namespace TownOfUs
         public static int MaxImpostorRoles => (int) Generate.MaxImpostorRoles.Get();
         public static int MaxNeutralRoles => (int) Generate.MaxNeutralRoles.Get();
 
+        public static bool RoleUnderName => Generate.RoleUnderName.Get();
+        
         public static EngineerMod.EngineerFixPer EngineerFixPer =>
             (EngineerMod.EngineerFixPer) Generate.EngineerPer.Get();
+        
+        public static float ReviveDuration => Generate.ReviveDuration.Get();
+        public static bool AltruistTargetBody => Generate.AltruistTargetBody.Get();
+
+        public static bool SheriffBodyReport => Generate.SheriffBodyReport.Get();
     }
 }

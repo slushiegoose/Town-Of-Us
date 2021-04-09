@@ -24,10 +24,10 @@ namespace TownOfUs.EngineerMod
             
             __instance.KillButton.renderer.sprite = Sprite;
             __instance.KillButton.SetCoolDown(0f, 10f);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance);
 
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
-            if (ShipStatus.Instance) return;
+            if (!ShipStatus.Instance) return;
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             if (system == null) return;
             var specials = system.specials.ToArray();
@@ -41,7 +41,7 @@ namespace TownOfUs.EngineerMod
                 return;
             }
 
-            renderer.color = Palette.DisabledColor;
+            renderer.color = Palette.DisabledClear;
             renderer.material.SetFloat("_Desat", 1f);
         }
         

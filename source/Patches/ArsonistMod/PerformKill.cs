@@ -13,6 +13,7 @@ namespace TownOfUs.ArsonistMod
         {
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist);
             if (!flag) return true;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             var role = Roles.Role.GetRole<Roles.Arsonist>(PlayerControl.LocalPlayer);
             if(role.IgniteUsed) return false;
@@ -28,7 +29,7 @@ namespace TownOfUs.ArsonistMod
                 return false;
             }
     
-            
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             if (!__instance.isActiveAndEnabled) return false;
             if (role.closestPlayer == null) return false;
             if(role.DouseTimer() != 0) return false;

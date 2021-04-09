@@ -13,26 +13,32 @@ namespace TownOfUs.JanitorMod
         {
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Janitor);
             if (!flag) return true;
-            var flag1 = CustomGameOptions.JanitorKill && Utils.IsLastImp(PlayerControl.LocalPlayer);
-            if (flag1) return true;
             if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var role = Roles.Role.GetRole<Roles.Janitor>(PlayerControl.LocalPlayer);
-            var flag2 = role.JanitorTimer() == 0f;
-            if (!flag2) return false;
-            if (!__instance.enabled) return false;
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-            if (Vector2.Distance(role.CurrentTarget.TruePosition,
-                PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance) return false;
-            var playerId = role.CurrentTarget.ParentId;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.JanitorClean, SendOption.Reliable, -1);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            if (__instance == role.CleanButton)
+            {
 
-            Coroutines.Start(Coroutine.CleanCoroutine(role.CurrentTarget, role));
-            return false;
+                var flag2 = __instance.isCoolingDown;
+                if (flag2) return false;
+                if (!__instance.enabled) return false;
+                var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                if (Vector2.Distance(role.CurrentTarget.TruePosition,
+                    PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance) return false;
+                var playerId = role.CurrentTarget.ParentId;
+
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte) CustomRPC.JanitorClean, SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(playerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                Coroutines.Start(Coroutine.CleanCoroutine(role.CurrentTarget, role));
+                return false;
+            }
+
+            return true;
         }
         
         

@@ -3,11 +3,13 @@ using HarmonyLib;
 
 namespace TownOfUs.SwooperMod
 {
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
+    [HarmonyPatch(typeof(UnityEngine.Object), nameof(UnityEngine.Object.Destroy), new Type[] { typeof(UnityEngine.Object) })]
     public static class HUDClose
     {
-        public static void Postfix(HudManager __instance)
-        {
+
+        public static void Postfix(UnityEngine.Object obj)
+        { 
+            if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Swooper))
             {
                 var role = Roles.Role.GetRole<Roles.Swooper>(PlayerControl.LocalPlayer);

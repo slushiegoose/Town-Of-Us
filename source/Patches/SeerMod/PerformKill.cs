@@ -10,6 +10,7 @@ namespace TownOfUs.SeerMod
     {
         public static bool Prefix(KillButtonManager __instance)
         {
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Seer);
             if (!flag) return true;
             var role = Roles.Role.GetRole<Roles.Seer>(PlayerControl.LocalPlayer);

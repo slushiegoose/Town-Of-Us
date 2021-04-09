@@ -1,4 +1,6 @@
 using HarmonyLib;
+using TownOfUs.Roles;
+using TownOfUs.Roles.Modifiers;
 using UnityEngine;
 
 namespace TownOfUs.MayorMod
@@ -18,6 +20,13 @@ namespace TownOfUs.MayorMod
             if (player.IsImpostor || player._object.Is(RoleEnum.Glitch))
             {
                 __result = __instance.MaxLightRadius * PlayerControl.GameOptions.ImpostorLightMod;
+                if (player.Object.Is(ModifierEnum.ButtonBarry))
+                {
+                    if (Modifier.GetModifier<ButtonBarry>(PlayerControl.LocalPlayer).ButtonUsed)
+                    {
+                        __result *= 0.5f;
+                    }
+                }
                 return false;
             }
             var t = switchSystem.Value / 255f;
@@ -26,6 +35,15 @@ namespace TownOfUs.MayorMod
                 t = 1;
             }
             __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * PlayerControl.GameOptions.CrewLightMod;
+
+            if (player.Object.Is(ModifierEnum.ButtonBarry))
+            {
+                if (Modifier.GetModifier<ButtonBarry>(PlayerControl.LocalPlayer).ButtonUsed)
+                {
+                    __result *= 0.5f;
+                }
+            }
+            
             return false;
 
         }

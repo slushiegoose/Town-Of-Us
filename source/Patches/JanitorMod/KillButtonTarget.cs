@@ -9,7 +9,7 @@ namespace TownOfUs.JanitorMod
         public static bool Prefix(KillButtonManager __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor)) return true;
-            return CustomGameOptions.JanitorKill && Utils.IsLastImp(PlayerControl.LocalPlayer);
+            return __instance == DestroyableSingleton<HudManager>.Instance.KillButton;
         }
 
         public static void SetTarget(KillButtonManager __instance, DeadBody target, Roles.Janitor role)
@@ -24,13 +24,13 @@ namespace TownOfUs.JanitorMod
             {
                 var component = role.CurrentTarget.GetComponent<SpriteRenderer>();
                 component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", Color.red);
+                component.material.SetColor("_OutlineColor", Color.yellow);
                 __instance.renderer.color = Palette.EnabledColor;
                 __instance.renderer.material.SetFloat("_Desat", 0f);
                 return;
             }
 
-            __instance.renderer.color = Palette.DisabledColor;
+            __instance.renderer.color = Palette.DisabledClear;
             __instance.renderer.material.SetFloat("_Desat", 1f);
         }
     }

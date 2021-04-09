@@ -11,6 +11,15 @@ namespace TownOfUs.MedicMod
         SelfAndMedic = 2,
         Everyone = 3,
     }
+
+    public enum NotificationOptions
+    {
+        Medic = 0,
+        Shielded = 1,
+        Everyone = 2,
+        Nobody = 3,
+    }
+    
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class ShowShield
     {
@@ -22,12 +31,23 @@ namespace TownOfUs.MedicMod
             foreach (var role in Roles.Role.GetRoles(RoleEnum.Medic))
             {
                 var medic = (Roles.Medic) role;
+
+                var exPlayer = medic.exShielded;
+                if (exPlayer != null)
+                {
+                    System.Console.WriteLine(exPlayer.name + " is ex-Shielded and unvisored");
+                    exPlayer.myRend.material.SetColor("_VisorColor", Palette.VisorColor);
+                    exPlayer.myRend.material.SetFloat("_Outline", 0f);
+                    medic.exShielded = null;
+                    continue;
+                }
+                
                 var player = medic.ShieldedPlayer;
                 if (player == null) continue;
 
                 if (player.Data.IsDead || medic.Player.Data.IsDead)
                 {
-                    StopKill.BreakShield(player.PlayerId, true);
+                    StopKill.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
                     continue;
                 }
 

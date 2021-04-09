@@ -48,7 +48,7 @@ namespace TownOfUs.CustomOption
             number.TitleText.Text = Name;
             number.ValidRange = new FloatRange(Min, Max);
             number.Increment = Increment;
-            number.Value = number.Field_3 = Get();
+            number.Value = number.oldValue = Get();
             number.ValueText.Text = ToString();
         }
     }

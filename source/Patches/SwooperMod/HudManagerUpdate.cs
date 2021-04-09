@@ -18,16 +18,16 @@ namespace TownOfUs.SwooperMod
             var role = Roles.Role.GetRole<Roles.Swooper>(PlayerControl.LocalPlayer);
             if (role.SwoopButton == null)
             {
-                role.SwoopButton = Object.Instantiate(__instance.KillButton);
+                role.SwoopButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
                 role.SwoopButton.renderer.enabled = true;
 
             }
 
             role.SwoopButton.renderer.sprite = SwoopSprite;
-            role.SwoopButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead);
-            var position = __instance.KillButton.transform.position;
-            role.SwoopButton.transform.position = new Vector3(position.x,
-                __instance.ReportButton.transform.position.y, position.z);
+            role.SwoopButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            var position = __instance.KillButton.transform.localPosition;
+            role.SwoopButton.transform.localPosition = new Vector3(position.x,
+                __instance.ReportButton.transform.localPosition.y, position.z);
 
             if (role.IsSwooped)
             {

@@ -14,7 +14,7 @@ namespace TownOfUs
                 __instance.CompletedTasks = 0;
                 for (int i = 0; i < __instance.AllPlayers.Count; i++)
                 {
-                    GameData.PlayerInfo playerInfo = __instance.AllPlayers[i];
+                    GameData.PlayerInfo playerInfo = __instance.AllPlayers.ToArray()[i];
                     if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object &&
                         (PlayerControl.GameOptions.GhostsDoTasks || !playerInfo.IsDead) && !playerInfo.IsImpostor &&
                         !(
@@ -26,7 +26,7 @@ namespace TownOfUs
                         for (int j = 0; j < playerInfo.Tasks.Count; j++)
                         {
                             __instance.TotalTasks++;
-                            if (playerInfo.Tasks[j].Complete)
+                            if (playerInfo.Tasks.ToArray()[j].Complete)
                             {
                                 __instance.CompletedTasks++;
                             }
@@ -102,7 +102,7 @@ namespace TownOfUs
             {
                 for (int i = 0; i < pc.myTasks.Count; i++)
                 {
-                    PlayerTask playerTask = pc.myTasks[i];
+                    PlayerTask playerTask = pc.myTasks.ToArray()[i];
                     if (!playerTask.IsComplete && playerTask.ValidConsole(__instance))
                     {
                         return playerTask;

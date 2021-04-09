@@ -1,4 +1,4 @@
-namespace TownOfUs.Roles
+namespace TownOfUs.Roles.Modifiers
 {
     public class Tiebreaker : Modifier
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TownOfUs.Roles
+namespace TownOfUs.Roles.Modifiers
 {
     public class Drunk : Modifier
     {

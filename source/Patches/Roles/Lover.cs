@@ -14,7 +14,7 @@ namespace TownOfUs.Roles
         public int Num {get; set;} 
         public bool LoverImpostor {get; set;} 
 
-        protected override void IntroPrefix(IntroCutscene.CoBegin__d __instance)
+        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
         {
             var loverTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             loverTeam.Add(PlayerControl.LocalPlayer);
@@ -39,7 +39,13 @@ namespace TownOfUs.Roles
             }
             if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding ||
                                    MeetingHud.Instance.state == MeetingHud.VoteStates.Results)) return Player.name;
-            Player.nameText.transform.localPosition = new Vector3(0f, (Player.Data.HatId == 0U) ? 1.05f : 1.4f, -0.5f);
+            if (!CustomGameOptions.RoleUnderName && player == null) return Player.name;
+            Player.nameText.transform.localPosition = new Vector3(
+                0f,
+                (Player.Data.HatId == 0U) ? 1.05f :
+                CustomHats.HatCreation.TallIds.Contains(Player.Data.HatId) ? 1.6f : 1.4f,
+                -0.5f
+            );
             if (PlayerControl.LocalPlayer.Data.IsImpostor && RoleType == RoleEnum.LoverImpostor)
             {
                 Player.nameText.Color = Palette.ImpostorRed;
@@ -58,7 +64,7 @@ namespace TownOfUs.Roles
             if (crewmates.Count <= 1 && impostors.Count < 1) return;
 
             //System.Console.WriteLine("LOVER3");
-            var b = HashRandom.Method_1(3);
+            var b = UnityEngine.Random.RandomRangeInt(0, 3);
 
             if (b == 0 & impostors.Count < 1) b = 1;
             
@@ -66,19 +72,19 @@ namespace TownOfUs.Roles
 
             //System.Console.WriteLine("LOVER4");
             var flag2 = b == 0;
-            var num = HashRandom.Method_1(crewmates.Count);
+            var num = UnityEngine.Random.RandomRangeInt(0, crewmates.Count);
             var player1 = crewmates[num];
             crewmates.Remove(player1);
             PlayerControl player2;
             if (flag2)
             {
-                var num2 = HashRandom.Method_1(impostors.Count);
+                var num2 = UnityEngine.Random.RandomRangeInt(0, impostors.Count);
                 player2 = impostors[num2];
                 impostors.Remove(player2);
             }
             else
             {
-                var num2 = HashRandom.Method_1(crewmates.Count);
+                var num2 = UnityEngine.Random.RandomRangeInt(0, crewmates.Count);
                 player2 = crewmates[num2];
                 crewmates.Remove(player2);
             }
@@ -96,8 +102,8 @@ namespace TownOfUs.Roles
 
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
-        
-        protected override bool CheckEndCriteria(ShipStatus __instance)
+
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (FourPeopleLeft())
             {
@@ -112,7 +118,7 @@ namespace TownOfUs.Roles
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Win();
-                ShipStatus.RpcEndGame(GameOverReason.ImpostorByVote, false);
+                Utils.EndGame();
                 return false;
             }
 

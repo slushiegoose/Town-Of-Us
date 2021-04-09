@@ -53,6 +53,12 @@ namespace TownOfUs.RainbowMod
                 case 999987:
                     __result = "Rainbow";
                     return false;
+                case 999989:
+                    __result = "Lilac";
+                    return false;
+                case 999999:
+                    __result = "LILAC";
+                    return false;
                 
             }
 
