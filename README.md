@@ -50,7 +50,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 
 -----------------------
-# Releases :
+# Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
 | 2021.3.31.3s | v2.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.0/TownOfUs-v2.0.0.zip) |
@@ -150,14 +150,40 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 -----------------------
 # Installation
-**Download the zip file on the right side of Github.**  
-1. Find the folder of your game, for steams players you can right click in steam, on the game, a menu will appear proposing you to go to the folders.
-2. Make a copy of your game (not required but recommended)
-3. Drag or extract the files from the zip into your game, at the .exe level.
-4. Turn on the game.
-5. Play the game.
+## Requirements 
+- Among Us
+- Steam
 
+## Installation Guide (Steam)
+**1. Create a new folder on `Desktop`, called `Town of Us`.**\
+This can be created anywhere and be named anything, as long as this folder is easy to locate.\
+\
+**2. Open Steam, go to `Library` and locate Among Us. Right click on it, select `Properties...`. Then, under `Local Files`, click on `Browse...`.**\
+This opens the folder containing the Among Us application.\
+\
+**3. Delete everything in the currently opened folder.**\
+Don't worry, this will not delete the game. This simply verifies the Among Us folder being entirely clean.\
+\
+**4. On Steam, locate Among Us once again. Right click on it, select `Properties...`. Now, under `Local Files`, click on `Verify integrity of game files...`.**\
+This restores all of the game files as a fresh installation.\
+\
+**5. Copy all of the files from the `Among Us` folder to the newly created folder.**\
+\
+**6. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
+\
+**7. Locate the downloaded `.zip` file, and move it to the `Town of Us` folder.**\
+Usually, this can be found in the `Downloads` folder.\
+\
+**8. Right click on the `.zip` file, and click on `7-Zip`. Then choose `Extract Here`.**\
+Something different might appear depending on the file manager being used. Make sure the folder gets extracted in the `Town of Us` folder, in the same location as the Among Us application. It should look similar to the picture below.\
+\
+**9. Launch the Among Us application that's inside, and start playing Town of Us!**\
+A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
+<br/>
 ![Install](https://i.imgur.com/pvBAyZN.png)
+<br/>
+## Issues
+If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/bYSaT74KzT) to receive help.
 
 -----------------------
 # Roles
@@ -365,7 +391,7 @@ However, when they only have a single task left, the Impostors get an arrow poin
 The Altruist is a Crewmate that is capable of reviving dead players.\
 Upon finding a dead body, the Altruist can hit their revive button, risking sacrificing themselves for the revival of another player.\
 If enabled, the dead body disappears, so only they Altruist's body remains at the scene.\
-After a set period of time, both players will be resurrected, if the revival isn't interrupted.
+After a set period of time, the player will be resurrected, if the revival isn't interrupted.
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
@@ -584,7 +610,7 @@ The Giant is a gigantic Crewmate, that has a decreased walk speed.
 -----------------------
 ## Button Barry
 ### **Applied to: All**
-Button Barry has the ability to call a meeting from anywhere on the map.
+Button Barry has the ability to call a meeting from anywhere on the map, even during sabotages.
 They have the same amount of meetings as a regular player.
 ### Game Options
 | Name | Description | Type | Default |
@@ -617,7 +643,7 @@ Custom hats have been added, made by some very talented artists. These are mostl
 
 -----------------------
 # Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/bYSaT74KzT) or create a ticket on GitHub
+If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/bYSaT74KzT) or create a ticket on GitHub.
 
 -----------------------
 # Credits & Resources
