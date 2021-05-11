@@ -97,11 +97,11 @@ namespace TownOfUs.Roles
             Player.Data.IsImpostor = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
+        protected override void IntroPrefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
         {
             var glitchTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             glitchTeam.Add(PlayerControl.LocalPlayer);
-            __instance.yourTeam = glitchTeam;
+            yourTeam = glitchTeam;
         }
 
 

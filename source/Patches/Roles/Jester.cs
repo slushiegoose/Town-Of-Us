@@ -10,11 +10,11 @@ namespace TownOfUs.Roles
 
         public bool VotedOut = false;
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
+        protected override void IntroPrefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
         {
             var jesterTeam = new List<PlayerControl>();
             jesterTeam.Add(PlayerControl.LocalPlayer);
-            __instance.yourTeam = jesterTeam;
+            yourTeam = jesterTeam;
         }
 
         internal override bool CheckEndCriteria(ShipStatus __instance)

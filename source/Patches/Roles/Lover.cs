@@ -14,12 +14,12 @@ namespace TownOfUs.Roles
         public int Num {get; set;} 
         public bool LoverImpostor {get; set;} 
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
+        protected override void IntroPrefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
         {
             var loverTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             loverTeam.Add(PlayerControl.LocalPlayer);
             loverTeam.Add(OtherLover.Player);
-            __instance.yourTeam = loverTeam;
+            yourTeam = loverTeam;
         }
 
         protected override bool Criteria()

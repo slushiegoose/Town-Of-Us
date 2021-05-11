@@ -104,7 +104,7 @@ namespace TownOfUs.Roles
             return GetRole(PlayerControl.LocalPlayer) == this;
         }
 
-        protected virtual void IntroPrefix(IntroCutscene._CoBegin_d__11 __instance)
+        protected virtual void IntroPrefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourteam)
         {
         }
 
@@ -274,8 +274,16 @@ namespace TownOfUs.Roles
             [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
             public static class IntroCutscene_BeginCrewmate
             {
+                public static void Prefix(IntroCutscene __instance, [HarmonyArgument(0)] ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
+                {
+                    IntroCutscene_CoBegin__d_MoveNext.Prefix(__instance, ref yourTeam);
+                }
+                
                 public static void Postfix(IntroCutscene __instance)
                 {
+                    
+                    IntroCutscene_CoBegin__d_MoveNext.Postfix(__instance);
+                    
                     //System.Console.WriteLine("REACHED HERE - CREW");
                     var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
                     if (modifier != null)
@@ -294,6 +302,10 @@ namespace TownOfUs.Roles
             [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginImpostor))]
             public static class IntroCutscene_BeginImpostor
             {
+                public static void Prefix(IntroCutscene __instance, [HarmonyArgument(0)] ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
+                {
+                    IntroCutscene_CoBegin__d_MoveNext.Prefix(__instance, ref yourTeam);
+                }
                 public static void Postfix(IntroCutscene __instance)
                 {
                     //System.Console.WriteLine("REACHED HERE - IMP");
@@ -311,19 +323,18 @@ namespace TownOfUs.Roles
                 }
             }
 
-
-            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__11), nameof(IntroCutscene._CoBegin_d__11.MoveNext))]
+            
             public static class IntroCutscene_CoBegin__d_MoveNext
             {
                 public static float TestScale;
 
-                public static void Prefix(IntroCutscene._CoBegin_d__11 __instance)
+                public static void Prefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
                     if (role != null)
                     {
-                        role.IntroPrefix(__instance);
+                        role.IntroPrefix(__instance, ref yourTeam);
                         ;
                     }
 
@@ -331,19 +342,19 @@ namespace TownOfUs.Roles
                 }
 
 
-                public static void Postfix(IntroCutscene._CoBegin_d__11 __instance)
+                public static void Postfix(IntroCutscene __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
-                    var alpha = __instance.__4__this.Title.color.a;
+                    var alpha = __instance.Title.color.a;
                     
                     if (role != null && !role.Hidden)
                     {
 
-                        __instance.__4__this.Title.text = role.Name;
-                        __instance.__4__this.Title.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = role.ImpostorText();
-                        __instance.__4__this.ImpostorText.gameObject.SetActive(true);
-                        __instance.__4__this.BackgroundBar.material.color = role.Color;
+                        __instance.Title.text = role.Name;
+                        __instance.Title.color = role.Color;
+                        __instance.ImpostorText.text = role.ImpostorText();
+                        __instance.ImpostorText.gameObject.SetActive(true);
+                        __instance.BackgroundBar.material.color = role.Color;
 //                        TestScale = Mathf.Max(__instance.__this.Title.scale, TestScale);
 //                        __instance.__this.Title.scale = TestScale / role.Scale;
 
@@ -360,7 +371,7 @@ namespace TownOfUs.Roles
                         ModifierText.color = modifier.Color;
 //                       
                         ModifierText.transform.position =
-                            __instance.__4__this.transform.position - new Vector3(0f, 2.0f, 0f);
+                            __instance.transform.position - new Vector3(0f, 2.0f, 0f);
                         ModifierText.gameObject.SetActive(true);
                     }
                 }
@@ -369,13 +380,13 @@ namespace TownOfUs.Roles
 
             
 
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__78), nameof(PlayerControl._CoSetTasks_d__78.MoveNext))]
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetTasks))]
         public static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl._CoSetTasks_d__78 __instance)
+            public static void Postfix(PlayerControl __instance)
             {
                 if (__instance == null) return;
-                var player = __instance.__4__this;
+                var player = __instance;
                 var role = GetRole(player);
                 var modifier = Modifier.GetModifier(player);
 
