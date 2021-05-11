@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using UnityEngine;
 
 namespace TownOfUs.CustomOption
@@ -33,9 +36,9 @@ namespace TownOfUs.CustomOption
         {
             var str = Setting.Cast<StringOption>();
 
-            str.TitleText.Text = Name;
+            str.TitleText.text = Name;
             str.Value = str.oldValue = Get();
-            str.ValueText.Text = ToString();
+            str.ValueText.text = ToString();
         }
         
         

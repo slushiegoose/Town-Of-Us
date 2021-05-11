@@ -11,7 +11,7 @@ namespace TownOfUs.Roles
         public Sheriff(PlayerControl player) : base(player)
         {
             Name = "Sheriff";
-            ImpostorText = () => "Shoot the [FF0000FF]Impostor";
+            ImpostorText = () => "Shoot the <color=#FF0000FF>Impostor</color>";
             TaskText = () => "Kill off the impostor but don't kill crewmates.";
             Color = UnityEngine.Color.yellow;
             RoleType = RoleEnum.Sheriff;

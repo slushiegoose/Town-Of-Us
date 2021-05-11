@@ -2,9 +2,9 @@
   <PropertyGroup>
     <RootNamespace>TownOfUs</RootNamespace>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.0.0-dev15</Version>
-    <GameVersion>2021.3.31.3s</GameVersion>
-    <Mappings>NuclearPowered/Mappings:0.3.0</Mappings>
+    <Version>2.0.3</Version>
+    <GameVersion>2021.5.10s</GameVersion> 
+    <Mappings>D:\Slushie\Downloads\2021.5.10s.json</Mappings>
     <Description>TownOfUs Mod by Slushiegoose</Description>
     <Authors>slushiegoose</Authors>
   </PropertyGroup>

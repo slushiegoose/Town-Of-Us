@@ -481,6 +481,7 @@ namespace TownOfUs
         internal static bool Check(int probability)
         {
             //System.Console.WriteLine("Check");
+            if (probability == 100) return true;
             var num = UnityEngine.Random.RandomRangeInt(0,  101) + 1;
             return num <= probability;
         }
@@ -646,6 +647,14 @@ namespace TownOfUs
             
 
             var executionerOn = false;
+            
+            
+            foreach(var y in crewAndNeutRoles.Select(x => x.Item2.ToString())) System.Console.WriteLine(y + "- c&n");
+            foreach(var y in CrewmateRoles.Select(x => x.Item2.ToString())) System.Console.WriteLine(y + "- c");
+            foreach(var y in infected.Select(x => x.PlayerId.ToString())) System.Console.WriteLine(y);
+            
+            /*System.Console.WriteLine(from x in crewAndNeutRoles select x.Item2.ToString());
+            System.Console.WriteLine(from x in infected select x.PlayerId);*/
             
             foreach (var (role, rpc) in crewAndNeutRoles)
             {

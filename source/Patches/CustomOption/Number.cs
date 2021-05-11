@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using System;
 using UnityEngine;
 
@@ -45,11 +48,11 @@ namespace TownOfUs.CustomOption
             base.OptionCreated();
             var number = Setting.Cast<NumberOption>();
 
-            number.TitleText.Text = Name;
+            number.TitleText.text = Name;
             number.ValidRange = new FloatRange(Min, Max);
             number.Increment = Increment;
             number.Value = number.oldValue = Get();
-            number.ValueText.Text = ToString();
+            number.ValueText.text = ToString();
         }
     }
 }

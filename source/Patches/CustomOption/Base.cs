@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using System;
 using System.Collections.Generic;
 
@@ -71,14 +74,14 @@ namespace TownOfUs.CustomOption
                     float newValue = (float) Value;
 
                     number.Value = number.oldValue = newValue;
-                    number.ValueText.Text = ToString();
+                    number.ValueText.text = ToString();
                 }
                 else if (Setting is StringOption str)
                 {
                     int newValue = (int) Value;
 
                     str.Value = str.oldValue = newValue;
-                    str.ValueText.Text = ToString();
+                    str.ValueText.text = ToString();
                 }
 
             }

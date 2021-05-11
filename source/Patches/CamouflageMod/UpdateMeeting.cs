@@ -14,7 +14,7 @@ namespace TownOfUs.CamouflageMod
                 {
                     if(!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                     {
-                        state.NameText.Text = "";
+                        state.NameText.text = "";
 
                     };
                     PlayerControl.SetPlayerMaterialColors(Color.grey, state.PlayerIcon.Body);

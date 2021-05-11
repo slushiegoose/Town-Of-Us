@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using System;
 
 namespace TownOfUs.CustomOption
@@ -172,52 +175,51 @@ namespace TownOfUs.CustomOption
 			
 			CrewmateRoles =
 				new CustomHeaderOption(num++, "Crewmate Roles");
-			MayorOn = new CustomNumberOption(true, num++, "[704FA8FF]Mayor", 0f, 0f, 100f, 5f, PercentFormat);
-			LoversOn = new CustomNumberOption(true, num++, "[FF66CCFF]Lovers", 0f, 0f, 100f, 5f, PercentFormat);
-			SheriffOn = new CustomNumberOption(true, num++, "[FFFF00FF]Sheriff", 0f, 0f, 100f, 5f, PercentFormat);
-			EngineerOn = new CustomNumberOption(true, num++, "[FFA60AFF]Engineer", 0f, 0f, 100f, 5f, PercentFormat);
-			SwapperOn = new CustomNumberOption(true, num++, "[66E666FF]Swapper", 0f, 0f, 100f, 5f, PercentFormat);
-			InvestigatorOn = new CustomNumberOption(true, num++, "[00B3B3FF]Investigator", 0f, 0f, 100f, 5f, PercentFormat);
-			TimeLordOn = new CustomNumberOption(true, num++, "[0000FFFF]Time Lord", 0f, 0f, 100f, 5f, PercentFormat);
-			MedicOn = new CustomNumberOption(true, num++, "[006600FF]Medic", 0f, 0f, 100f, 5f, PercentFormat);
-			SeerOn = new CustomNumberOption(true, num++, "[FFCC80FF]Seer", 0f, 0f, 100f, 5f, PercentFormat);
-			ChildOn = new CustomNumberOption(true, num++, "Child", 0f, 0f, 100f, 5f, PercentFormat);
-			SpyOn = new CustomNumberOption(true, num++, "[CCA3CCFF]Spy", 0f, 0f, 100f, 5f, PercentFormat);
+			MayorOn = new CustomNumberOption(true, num++, "<color=#704FA8FF>Mayor</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			LoversOn = new CustomNumberOption(true, num++, "<color=#FF66CCFF>Lovers</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			SheriffOn = new CustomNumberOption(true, num++, "<color=#FFFF00FF>Sheriff</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			EngineerOn = new CustomNumberOption(true, num++, "<color=#FFA60AFF>Engineer</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			SwapperOn = new CustomNumberOption(true, num++, "<color=#66E666FF>Swapper</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			InvestigatorOn = new CustomNumberOption(true, num++, "<color=#00B3B3FF>Investigator</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			TimeLordOn = new CustomNumberOption(true, num++, "<color=#0000FFFF>Time Lord</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			MedicOn = new CustomNumberOption(true, num++, "<color=#006600FF>Medic</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			SeerOn = new CustomNumberOption(true, num++, "<color=#FFCC80FF>Seer</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			ChildOn = new CustomNumberOption(true, num++, "Child", 0f, 0f, 100f, 10f, PercentFormat);
+			SpyOn = new CustomNumberOption(true, num++, "<color=#CCA3CCFF>Spy</color>", 0f, 0f, 100f, 10f, PercentFormat);
 			SnitchOn =
-				new CustomNumberOption(true, num++, "[D4AF37FF]Snitch", 0f, 0f, 100f, 5f, PercentFormat);
+				new CustomNumberOption(true, num++, "<color=#D4AF37FF>Snitch</color>", 0f, 0f, 100f, 10f, PercentFormat);
 			AltruistOn =
-				new CustomNumberOption(true, num++, "[660000FF]Altruist", 0f, 0f, 100f, 5f, PercentFormat);
-			
+				new CustomNumberOption(true, num++, "<color=#660000FF>Altruist</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
 
 			NeutralRoles =
 				new CustomHeaderOption(num++, "Neutral Roles");
-			JesterOn = new CustomNumberOption(true, num++, "[FFBFCCFF]Jester", 0f, 0f, 100f, 5f, PercentFormat);
-			ShifterOn = new CustomNumberOption(true, num++, "[999999FF]Shifter", 0f, 0f, 100f, 5f, PercentFormat);
-			GlitchOn = new CustomNumberOption(true, num++, "[00FF00FF]The Glitch", 0f, 0f, 100f, 5f, PercentFormat);
-			ExecutionerOn = new CustomNumberOption(true, num++, "[8C4005FF]Executioner", 0f, 0f, 100f, 5f, PercentFormat);
-			ArsonistOn = new CustomNumberOption(true, num++, "[FF4D00FF]Arsonist", 0f, 0f, 100f, 5f, PercentFormat);
+			JesterOn = new CustomNumberOption(true, num++, "<color=#FFBFCCFF>Jester</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			ShifterOn = new CustomNumberOption(true, num++, "<color=#999999FF>Shifter</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			GlitchOn = new CustomNumberOption(true, num++, "<color=#00FF00FF>The Glitch</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			ExecutionerOn = new CustomNumberOption(true, num++, "<color=#8C4005FF>Executioner</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			ArsonistOn = new CustomNumberOption(true, num++, "<color=#FF4D00FF>Arsonist</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
 
 			ImpostorRoles =
 				new CustomHeaderOption(num++, "Impostor Roles");
-			JanitorOn = new CustomNumberOption(true, num++, "[FF0000FF]Janitor", 0f, 0f, 100f, 5f, PercentFormat);
-			MorphlingOn = new CustomNumberOption(true, num++, "[FF0000FF]Morphling", 0f, 0f, 100f, 5f, PercentFormat);
-			CamouflagerOn = new CustomNumberOption(true, num++, "[FF0000FF]Camouflager", 0f, 0f, 100f, 5f, PercentFormat);
-			MinerOn = new CustomNumberOption(true, num++, "[FF0000FF]Miner", 0f, 0f, 100f, 5f, PercentFormat);
-			SwooperOn = new CustomNumberOption(true, num++, "[FF0000FF]Swooper", 0f, 0f, 100f, 5f, PercentFormat);
+			JanitorOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Janitor</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			MorphlingOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Morphling</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			CamouflagerOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Camouflager</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			MinerOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Miner</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			SwooperOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Swooper</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
 
 			Modifiers = new CustomHeaderOption(num++, "Modifiers");
-			TorchOn = new CustomNumberOption(true, num++, "[FFFF99FF]Torch", 0f, 0f, 100f, 5f, PercentFormat);
+			TorchOn = new CustomNumberOption(true, num++, "<color=#FFFF99FF>Torch</color>", 0f, 0f, 100f, 10f, PercentFormat);
 			DiseasedOn =
-				new CustomNumberOption(true, num++, "[808080FF]Diseased", 0f, 0f, 100f, 5f, PercentFormat);
-			FlashOn = new CustomNumberOption(true, num++, "[FF8080FF]Flash", 0f, 0f, 100f, 5f, PercentFormat);
-			TiebreakerOn = new CustomNumberOption(true, num++, "[99E699FF]Tiebreaker", 0f, 0f, 100f, 5f, PercentFormat);
-			DrunkOn = new CustomNumberOption(true, num++, "[758000FF]Drunk", 0f, 0f, 100f, 5f, PercentFormat);
-			BigBoiOn = new CustomNumberOption(true, num++, "[FF8080FF]Giant", 0f, 0f, 100f, 5f, PercentFormat);
+				new CustomNumberOption(true, num++, "<color=#808080FF>Diseased</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			FlashOn = new CustomNumberOption(true, num++, "<color=#FF8080FF>Flash</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			TiebreakerOn = new CustomNumberOption(true, num++, "<color=#99E699FF>Tiebreaker</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			DrunkOn = new CustomNumberOption(true, num++, "<color=#758000FF>Drunk</color>", 0f, 0f, 100f, 10f, PercentFormat);
+			BigBoiOn = new CustomNumberOption(true, num++, "<color=#FF8080FF>Giant</color>", 0f, 0f, 100f, 10f, PercentFormat);
 			ButtonBarryOn =
-				new CustomNumberOption(true, num++, "[E600FFFF]Button Barry", 0f, 0f, 100f, 5f, PercentFormat);
+				new CustomNumberOption(true, num++, "<color=#E600FFFF>Button Barry</color>", 0f, 0f, 100f, 5f, PercentFormat);
 
 
 			CustomGameSettings =
@@ -237,7 +239,7 @@ namespace TownOfUs.CustomOption
 			VanillaGame = new CustomNumberOption(num++, "Probability of a completely vanilla game", 0f, 0f, 100f, 5f, PercentFormat);
 
 			Mayor =
-				new CustomHeaderOption(num++, "[704FA8FF]Mayor");
+				new CustomHeaderOption(num++, "<color=#704FA8FF>Mayor</color>");
 
 			MayorVoteBank =
 				new CustomNumberOption(num++, "Initial Mayor Vote Bank", 1, 1, 5, 1);
@@ -246,11 +248,11 @@ namespace TownOfUs.CustomOption
 				new CustomToggleOption(num++, "Mayor Votes Show Anonymous", false);
 
 			Lovers =
-				new CustomHeaderOption(num++, "[FF66CCFF]Lovers");
+				new CustomHeaderOption(num++, "<color=#FF66CCFF>Lovers</color>");
 			BothLoversDie = new CustomToggleOption(num++, "Both Lovers Die", true);
 
 			Sheriff =
-				new CustomHeaderOption(num++, "[FFFF00FF]Sheriff");
+				new CustomHeaderOption(num++, "<color=#FFFF00FF>Sheriff</color>");
 			ShowSheriff = new CustomToggleOption(num++, "Show Sheriff", false);
 
 			SheriffKillOther =
@@ -270,7 +272,7 @@ namespace TownOfUs.CustomOption
 			
 
 			Engineer =
-				new CustomHeaderOption(num++, "[FFA60AFF]Engineer");
+				new CustomHeaderOption(num++, "<color=#FFA60AFF>Engineer</color>");
 			EngineerPer =
 				new CustomStringOption(num++, "Engineer Fix Per", new[] {"Round", "Game"});
 
@@ -278,7 +280,7 @@ namespace TownOfUs.CustomOption
 
 
 			Investigator =
-				new CustomHeaderOption(num++, "[00B3B3FF]Investigator");
+				new CustomHeaderOption(num++, "<color=#00B3B3FF>Investigator</color>");
 			FootprintSize = new CustomNumberOption(num++, "Footprint Size", 4f, 1f, 10f, 1f);
 
 			FootprintInterval = new CustomNumberOption(num++, "Footprint Interval", 1f, 0.25f, 5f, 0.25f, CooldownFormat);
@@ -287,7 +289,7 @@ namespace TownOfUs.CustomOption
 			VentFootprintVisible = new CustomToggleOption(num++, "Footprint Vent Visible", false);
 
 			TimeLord =
-				new CustomHeaderOption(num++, "[0000FFFF]Time Lord");
+				new CustomHeaderOption(num++, "<color=#0000FFFF>Time Lord</color>");
 			RewindRevive = new CustomToggleOption(num++, "Revive During Rewind", false);
 			RewindDuration = new CustomNumberOption(num++, "Rewind Duration", 3f, 3f, 15f, 0.5f, CooldownFormat);
 			RewindCooldown = new CustomNumberOption(num++, "Rewind Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
@@ -296,7 +298,7 @@ namespace TownOfUs.CustomOption
 				new CustomToggleOption(num++, "Time Lord can use Vitals", false);
 
 			Medic =
-				new CustomHeaderOption(num++, "[006600FF]Medic");
+				new CustomHeaderOption(num++, "<color=#006600FF>Medic</color>");
 
 			ShowShielded =
 				new CustomStringOption(num++, "Show Shielded Player",
@@ -316,7 +318,7 @@ namespace TownOfUs.CustomOption
 			ShieldBreaks = new CustomToggleOption(num++, "Shield breaks on murder attempt", false);
 
 			Seer =
-				new CustomHeaderOption(num++, "[FFCC80FF]Seer");
+				new CustomHeaderOption(num++, "<color=#FFCC80FF>Seer</color>");
 
 			SeerCooldown =
 				new CustomNumberOption(num++, "Seer Cooldown", 25f, 10f, 100f, 2.5f, CooldownFormat);
@@ -331,18 +333,18 @@ namespace TownOfUs.CustomOption
 			NeutralRed =
 				new CustomToggleOption(num++, "Neutrals show up as Impostors", false);
 			
-			Snitch = new CustomHeaderOption(num++, "[D4AF37FF]Snitch");
+			Snitch = new CustomHeaderOption(num++, "<color=#D4AF37FF>Snitch</color>");
 			SnitchOnLaunch =
 				new CustomToggleOption(num++, "Snitch knows who they are on Game Start", false);
 			
-			Altruist = new CustomHeaderOption(num++, "[660000FF]Altruist");
+			Altruist = new CustomHeaderOption(num++, "<color=#660000FF>Altruist</color>");
 			ReviveDuration =
 				new CustomNumberOption(num++, "Altruist Revive Duration", 10, 1, 30, 1f, CooldownFormat);
 			AltruistTargetBody =
 				new CustomToggleOption(num++, "Target's body disappears on beginning of revive", false);
 
 			Shifter =
-				new CustomHeaderOption(num++, "[999999FF]Shifter");
+				new CustomHeaderOption(num++, "<color=#999999FF>Shifter</color>");
 			ShifterCd =
 				new CustomNumberOption(num++, "Shifter Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
 			WhoShifts = new CustomStringOption(num++,
@@ -350,7 +352,7 @@ namespace TownOfUs.CustomOption
 			
 			
 			TheGlitch =
-				new CustomHeaderOption(num++, "[00FF00FF]The Glitch");
+				new CustomHeaderOption(num++, "<color=#00FF00FF>The Glitch</color>");
 			MimicCooldownOption = new CustomNumberOption(num++, "Mimic Cooldown", 30, 10, 120, 2.5f, CooldownFormat);
 			MimicDurationOption = new CustomNumberOption(num++, "Mimic Duration", 10, 1, 30, 1f, CooldownFormat);
 			HackCooldownOption = new CustomNumberOption(num++, "Hack Cooldown", 30, 10, 120, 2.5f, CooldownFormat);
@@ -362,11 +364,11 @@ namespace TownOfUs.CustomOption
 				new CustomStringOption(num++, "Glitch Hack Distance", new string[] {"Short", "Normal", "Long"});
 
 			Executioner =
-				new CustomHeaderOption(num++, "[8C4005FF]Executioner");
+				new CustomHeaderOption(num++, "<color=#8C4005FF>Executioner</color>");
 			OnTargetDead = new CustomStringOption(num++, "Executioner becomes on Target Dead",
 				new string[] {"Crew", "Jester"});
 			
-			Arsonist = new CustomHeaderOption(num++, "[FF4D00FF]Arsonist");
+			Arsonist = new CustomHeaderOption(num++, "<color=#FF4D00FF>Arsonist</color>");
 
 			DouseCooldown =
 				new CustomNumberOption(num++, "Douse Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
@@ -375,14 +377,14 @@ namespace TownOfUs.CustomOption
 			
 			
 			Morphling =
-				new CustomHeaderOption(num++, "[FF0000FF]Morphling");
+				new CustomHeaderOption(num++, "<color=#FF0000FF>Morphling</color>");
 			MorphlingCooldown =
 				new CustomNumberOption(num++, "Morphling Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
 			MorphlingDuration =
 				new CustomNumberOption(num++, "Morphling Duration", 10, 5, 15, 1f, CooldownFormat);
 
 			Camouflager =
-				new CustomHeaderOption(num++, "[FF0000FF]Camouflager");
+				new CustomHeaderOption(num++, "<color=#FF0000FF>Camouflager</color>");
 			CamouflagerCooldown =
 				new CustomNumberOption(num++, "Camouflager Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
 			CamouflagerDuration =
@@ -392,12 +394,12 @@ namespace TownOfUs.CustomOption
 
 			
 
-			Miner = new CustomHeaderOption(num++, "[FF0000FF]Miner");
+			Miner = new CustomHeaderOption(num++, "<color=#FF0000FF>Miner</color>");
 
 			MineCooldown =
 				new CustomNumberOption(num++, "Mine Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
 
-			Swooper = new CustomHeaderOption(num++, "[FF0000FF]Swooper");
+			Swooper = new CustomHeaderOption(num++, "<color=#FF0000FF>Swooper</color>");
 
 			SwoopCooldown =
 				new CustomNumberOption(num++, "Swoop Cooldown", 25, 10, 40, 2.5f, CooldownFormat);

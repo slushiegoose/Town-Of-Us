@@ -330,12 +330,12 @@ namespace TownOfUs.Roles
                     DistClosest = Utils.getDistBetweenPlayers(this.Player, this.ClosestPlayer);
             }
 
-            Player.nameText.Color = Color;
+            Player.nameText.color = Color;
 
             if (MeetingHud.Instance != null)
                 foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
                     if (player.NameText != null && this.Player.PlayerId == player.TargetPlayerId)
-                        player.NameText.Color = Color;
+                        player.NameText.color = Color;
 
             if (HudManager.Instance != null && HudManager.Instance.Chat != null)
                 foreach (var bubble in HudManager.Instance.Chat.chatBubPool.activeChildren)

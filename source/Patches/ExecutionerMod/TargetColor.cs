@@ -21,7 +21,7 @@ namespace TownOfUs.ExecutionerMod
             {
                 if (player.TargetPlayerId == role.target.PlayerId)
                 {
-                    player.NameText.Color = Color.black;
+                    player.NameText.color = Color.black;
                 }
             }
         }
@@ -36,7 +36,7 @@ namespace TownOfUs.ExecutionerMod
 
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, role);
 
-            role.target.nameText.Color = Color.black;
+            role.target.nameText.color = Color.black;
 
             if (PlayerControl.LocalPlayer.Data.IsDead)   return;
             if (!role.target.Data.IsDead && !role.target.Data.Disconnected) return;

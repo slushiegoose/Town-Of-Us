@@ -53,8 +53,9 @@ namespace TownOfUs
         public static Sprite IgniteSprite;
         public static Sprite ReviveSprite;
         public static Sprite ButtonSprite;
+        public static Sprite PolusSprite;
 
-        
+
         public override void Load()
 		{
 			this._harmony = new Harmony("com.slushiegoose.townofus");
@@ -89,7 +90,8 @@ namespace TownOfUs
 			IgniteSprite = CreateSprite("TownOfUs.Resources.Ignite.png");
 			ReviveSprite = CreateSprite("TownOfUs.Resources.Revive.png");
 			ButtonSprite = CreateSprite("TownOfUs.Resources.Button.png");
-			
+			PolusSprite = CreateSprite("TownOfUs.Resources.polus.gg.png");
+
 			PalettePatch.Load();
 			ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
 			

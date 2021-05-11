@@ -57,7 +57,7 @@ namespace TownOfUs.Roles
             Player.GetComponent<SpriteRenderer>().color = color;
             
             Player.HatRenderer.SetHat(0, 0);
-            Player.nameText.Text = "";
+            Player.nameText.text = "";
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
                 .AllSkins.ToArray()[0].ProdId)
             {

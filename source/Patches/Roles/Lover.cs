@@ -48,8 +48,8 @@ namespace TownOfUs.Roles
             );
             if (PlayerControl.LocalPlayer.Data.IsImpostor && RoleType == RoleEnum.LoverImpostor)
             {
-                Player.nameText.Color = Palette.ImpostorRed;
-                if (player != null) player.NameText.Color = Palette.ImpostorRed;
+                Player.nameText.color = Palette.ImpostorRed;
+                if (player != null) player.NameText.color = Palette.ImpostorRed;
                 return Player.name + "\n" + "Impostor";
             }
             
@@ -181,7 +181,7 @@ namespace TownOfUs.Roles
             var imp = num == 2 && loverImpostor;
             Name = imp ? "Loving Impostor" : "Lover";
             Color = new Color(1f, 0.4f, 0.8f, 1f);
-            ImpostorText = () => "You are in " + ColorString + "Love[] with " + ColorString + OtherLover.Player.name;
+            ImpostorText = () => "You are in " + ColorString + "Love</color> with " + ColorString + OtherLover.Player.name;
             TaskText = () => $"Stay alive with your love {OtherLover.Player.name} \n and win together";
             RoleType = imp ? RoleEnum.LoverImpostor : RoleEnum.Lover;
             Num = num;

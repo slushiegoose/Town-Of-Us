@@ -17,7 +17,7 @@ namespace TownOfUs.SpyMod
                 if (!panel.IsDead) continue;
                 var deadBody = MedicMod.Murder.KilledPlayers.First(x => x.PlayerId == info.PlayerId);
                 var num = (float) (DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
-                panel.Text.Text = Math.Round(num/1000f) + "s";
+                panel.Text.text = Math.Round(num/1000f) + "s";
             }
         }
     }

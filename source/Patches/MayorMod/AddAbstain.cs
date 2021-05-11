@@ -86,7 +86,7 @@ namespace TownOfUs.MayorMod
         }
         
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-        public class MeetingHudVotingComplete
+        public class MeetingHudBBFDNCCEJHI
         {
             public static void Postfix(MeetingHud __instance)
             {

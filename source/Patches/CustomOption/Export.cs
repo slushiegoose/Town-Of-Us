@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,7 +78,7 @@ namespace TownOfUs.CustomOption
 
             Loading = SlotButtons[0];
             Loading.Do = () => { };
-            Loading.Setting.Cast<ToggleOption>().TitleText.Text = "Loading...";
+            Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
 
             __instance.Children = new[] {Loading.Setting};
             
@@ -179,17 +182,17 @@ namespace TownOfUs.CustomOption
 
         private IEnumerator FlashGreen()
         {
-            Setting.Cast<ToggleOption>().TitleText.Color = Color.green;
+            Setting.Cast<ToggleOption>().TitleText.color = Color.green;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.Color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
 
         }
         
         private IEnumerator FlashRed()
         {
-            Setting.Cast<ToggleOption>().TitleText.Color = Color.red;
+            Setting.Cast<ToggleOption>().TitleText.color = Color.red;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.Color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
 
         }
         

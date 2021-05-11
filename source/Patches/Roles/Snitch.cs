@@ -32,8 +32,8 @@ namespace TownOfUs.Roles
             }
             if (PlayerControl.LocalPlayer.Data.IsDead) return base.NameText(player);
             if (OneTaskLeft || !Hidden) return base.NameText(player);
-            Player.nameText.Color = Color.white;
-            if (player != null) player.NameText.Color = Color.white;
+            Player.nameText.color = Color.white;
+            if (player != null) player.NameText.color = Color.white;
             if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding ||
                                    MeetingHud.Instance.state == MeetingHud.VoteStates.Results)) return Player.name;
             if (!CustomGameOptions.RoleUnderName && player == null) return Player.name;

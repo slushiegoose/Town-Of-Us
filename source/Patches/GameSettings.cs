@@ -47,7 +47,7 @@ namespace TownOfUs {
             public static bool Prefix()
             {
                 
-                DestroyableSingleton<HudManager>.Instance.GameSettings.Text = StringBuild();
+                DestroyableSingleton<HudManager>.Instance.GameSettings.text = StringBuild();
                 DestroyableSingleton<HudManager>.Instance.GameSettings.gameObject.SetActive(true);
                 return false;
             }
@@ -60,7 +60,7 @@ namespace TownOfUs {
         {
             public static void Prefix(HudManager __instance)
             {
-                __instance.GameSettings.scale = 0.3f;
+//                __instance.GameSettings.scale = 0.3f;
             }
         }*/
 
@@ -85,17 +85,23 @@ namespace TownOfUs {
 
                     if (option.Name == "Custom Game Settings" && !AllOptions) break;
                     if (option.Type == CustomOptionType.Button) continue;
-                    if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}[]");
-                    else if(option.Indent) builder.AppendLine($"     {option.Name}[]: {option}[]");
-                    else builder.AppendLine($"{option.Name}[]: {option}");
+                    if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}");
+                    else if(option.Indent) builder.AppendLine($"     {option.Name}: {option}");
+                    else builder.AppendLine($"{option.Name}: {option}");
                 }
 
 
                 __result = builder.ToString();
+                
+                
 
-                if (CustomOption.CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 37)
+                if (CustomOption.CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 38)
                     __result = __result.Insert(__result.IndexOf('\n'), " (Scroll for more)");
                 else __result = __result.Insert(__result.IndexOf('\n'), "Press Tab to see All Options");
+
+
+                __result = $"<size=1.25>{__result}</size>";
+
             }
         }
 
@@ -109,7 +115,7 @@ namespace TownOfUs {
                     AllOptions = !AllOptions;
                 }
 
-                HudManager.Instance.GameSettings.scale = 0.5f;
+//                HudManager.Instance.GameSettings.scale = 0.5f;
             }
         }
 

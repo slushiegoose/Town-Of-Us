@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using Il2CppSystem.Runtime.Remoting.Messaging;
 
 namespace TownOfUs.CustomOption
@@ -11,7 +14,7 @@ namespace TownOfUs.CustomOption
         public override void OptionCreated()
         {
             base.OptionCreated();
-            Setting.Cast<ToggleOption>().TitleText.Text = Name;
+            Setting.Cast<ToggleOption>().TitleText.text = Name;
         }
     }
 }

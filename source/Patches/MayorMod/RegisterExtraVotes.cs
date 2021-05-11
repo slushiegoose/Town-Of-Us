@@ -78,9 +78,9 @@ namespace TownOfUs.MayorMod
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
             if (PlayerControl.LocalPlayer.Data.IsDead) return;
-            if (__instance.TimerText.Text.Contains("Can Vote")) return;
+            if (__instance.TimerText.text.Contains("Can Vote")) return;
             var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-            __instance.TimerText.Text = "Can Vote: " + role.VoteBank + " time(s) | " + __instance.TimerText.Text;
+            __instance.TimerText.text = "Can Vote: " + role.VoteBank + " time(s) | " + __instance.TimerText.text;
         }
 
 
@@ -168,7 +168,7 @@ namespace TownOfUs.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-        public static class VotingComplete
+        public static class BBFDNCCEJHI
         {
             public static bool Prefix(MeetingHud __instance)
             {
@@ -242,7 +242,7 @@ namespace TownOfUs.MayorMod
                 var allnums = new int[__instance.playerStates.Length];
 
 
-                __instance.TitleText.Text = UnityEngine.Object.FindObjectOfType<TranslationController>()
+                __instance.TitleText.text = UnityEngine.Object.FindObjectOfType<TranslationController>()
                     .GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
                 var num = 0;
                 for (var i = 0; i < __instance.playerStates.Length; i++)

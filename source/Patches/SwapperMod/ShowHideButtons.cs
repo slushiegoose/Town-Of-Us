@@ -92,7 +92,7 @@ namespace TownOfUs.SwapperMod
 
         }
 
-        public static void RpcVotingComplete(MeetingHud __instance, byte[] states, GameData.PlayerInfo exiled, bool tie)
+        public static void RpcBBFDNCCEJHI(MeetingHud __instance, byte[] states, GameData.PlayerInfo exiled, bool tie)
         {
             if (AmongUsClient.Instance.AmClient)
             {
@@ -125,7 +125,7 @@ namespace TownOfUs.SwapperMod
                     {
                         array[(int)playerVoteArea.TargetPlayerId] = playerVoteArea.GetState();
                     }
-                    RpcVotingComplete(__instance, array, exiled, tie);
+                    RpcBBFDNCCEJHI(__instance, array, exiled, tie);
                 }
 
                 return false;

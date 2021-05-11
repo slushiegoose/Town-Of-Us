@@ -25,7 +25,7 @@ namespace TownOfUs
         ExitVent,  //20
         SnapTo,  //21
         Close,  //22
-        VotingComplete,  //23
+        BBFDNCCEJHI,  //23
         CastVote,  //24
         ClearVote,  //25
         AddVote,  //26

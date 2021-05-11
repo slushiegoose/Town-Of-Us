@@ -14,12 +14,12 @@ namespace TownOfUs.ChildMod
             //System.Console.WriteLine(role);
             if (role == null) return;
             var text = Object.Instantiate(__instance.WinText);
-            text.Text = "The Child was killed";
-            text.Color = Color.red;
+            text.text = "The Child was killed";
+            text.color = Color.red;
             var pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;
             text.transform.position = pos;
-            text.scale = 1f;
+            text.text = $"<size=4>{text.text}</size>";
         }
     }
 }

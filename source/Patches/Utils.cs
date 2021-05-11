@@ -33,7 +33,7 @@ namespace TownOfUs
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
             {
-                Player.nameText.Text = MorphedPlayer.Data.PlayerName;
+                Player.nameText.text = MorphedPlayer.Data.PlayerName;
             }
 
             var colorId = MorphedPlayer.Data.ColorId;
@@ -79,7 +79,7 @@ namespace TownOfUs
         public static void Unmorph(PlayerControl Player)
         {
             var colorId = Player.Data.ColorId;
-            Player.nameText.Text = Player.Data.PlayerName;
+            Player.nameText.text = Player.Data.PlayerName;
             PlayerControl.SetPlayerMaterialColors(colorId, Player.myRend);
             Player.HatRenderer.SetHat(Player.Data.HatId, colorId);
             Player.nameText.transform.localPosition = new Vector3(
@@ -121,7 +121,7 @@ namespace TownOfUs
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                player.nameText.Text = "";
+                player.nameText.text = "";
                 PlayerControl.SetPlayerMaterialColors(Color.grey, player.myRend);
                 player.HatRenderer.SetHat(0, 0);
                 if (player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
@@ -459,7 +459,7 @@ namespace TownOfUs
                     if (edison != null)
                     {
                         edison.name = "babe";
-                        edison.nameText.Text = "babe";
+                        edison.nameText.text = "babe";
                     }
                 }
 
@@ -470,7 +470,7 @@ namespace TownOfUs
                     if (sykkuno != null)
                     {
                         sykkuno.name = "babe's babe";
-                        sykkuno.nameText.Text = "babe's babe";
+                        sykkuno.nameText.text = "babe's babe";
                     }
                 }
             }

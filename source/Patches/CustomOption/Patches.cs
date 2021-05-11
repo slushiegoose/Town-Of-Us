@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -378,7 +381,7 @@ namespace TownOfUs.CustomOption
 
                 if (!Scroller.gameObject.active) return;
 
-                int rows = __instance.GameSettings.Text.Count(c => c == '\n');
+                int rows = __instance.GameSettings.text.Count(c => c == '\n');
                 float maxY = Mathf.Max(MinY, rows * LobbyTextRowHeight + (rows - 38) * LobbyTextRowHeight);
 
                 Scroller.YBounds = new FloatRange(MinY, maxY);

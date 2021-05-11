@@ -12,8 +12,8 @@ namespace TownOfUs.SwapperMod
         public static PlayerVoteArea Swap1;
         public static PlayerVoteArea Swap2;
 
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))] // VotingComplete
-        public static class VotingComplete
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))] // BBFDNCCEJHI
+        public static class BBFDNCCEJHI
         {
             public static void Postfix(MeetingHud __instance)
             {

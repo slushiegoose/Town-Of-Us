@@ -24,6 +24,14 @@ namespace TownOfUs.CustomHats
 
         private static List<HatData> _hatDatas = new List<HatData>()
         {
+            
+            new HatData {name = "glitch", bounce = false, highUp = false, offset = new Vector2(0f, 0.1f), author="PhasmoFireGod"},
+            new HatData {name = "firegod", bounce = false, highUp = false, offset = new Vector2(0f, 0.1f), author="PhasmoFireGod"},
+            new HatData {name = "dad", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.4f), author="PhasmoFireGod"},
+            new HatData {name = "mama", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.4f), author="PhasmoFireGod"},
+            new HatData {name = "pinkee", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.4f), author="PhasmoFireGod"},
+            new HatData {name = "racoon", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.4f), author="PhasmoFireGod"},
+            
             new HatData {name = "aphex", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.2f), author="Nassegris"},
             new HatData {name = "junkyard", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.2f), author="Nassegris"},
             new HatData {name = "cheesy", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.2f), author="Nassegris"},
@@ -33,6 +41,7 @@ namespace TownOfUs.CustomHats
             new HatData {name = "chilled", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.2f), author="Nassegris"},
             
             
+            new HatData {name = "raflp", bounce = true, highUp = true, offset = new Vector2(-0.1f, 0.1f), author="??????"},
             new HatData {name = "harrie", bounce = true, highUp = true, offset = new Vector2(-0.1f, 0.1f), author="TheLastShaymin"},
             new HatData {name = "razz", bounce = true, highUp = true, offset = new Vector2(-0.1f, 0.3f), author="TheLastShaymin"},
             new HatData {name = "kay", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.4f), author="TheLastShaymin"},

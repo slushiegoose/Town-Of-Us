@@ -31,8 +31,8 @@ namespace TownOfUs.SeerMod
                 if (!seerRole.Investigated.Contains(PlayerControl.LocalPlayer.PlayerId)) continue;
                 if (!seerRole.CheckSeeReveal(PlayerControl.LocalPlayer)) continue;
                 var state = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == seerRole.Player.PlayerId);
-                state.NameText.Color = seerRole.Color;
-                state.NameText.Text = NameText(seerRole.Player,  " (Seer)", true);
+                state.NameText.color = seerRole.Color;
+                state.NameText.text = NameText(seerRole.Player,  " (Seer)", true);
             }
         }
         private static void UpdateMeeting(MeetingHud __instance, Roles.Seer seer)
@@ -47,22 +47,22 @@ namespace TownOfUs.SeerMod
                     switch (roleType)
                     {
                         case RoleEnum.Crewmate:
-                            state.NameText.Color =
+                            state.NameText.color =
                                 CustomGameOptions.SeerInfo == SeerInfo.Faction ? Color.green : Color.white;
-                            state.NameText.Text = NameText(player,  (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Crew)" : ""), true);
+                            state.NameText.text = NameText(player,  (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Crew)" : ""), true);
                             break;
                         case RoleEnum.Impostor:
-                            state.NameText.Color = CustomGameOptions.SeerInfo == SeerInfo.Faction
+                            state.NameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                                 ? Color.red
                                 : Palette.ImpostorRed;
-                            state.NameText.Text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : ""), true);
+                            state.NameText.text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : ""), true);
                             break;
                         default:
                             var role = Roles.Role.GetRole(player);
-                            state.NameText.Color = CustomGameOptions.SeerInfo == SeerInfo.Faction
+                            state.NameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                                 ? role.FactionColor
                                 : role.Color;
-                            state.NameText.Text = NameText(player,  (CustomGameOptions.SeerInfo == SeerInfo.Role ? $" ({role.Name})" : ""), true);
+                            state.NameText.text = NameText(player,  (CustomGameOptions.SeerInfo == SeerInfo.Role ? $" ({role.Name})" : ""), true);
                             break;
                     }
                 }
@@ -82,8 +82,8 @@ namespace TownOfUs.SeerMod
                 if (!seerRole.Investigated.Contains(PlayerControl.LocalPlayer.PlayerId)) continue;
                 if (!seerRole.CheckSeeReveal(PlayerControl.LocalPlayer)) continue;
                 
-                seerRole.Player.nameText.Color = seerRole.Color;
-                seerRole.Player.nameText.Text = NameText(seerRole.Player, " (Seer)");
+                seerRole.Player.nameText.color = seerRole.Color;
+                seerRole.Player.nameText.text = NameText(seerRole.Player, " (Seer)");
             }
             if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance);
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) return;
@@ -99,22 +99,22 @@ namespace TownOfUs.SeerMod
                 switch (roleType)
                 {
                     case RoleEnum.Crewmate:
-                        player.nameText.Color =
+                        player.nameText.color =
                             CustomGameOptions.SeerInfo == SeerInfo.Faction ? Color.green : Color.white;
-                        player.nameText.Text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Crew)" : ""));
+                        player.nameText.text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Crew)" : ""));
                         break;
                     case RoleEnum.Impostor:
-                        player.nameText.Color = CustomGameOptions.SeerInfo == SeerInfo.Faction
+                        player.nameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                             ? Color.red
                             : Palette.ImpostorRed;
-                        player.nameText.Text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : ""));
+                        player.nameText.text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? " (Imp)" : ""));
                         break;
                     default:
                         var role = Roles.Role.GetRole(player);
-                        player.nameText.Color = CustomGameOptions.SeerInfo == SeerInfo.Faction
+                        player.nameText.color = CustomGameOptions.SeerInfo == SeerInfo.Faction
                             ? role.FactionColor
                             : role.Color;
-                        player.nameText.Text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? $" ({role.Name})" : ""));
+                        player.nameText.text = NameText(player, (CustomGameOptions.SeerInfo == SeerInfo.Role ? $" ({role.Name})" : ""));
                         break;
                 }
 

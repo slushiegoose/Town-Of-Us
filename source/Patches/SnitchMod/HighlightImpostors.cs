@@ -13,7 +13,7 @@ namespace TownOfUs.SnitchMod
             {
                 if (Utils.PlayerById((byte) state.TargetPlayerId).Data.IsImpostor)
                 {
-                    state.NameText.Color = Palette.ImpostorRed;
+                    state.NameText.color = Palette.ImpostorRed;
                 }
             }
             
@@ -28,7 +28,7 @@ namespace TownOfUs.SnitchMod
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.Data.IsImpostor) player.nameText.Color = Palette.ImpostorRed;
+                if (player.Data.IsImpostor) player.nameText.color = Palette.ImpostorRed;
             }
 
         }

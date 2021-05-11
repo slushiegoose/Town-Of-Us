@@ -48,7 +48,7 @@ namespace TownOfUs.Roles.Modifiers
         public PlayerControl Player { get; set; }
         protected internal Color Color { get; set; }
         protected internal ModifierEnum ModifierType { get; set; }
-        public string ColorString => "[" + Color.ToHtmlStringRGBA() + "]";
+        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
         protected internal Func<string> TaskText;
         
         public static void Gen(Type T, List<PlayerControl> crewmates, CustomRPC rpc)

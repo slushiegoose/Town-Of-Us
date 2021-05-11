@@ -1,3 +1,6 @@
+// This folder is a Stripped down version of Reactor-Essentials
+// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
+
 namespace TownOfUs.CustomOption
 {
     public class CustomToggleOption : CustomOption
@@ -23,7 +26,7 @@ namespace TownOfUs.CustomOption
         public override void OptionCreated()
         {
             base.OptionCreated();
-            Setting.Cast<ToggleOption>().TitleText.Text = Name;
+            Setting.Cast<ToggleOption>().TitleText.text = Name;
             Setting.Cast<ToggleOption>().CheckMark.enabled = Get();
         }
         

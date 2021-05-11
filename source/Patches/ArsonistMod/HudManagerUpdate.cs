@@ -19,7 +19,7 @@ namespace TownOfUs.ArsonistMod
                 if (player == null) continue;
                 if (role.DousedPlayers.Contains(player.PlayerId))
                 {
-                    state.NameText.Color = Color.black;
+                    state.NameText.color = Color.black;
                 }
             }
         }
@@ -38,7 +38,7 @@ namespace TownOfUs.ArsonistMod
                 
                 var player = Utils.PlayerById(playerId);
                 player.myRend.material.SetColor("_VisorColor", role.Color);
-                player.nameText.Color = Color.black;
+                player.nameText.color = Color.black;
             }
             
             if (role.IgniteButton == null)
