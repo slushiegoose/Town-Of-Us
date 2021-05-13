@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Version>2.0.4</Version>
     <GameVersion>2021.5.10s</GameVersion> 
-    <Mappings>D:\Slushie\Downloads\2021.5.10s.json</Mappings>
+    <Mappings>DaemonBeast/Mappings:0.5.0</Mappings>
     <Description>TownOfUs Mod by Slushiegoose</Description>
     <Authors>slushiegoose</Authors>
   </PropertyGroup>
