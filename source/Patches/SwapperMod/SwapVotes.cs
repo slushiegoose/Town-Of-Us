@@ -31,48 +31,32 @@ namespace TownOfUs.SwapperMod
                     }
                 }
 
-                var pool1 = Swap1.PlayerIcon.transform;
-                var name1 = Swap1.NameText.transform;
-                var mask1 = Swap1.transform.GetChild(4).GetChild(0);
-                var pooldest1 = (Vector2) pool1.position;
-                var namedest1 = (Vector2) name1.position;
-                var maskdest1 = (Vector2) mask1.position;
-                mask1.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
-
-                var pool2 = Swap2.PlayerIcon.transform;
-                var name2 = Swap2.NameText.transform;
-                var mask2 = Swap2.transform.GetChild(4).GetChild(0);
-                var pooldest2 = (Vector2) pool2.position;
-                var namedest2 = (Vector2) name2.position;
-                var maskdest2 = (Vector2) mask2.position;
-                mask2.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
-
-
-                Reactor.Coroutines.Start(Slide2D(pool1, pooldest1, pooldest2, 2f));
-                Reactor.Coroutines.Start(Slide2D(pool2, pooldest2, pooldest1, 2f));
-                Reactor.Coroutines.Start(Slide2D(name1, namedest1, namedest2, 2f));
-                Reactor.Coroutines.Start(Slide2D(name2, namedest2, namedest1, 2f));
-                Reactor.Coroutines.Start(Slide2D(mask1, maskdest1, maskdest2, 2f));
-                Reactor.Coroutines.Start(Slide2D(mask2, maskdest2, maskdest1, 2f));
+                SwapPositions(Swap1.PlayerIcon.transform, Swap2.PlayerIcon.transform);
+                SwapPositions(Swap1.NameText.transform, Swap2.NameText.transform);
+                SwapPositions(Swap1.transform.GetChild(4).GetChild(0), Swap2.transform.GetChild(4).GetChild(0));
             }
         }
 
-        private static IEnumerator Slide2D(Transform target, Vector2 source, Vector2 dest, float duration = 0.75f)
+        private static void SwapPositions(Transform a, Transform b, float duration = 5f)
         {
-            var temp = default(Vector3);
-            temp.z = target.position.z;
+            Coroutines.Start(Slide2D(a, b.position, duration));
+            Coroutines.Start(Slide2D(b, a.position, duration));
+        }
+
+        private static IEnumerator Slide2D(Transform target, Vector3 dest, float duration = 5f)
+        {
+            var currentPos = new Vector3(target.position.x, target.position.y, target.position.z);
+
             for (var time = 0f; time < duration; time += Time.deltaTime)
             {
                 var t = time / duration;
-                temp.x = Mathf.SmoothStep(source.x, dest.x, t);
-                temp.y = Mathf.SmoothStep(source.y, dest.y, t);
-                target.position = temp;
+                currentPos.x = Mathf.SmoothStep(currentPos.x, dest.x, t);
+                currentPos.y = Mathf.SmoothStep(currentPos.y, dest.y, t);
+                target.position = currentPos;
                 yield return null;
             }
 
-            temp.x = dest.x;
-            temp.y = dest.y;
-            target.position = temp;
+            target.position = dest;
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
