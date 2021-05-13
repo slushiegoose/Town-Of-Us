@@ -225,6 +225,7 @@ namespace TownOfUs
                     if (player.PlayerId == impostor.Object.PlayerId)
                     {
                         isImpostor = true;
+                        break;
                     }
                 }
 
@@ -267,6 +268,7 @@ namespace TownOfUs
                     if (player.PlayerId == impostor.Object.PlayerId)
                     {
                         isImpostor = true;
+                        break;
                     }
                 }
 
