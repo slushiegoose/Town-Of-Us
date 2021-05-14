@@ -37,13 +37,13 @@ namespace TownOfUs.SwapperMod
             }
         }
 
-        private static void SwapPositions(Transform a, Transform b, float duration = 5f)
+        private static void SwapPositions(Transform a, Transform b, float duration = 2f)
         {
             Coroutines.Start(Slide2D(a, b.position, duration));
             Coroutines.Start(Slide2D(b, a.position, duration));
         }
 
-        private static IEnumerator Slide2D(Transform target, Vector3 dest, float duration = 5f)
+        private static IEnumerator Slide2D(Transform target, Vector3 dest, float duration = 2f)
         {
             var currentPos = new Vector3(target.position.x, target.position.y, target.position.z);
 
