@@ -3,8 +3,8 @@
     <RootNamespace>TownOfUs</RootNamespace>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Version>2.0.4</Version>
-    <GameVersion>2021.5.10s</GameVersion> 
-    <Mappings>D:\Slushie\Downloads\2021.5.10s.json</Mappings>
+    <GameVersion>2021.5.25e</GameVersion> 
+    <Mappings>HelpfulStranger999/Mappings:0.6.0</Mappings>
     <Description>TownOfUs Mod by Slushiegoose</Description>
     <Authors>slushiegoose</Authors>
   </PropertyGroup>
