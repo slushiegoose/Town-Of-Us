@@ -31,7 +31,7 @@ namespace TownOfUs {
             
             __instance.text.text = 
                 $"<color=#00FF00FF>TownOfUs v2.0.5</color>\n" +
-                $"Moving to <color=#BEA4FFFF>Polus.gg</color>\n" +
+                $"Available on <color=#BEA4FFFF>Polus.gg</color>\n" +
                 $"Ping: {AmongUsClient.Instance.Ping}ms";
             
         }
