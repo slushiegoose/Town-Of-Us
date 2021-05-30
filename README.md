@@ -51,6 +51,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2021.5.25.2s & 2021.5.25.2e | v2.0.5 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.5/TownOfUs-v2.0.5.zip) |
 | 2021.5.10s | v2.0.4 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.4/TownOfUs-v2.0.4.zip) |
 | 2021.5.10s | v2.0.3 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.3/TownOfUs-v2.0.3.zip) |
 | 2021.4.12s & 2021.4.14s | v2.0.2 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.2/TownOfUs-v2.0.2.zip) |
@@ -66,6 +67,10 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 <details>
   <summary> Changelog </summary>
+  <details>
+  <summary> v2.0.5 </summary>
+  <ul> <li> Epic Games compatibility </li> </ul>
+ </details>
  <details>
   <summary> v2.0.4 </summary>
   <ul> <li> Crucial bug fixes </li> </ul>
@@ -169,7 +174,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Installation
 ## Requirements 
 - Among Us
-- Steam
+- Steam or Epic Games
 
 ## Installation Guide (Steam)
 **1. Create a new folder on `Desktop`, called `Town of Us`.**\
@@ -195,6 +200,36 @@ Usually, this can be found in the `Downloads` folder.\
 Something different might appear depending on the file manager being used. Make sure the folder gets extracted in the `Town of Us` folder, in the same location as the Among Us application. It should look similar to the picture below.\
 \
 **9. Launch the Among Us application that's inside, and start playing Town of Us!**\
+A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
+<br/>
+
+## Installation Guide (Epic Games)
+**1. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
+\
+**2. Go to your Epic Games library.**\
+\
+**3. Find Among Us and click on the 3 dots `...` > click `Uninstall`.**\
+\
+**4. Confirm you want to Uninstall Among Us.**\
+\
+**5. In the Epic library, click on Among Us to install.**\
+\
+**6. Copy the Folder Path.**\
+\
+**7. Uncheck Auto-Update.**\
+\
+**8. Click on Install.**\
+\
+**9. Click Yes on the Windows popup.**\
+\
+**10. Paste the folder path in Windows search bar.**\
+\
+**11. Click on Enter.**\
+\
+**12. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.**\
+\
+**13. Finally, launch Among Us from Epic Games library.**\
+\
 A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
 <br/>
 ![Install](https://i.imgur.com/pvBAyZN.png)
