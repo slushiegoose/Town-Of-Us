@@ -1,7 +1,9 @@
 
-[![Discord](./Images/wearemovingimage.png)](https://discord.gg/polus)
+[![Discord](./Images/Polus.png)](https://discord.gg/polus)
 
-![Everyone](./Images/Everything.png)
+![LOGO](./Images/TOU-logo.png)
+![Roles](./Images/Roles1.png)
+
 An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 
@@ -35,6 +37,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Camouflager](#camouflager)
 - [Miner](#miner)
 - [Swooper](#swooper)
+- [Assassin](#assassin)
 
 **Modifiers**
 - [Torch](#torch)
@@ -51,22 +54,27 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2021.5.10s | v2.0.4 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.4/TownOfUs-v2.0.4.zip) |
-| 2021.5.10s | v2.0.3 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.3/TownOfUs-v2.0.3.zip) |
-| 2021.4.12s & 2021.4.14s | v2.0.2 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.2/TownOfUs-v2.0.2.zip) |
-| 2021.4.12s | v2.0.1 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.1/TownOfUs-v2.0.1.zip) |
-| 2021.3.31.3s | v2.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v2.0.0/TownOfUs-v2.0.0.zip) |
-| 2021.3.5s | v1.2.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.2.0/TownOfUs-v1.2.0.zip) |
-| 2021.3.5s | v1.1.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2021.3.5s.zip) |
-| 2020.12.19s | v1.1.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2020.12.9s.zip) |
-| 2020.12.19s | v1.0.3 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.3/TownOfUs-v1.0.3.zip) |
-| 2020.12.19s | v1.0.2 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.2/TownOfUs-v1.0.2.zip) |
-| 2020.12.19s | v1.0.1 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.1/TownOfUs-v1.0.1.zip) |
-| 2020.12.19s | v1.0.0 | [Download](https://github.com/slushiegoose/Town-Of-Us/releases/download/v1.0.0/TownOfUs-v1.0.0.zip) |
+| 2021.6.15s & 2021.6.15e | v2.1.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.1/TownOfUs-v2.1.1.zip) |
+| 2021.5.10s | v2.0.4 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.4/TownOfUs-v2.0.4.zip) |
+| 2021.5.10s | v2.0.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.3/TownOfUs-v2.0.3.zip) |
+| 2021.4.12s & 2021.4.14s | v2.0.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.2/TownOfUs-v2.0.2.zip) |
+| 2021.4.12s | v2.0.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.1/TownOfUs-v2.0.1.zip) |
+| 2021.3.31.3s | v2.0.0 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.0/TownOfUs-v2.0.0.zip) |
+| 2021.3.5s | v1.2.0 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.2.0/TownOfUs-v1.2.0.zip) |
+| 2021.3.5s | v1.1.0 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2021.3.5s.zip) |
+| 2020.12.19s | v1.1.0 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.1.0/TownOfUs-v1.1.0-2020.12.9s.zip) |
+| 2020.12.19s | v1.0.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.0.3/TownOfUs-v1.0.3.zip) |
+| 2020.12.19s | v1.0.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.0.2/TownOfUs-v1.0.2.zip) |
+| 2020.12.19s | v1.0.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.0.1/TownOfUs-v1.0.1.zip) |
+| 2020.12.19s | v1.0.0 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v1.0.0/TownOfUs-v1.0.0.zip) |
 
 <details>
   <summary> Changelog </summary>
  <details>
+  <summary> v2.1.1 </summary>
+  <ul> <li> 2021.6.15 support, Epic Games compatibility and Assassin Role </li> </ul>
+ </details>
+  <details>
   <summary> v2.0.4 </summary>
   <ul> <li> Crucial bug fixes </li> </ul>
  </details>
@@ -169,7 +177,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Installation
 ## Requirements 
 - Among Us
-- Steam
+- Steam or Epic Games
 
 ## Installation Guide (Steam)
 **1. Create a new folder on `Desktop`, called `Town of Us`.**\
@@ -197,6 +205,37 @@ Something different might appear depending on the file manager being used. Make 
 **9. Launch the Among Us application that's inside, and start playing Town of Us!**\
 A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
 <br/>
+
+## Installation Guide (Epic Games)
+**1. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
+\
+**2. Go to your Epic Games library.**\
+\
+**3. Find Among Us and click on the 3 dots `...` > click `Uninstall`.**\
+\
+**4. Confirm you want to Uninstall Among Us.**\
+\
+**5. In the Epic library, click on Among Us to install.**\
+\
+**6. Copy the Folder Path.**\
+\
+**7. Uncheck Auto-Update.**\
+\
+**8. Click on Install.**\
+\
+**9. Click Yes on the Windows popup.**\
+\
+**10. Paste the folder path in Windows search bar.**\
+\
+**11. Click on Enter.**\
+\
+**12. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.**\
+\
+**13. Finally, launch Among Us from Epic Games library.**\
+\
+A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
+<br/>
+
 ![Install](https://i.imgur.com/pvBAyZN.png)
 <br/>
 ## Issues
@@ -566,6 +605,22 @@ To balance the role, they can't vent.
 | Swooper Duration | How long the Swooping lasts for | Time | 10s |
 
 -----------------------
+## Assassin
+### **Team: Impostors**
+
+The Assassin is an Impostor that can kill during meetings by guessing the role of non-Impostors.\
+If they guessed wrong, they die instead.
+
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Assassin | The percentage probability of the Assassin appearing | Percentage | 0% |
+| Assassin Kill | The number of kill the Assassin can do with his ability | Number | 1 |
+| Assassin Guess Crewmate | Whether the Assassin can Guess "Crewmate" | Toggle | False |
+| Assassin Guess Neutral  | Whether the Assassin can Guess Neutral roles | Toggle | False |
+| Assassin Multiple Kill  | Whether the Assassin can kill more than once per meeting | Toggle | True |
+
+-----------------------
 
 # Modifiers
 Modifiers are added on top of players' roles.
@@ -660,7 +715,7 @@ Custom hats have been added, made by some very talented artists. These are mostl
 
 -----------------------
 # Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/bYSaT74KzT) or create a ticket on GitHub.
+If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/polus) or create a ticket on GitHub.
 
 -----------------------
 # Credits & Resources
