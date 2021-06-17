@@ -54,6 +54,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2021.6.15s & 2021.6.15e | v2.1.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.3/TownOfUs213_1.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.2/TownOfUs212_1.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.1/TownOfUs211_1.zip) |
 | 2021.5.10s | v2.0.4 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.4/TownOfUs-v2.0.4.zip) |
@@ -71,6 +72,13 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 <details>
   <summary> Changelog </summary>
+ <details>
+  <summary> v2.1.3 </summary>
+  <ul> <li> Fix the launch issue </li> </ul>
+  <ul> <li> Fix for the swooper role </li> </ul>
+  <ul> <li> Fix for the janitor role </li> </ul>
+  <ul> <li> Minor enhancements and bug fixes </li> </ul>
+ </details>
  <details>
   <summary> v2.1.2 </summary>
   <ul> <li> Crucial bug fixes </li> </ul>
