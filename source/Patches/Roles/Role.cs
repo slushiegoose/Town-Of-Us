@@ -540,71 +540,57 @@ namespace TownOfUs.Roles
             }
         }
 
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        public static class HudManager_Update
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+        public static class MeetingHud_Start
         {
-
-            private static Vector3 oldScale = Vector3.zero;
-            private static Vector3 oldPosition = Vector3.zero;
-            private static void UpdateMeeting(MeetingHud __instance)
+            public static List<GameObject> roleNameTextList = new List<GameObject>();
+            public static void Postfix(MeetingHud __instance)
             {
-
                 foreach (var player in __instance.playerStates)
                 {
                     var role = GetRole(player);
                     if (role != null && role.Criteria())
                     {
                         player.NameText.color = role.Color;
-                        player.NameText.text = role.NameText(player);
-                        if (player.NameText.text.Contains("\n"))
-                        {
-                            var newScale = Vector3.one * 1.8f;
-
-                            var trueScale = player.NameText.transform.localScale;
-                            
-                            
-                            if (trueScale != newScale) oldScale = trueScale;
-                            var newPosition = new Vector3(1.43f, 0.055f, 0f);
-
-                            var truePosition = player.NameText.transform.localPosition;
-                            
-                            if (newPosition != truePosition) oldPosition = truePosition;
-
-                            player.NameText.transform.localPosition = newPosition;
-                            player.NameText.transform.localScale = newScale;
-
-                        }
-                        else
-                        {
-                            if (oldPosition != Vector3.zero) player.NameText.transform.localPosition = oldPosition;
-                            if (oldScale != Vector3.zero) player.NameText.transform.localScale = oldScale;
-                        }
+                        var roleNameText = Object.Instantiate(player.NameText, player.transform);
+                        roleNameText.transform.position = player.NameText.transform.position - new Vector3(0f, 0.25f, 0f);
+                        roleNameText.text = role.Name;
+                        roleNameText.color = role.Color;
+                        roleNameTextList.Add(roleNameText.gameObject);
                     }
-                    else
+                    else if (role != null)
                     {
-                        try
-                        {
-                            player.NameText.text = role.Player.name;
-                        }
-                        catch
-                        {
-                        }
+                        player.NameText.text = role.Player.name;
                     }
                 }
             }
-            
+        }
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
+        public static class BBFDNCCEJHI
+        {
+            public static void Postfix(MeetingHud __instance)
+            {
+                foreach (var gameObject in MeetingHud_Start.roleNameTextList)
+                {
+                    gameObject.Destroy();
+                }
+                MeetingHud_Start.roleNameTextList.Clear();
+            }
+        }
+
+        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+        public static class HudManager_Update
+        {
             [HarmonyPriority(Priority.First)]
             private static void Postfix(HudManager __instance)
             {
-                if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance);
-
                 if (PlayerControl.AllPlayerControls.Count <= 1) return;
                 if (PlayerControl.LocalPlayer == null) return;
                 if (PlayerControl.LocalPlayer.Data == null) return;
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-
                     if (!(player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor))
                     {
                         player.nameText.text = player.name;
@@ -612,18 +598,12 @@ namespace TownOfUs.Roles
                     }
 
                     var role = GetRole(player);
-                    if (role != null)
+                    if (role != null && role.Criteria())
                     {
-                        if (role.Criteria())
-                        {
-                            player.nameText.color = role.Color;
-                            player.nameText.text = role.NameText();
-                            continue;
-                        }
+                        player.nameText.color = role.Color;
+                        player.nameText.text = role.NameText();
+                        continue;
                     }
-
-                    if (PlayerControl.LocalPlayer.Data.IsImpostor && player.Data.IsImpostor) continue;
-
                 }
 
             }
