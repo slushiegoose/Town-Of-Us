@@ -1,6 +1,6 @@
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using HarmonyLib;
 using UnityEngine;
 
 namespace TownOfUs.CustomHats
@@ -9,8 +9,7 @@ namespace TownOfUs.CustomHats
     {
         private static bool modded;
 
-        public static Sprite EmptySprite = TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
-
+        public static Sprite EmptySprite = null;// TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
 
         private static readonly List<HatData> _hatDatas = new List<HatData>
         {
@@ -77,7 +76,6 @@ namespace TownOfUs.CustomHats
                 name = "chilled", bounce = false, highUp = false, offset = new Vector2(-0.1f, 0.2f),
                 author = "Nassegris"
             },
-
 
             new HatData
             {
@@ -168,7 +166,6 @@ namespace TownOfUs.CustomHats
                 name = "falcone", bounce = true, highUp = false, offset = new Vector2(-0.1f, 0.4f),
                 author = "TheLastShaymin"
             },
-
 
             new HatData
             {
@@ -282,7 +279,6 @@ namespace TownOfUs.CustomHats
             foreach (var hat in _hatDatas) yield return CreateHat(hat, ++i);
         }
 
-
         protected internal struct HatData
         {
             public bool bounce;
@@ -297,7 +293,7 @@ namespace TownOfUs.CustomHats
             public int framecount;
         }
 
-        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
+        //[HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
         public static class HatManagerPatch
         {
             private static bool Prefix(HatManager __instance)
@@ -313,8 +309,8 @@ namespace TownOfUs.CustomHats
                         {
                             var hat = CreateHat(hatData, id++);
                             __instance.AllHats.Add(hat);
-                            if (hatData.highUp) TallIds.Add((uint) (__instance.AllHats.Count - 1));
-                            IdToData.Add((uint) __instance.AllHats.Count - 1, hatData);
+                            if (hatData.highUp) TallIds.Add((uint)(__instance.AllHats.Count - 1));
+                            IdToData.Add((uint)__instance.AllHats.Count - 1, hatData);
                         }
                     }
 
