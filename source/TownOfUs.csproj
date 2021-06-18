@@ -5,12 +5,12 @@
     <Version>2.1.3</Version>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <GameProvider>Static</GameProvider>
-    <GameVersion>../../AmongUsModded2021615s/</GameVersion>
+    <GameVersion>../AmongUs/</GameVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Reactor.MSBuild" Version="0.1.2" />
   </ItemGroup>
@@ -18,7 +18,7 @@
   <Target Name="Copy" AfterTargets="Build">
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(GameVersion)/BepInEx/plugins/" />
   </Target>
-  
+
   <ItemGroup>
     <EmbeddedResource Include="Resources\*" />
     <EmbeddedResource Include="Resources\Hats\**\*.png" />
