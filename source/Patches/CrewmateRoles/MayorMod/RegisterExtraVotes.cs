@@ -179,9 +179,9 @@ namespace TownOfUs.CrewmateRoles.MayorMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
         public static class VotingComplete
         {
-            public static bool Prefix(MeetingHud __instance)
+            public static void Prefix(MeetingHud __instance, bool tie)
             {
-                if (!AmongUsClient.Instance.AmHost) return true;
+                if (!AmongUsClient.Instance.AmHost) return;
                 foreach (var role in Role.GetRoles(RoleEnum.Mayor))
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
@@ -191,10 +191,10 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                return true;
+                PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Sending tie status from param: {tie}");
             }
 
-            public static void Postfix(MeetingHud __instance)
+            public static void Postfix(MeetingHud __instance, bool tie)
             {
                 // __instance.exiledPlayer = __instance.wasTie ? null : __instance.exiledPlayer;
                 PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Exiled PlayerID = {__instance.exiledPlayer}");
@@ -202,7 +202,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                     PluginSingleton<TownOfUs>.Instance.Log.LogMessage(
                         $"Exiled PlayerName = {__instance.exiledPlayer.PlayerName}");
 
-                PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Was a tie = {__instance.wasTie}");
+                PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Was a tie = {__instance.wasTie}, param = {tie}");
             }
         }
 

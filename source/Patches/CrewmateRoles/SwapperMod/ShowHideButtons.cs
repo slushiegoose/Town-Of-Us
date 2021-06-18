@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using Hazel;
+using System.Collections.Generic;
+using System.Linq;
 using TownOfUs.CrewmateRoles.MayorMod;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
@@ -69,11 +69,10 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                     }
                 }
 
-
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null) return true;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                    (byte)CustomRPC.SetSwaps, SendOption.Reliable, -1);
                 writer.Write(SwapVotes.Swap1.TargetPlayerId);
                 writer.Write(SwapVotes.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -95,7 +94,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                     var maxIdx = self.MaxPair(out var tie);
 
                     PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Meeting was a tie = {tie}");
-                    var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => v.PlayerId == maxIdx.Key);
+                    var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
                     for (var i = 0; i < __instance.playerStates.Length; i++)
                     {
                         var playerVoteArea = __instance.playerStates[i];
@@ -106,8 +105,8 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                         };
                     }
 
-                    __instance.exiledPlayer = tie ? null : exiled;
-                    __instance.wasTie = tie;
+                    //__instance.exiledPlayer = tie ? null : exiled;
+                    //__instance.wasTie = tie;
                     __instance.RpcVotingComplete(array, __instance.exiledPlayer, tie);
                 }
 
