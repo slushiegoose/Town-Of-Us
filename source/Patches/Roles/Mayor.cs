@@ -6,14 +6,6 @@ namespace TownOfUs.Roles
     public class Mayor : Role
     {
         public List<byte> ExtraVotes = new List<byte>();
-        public int VoteBank { get; set;}
-        public bool SelfVote { get; set; }
-        
-        public bool VotedOnce { get; set; }
-        
-        public PlayerVoteArea Abstain { get; set; }
-
-        public bool CanVote => VoteBank > 0 && !SelfVote;
 
         public Mayor(PlayerControl player) : base(player)
         {
@@ -24,5 +16,14 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Mayor;
             VoteBank = CustomGameOptions.MayorVoteBank;
         }
+
+        public int VoteBank { get; set; }
+        public bool SelfVote { get; set; }
+
+        public bool VotedOnce { get; set; }
+
+        public PlayerVoteArea Abstain { get; set; }
+
+        public bool CanVote => VoteBank > 0 && !SelfVote;
     }
 }

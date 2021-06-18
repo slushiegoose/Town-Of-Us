@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-using TownOfUs.SeerMod;
+using TownOfUs.CrewmateRoles.SeerMod;
 using UnityEngine;
 
 namespace TownOfUs.Roles
 {
     public class Seer : Role
     {
-
         public List<byte> Investigated = new List<byte>();
-        public PlayerControl ClosestPlayer { get; set; }
-        public DateTime LastInvestigated { get; set; }
 
         public Seer(PlayerControl player) : base(player)
         {
@@ -20,6 +17,9 @@ namespace TownOfUs.Roles
             Color = new Color(1f, 0.8f, 0.5f, 1f);
             RoleType = RoleEnum.Seer;
         }
+
+        public PlayerControl ClosestPlayer { get; set; }
+        public DateTime LastInvestigated { get; set; }
 
         public float SeerTimer()
         {
@@ -33,7 +33,7 @@ namespace TownOfUs.Roles
 
         public bool CheckSeeReveal(PlayerControl player)
         {
-            var role = Role.GetRole(player);
+            var role = GetRole(player);
             switch (CustomGameOptions.SeeReveal)
             {
                 case SeeReveal.All:
@@ -41,9 +41,9 @@ namespace TownOfUs.Roles
                 case SeeReveal.Nobody:
                     return false;
                 case SeeReveal.ImpsAndNeut:
-                    return (role != null && role.Faction != Faction.Crewmates) || player.Data.IsImpostor;
+                    return role != null && role.Faction != Faction.Crewmates || player.Data.IsImpostor;
                 case SeeReveal.Crew:
-                    return (role != null && role.Faction == Faction.Crewmates) || !player.Data.IsImpostor;
+                    return role != null && role.Faction == Faction.Crewmates || !player.Data.IsImpostor;
             }
 
             return false;

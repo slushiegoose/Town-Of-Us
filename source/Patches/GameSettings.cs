@@ -1,21 +1,19 @@
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using HarmonyLib;
 using TownOfUs.CustomOption;
+using TownOfUs.Extensions;
 using UnityEngine;
-using Reactor.Extensions;
 
-namespace TownOfUs {
-    
+namespace TownOfUs
+{
     [HarmonyPatch]
     public static class GameSettings
     {
+        public static bool AllOptions;
 
-        public static bool AllOptions = false;
-        
         /*public static string StringBuild()
         {
             var builder = new StringBuilder("Roles:\n");
@@ -67,7 +65,6 @@ namespace TownOfUs {
         [HarmonyPatch] //ToHudString
         private static class GameOptionsDataPatch
         {
-            
             public static IEnumerable<MethodBase> TargetMethods()
             {
                 return typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
@@ -75,25 +72,20 @@ namespace TownOfUs {
 
             private static void Postfix(ref string __result)
             {
-                
-                
-                
-                StringBuilder builder = new StringBuilder(AllOptions ? __result : "");
-                
-                foreach (CustomOption.CustomOption option in CustomOption.CustomOption.AllOptions)
-                {
+                var builder = new StringBuilder(AllOptions ? __result : "");
 
+                foreach (var option in CustomOption.CustomOption.AllOptions)
+                {
                     if (option.Name == "Custom Game Settings" && !AllOptions) break;
                     if (option.Type == CustomOptionType.Button) continue;
                     if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}");
-                    else if(option.Indent) builder.AppendLine($"     {option.Name}: {option}");
+                    else if (option.Indent) builder.AppendLine($"     {option.Name}: {option}");
                     else builder.AppendLine($"{option.Name}: {option}");
                 }
 
 
                 __result = builder.ToString();
-                
-                
+
 
                 if (CustomOption.CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 38)
                     __result = __result.Insert(__result.IndexOf('\n'), " (Scroll for more)");
@@ -101,7 +93,6 @@ namespace TownOfUs {
 
 
                 __result = $"<size=1.25>{__result}</size>";
-
             }
         }
 
@@ -110,18 +101,17 @@ namespace TownOfUs {
         {
             private static void Postfix()
             {
-                if (Input.GetKeyInt(KeyCode.Tab))
-                {
-                    AllOptions = !AllOptions;
-                }
+                if (Input.GetKeyInt(KeyCode.Tab)) AllOptions = !AllOptions;
 
-//                HudManager.Instance.GameSettings.scale = 0.5f;
+                //                HudManager.Instance.GameSettings.scale = 0.5f;
             }
         }
 
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
-        public static class Update {
-            public static void Postfix(ref GameOptionsMenu __instance) {
+        public static class Update
+        {
+            public static void Postfix(ref GameOptionsMenu __instance)
+            {
                 __instance.GetComponentInParent<Scroller>().YBounds.max = 70f;
             }
         }

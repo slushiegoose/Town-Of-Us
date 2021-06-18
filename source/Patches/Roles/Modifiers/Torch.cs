@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace TownOfUs.Roles.Modifiers
 {
-    public class Torch : Modifier 
+    public class Torch : Modifier
     {
         public Torch(PlayerControl player) : base(player)
         {

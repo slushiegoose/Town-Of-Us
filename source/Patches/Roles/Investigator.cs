@@ -1,16 +1,14 @@
 using System.Collections.Generic;
+using TownOfUs.CrewmateRoles.InvestigatorMod;
 using UnityEngine;
-using Footprint = TownOfUs.InvestigatorMod.Footprint;
-
 
 namespace TownOfUs.Roles
 {
     public class Investigator : Role
     {
-
         public readonly List<Footprint> AllPrints = new List<Footprint>();
-        
-        
+
+
         public Investigator(PlayerControl player) : base(player)
         {
             Name = "Investigator";

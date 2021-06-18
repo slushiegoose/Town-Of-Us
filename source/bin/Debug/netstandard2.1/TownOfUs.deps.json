@@ -1,0 +1,106 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "TownOfUs/2.1.3": {
+        "dependencies": {
+          "Reactor.MSBuild": "0.1.2"
+        },
+        "runtime": {
+          "TownOfUs.dll": {}
+        }
+      },
+      "Reactor.MSBuild/0.1.2": {
+        "runtime": {
+          "lib/netstandard2.1/AssemblyUnhollower.dll": {
+            "assemblyVersion": "0.4.14.0",
+            "fileVersion": "0.4.14.0"
+          },
+          "lib/netstandard2.1/DepotDownloader.Library.dll": {
+            "assemblyVersion": "0.1.3.0",
+            "fileVersion": "0.1.3.0"
+          },
+          "lib/netstandard2.1/Iced.dll": {
+            "assemblyVersion": "1.10.0.0",
+            "fileVersion": "1.10.0.0"
+          },
+          "lib/netstandard2.1/Il2CppDumper.dll": {
+            "assemblyVersion": "6.6.3.0",
+            "fileVersion": "6.6.3.0"
+          },
+          "lib/netstandard2.1/Mono.Cecil.Mdb.dll": {
+            "assemblyVersion": "0.11.3.0",
+            "fileVersion": "0.11.3.0"
+          },
+          "lib/netstandard2.1/Mono.Cecil.Pdb.dll": {
+            "assemblyVersion": "0.11.3.0",
+            "fileVersion": "0.11.3.0"
+          },
+          "lib/netstandard2.1/Mono.Cecil.Rocks.dll": {
+            "assemblyVersion": "0.11.3.0",
+            "fileVersion": "0.11.3.0"
+          },
+          "lib/netstandard2.1/Mono.Cecil.dll": {
+            "assemblyVersion": "0.11.3.0",
+            "fileVersion": "0.11.3.0"
+          },
+          "lib/netstandard2.1/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.1.25517"
+          },
+          "lib/netstandard2.1/Reactor.GameProvider.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          },
+          "lib/netstandard2.1/Reactor.MSBuild.dll": {
+            "assemblyVersion": "0.1.2.0",
+            "fileVersion": "0.1.2.0"
+          },
+          "lib/netstandard2.1/SemVer.dll": {
+            "assemblyVersion": "1.3.0.0",
+            "fileVersion": "1.3.0.0"
+          },
+          "lib/netstandard2.1/SteamKit2.dll": {
+            "assemblyVersion": "2.4.0.0",
+            "fileVersion": "2.4.0.5"
+          },
+          "lib/netstandard2.1/UnhollowerBaseLib.dll": {
+            "assemblyVersion": "0.4.14.0",
+            "fileVersion": "0.4.14.0"
+          },
+          "lib/netstandard2.1/UnhollowerRuntimeLib.dll": {
+            "assemblyVersion": "0.4.11.1",
+            "fileVersion": "0.4.11.1"
+          },
+          "lib/netstandard2.1/protobuf-net.Core.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.101.59408"
+          },
+          "lib/netstandard2.1/protobuf-net.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.101.59408"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TownOfUs/2.1.3": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Reactor.MSBuild/0.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DhFxeoafvY28VKmp1e2wXYGGcblB4e6BuUICuvhizj4FoxkXsW6AeRfaodfeJKSdF0OBH+jAArwYfObEuRGTAA==",
+      "path": "reactor.msbuild/0.1.2",
+      "hashPath": "reactor.msbuild.0.1.2.nupkg.sha512"
+    }
+  }
+}

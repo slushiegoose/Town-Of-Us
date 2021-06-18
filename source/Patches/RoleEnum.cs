@@ -26,12 +26,14 @@ namespace TownOfUs
         Morphling,
         Camouflager,
         Janitor,
+        Assassin,
+
 
         Glitch,
-        
+
         Crewmate,
         Impostor,
-        None,
+        None
     }
 
     public enum ModifierEnum
@@ -42,6 +44,6 @@ namespace TownOfUs
         Tiebreaker,
         Drunk,
         BigBoi,
-        ButtonBarry,
+        ButtonBarry
     }
 }

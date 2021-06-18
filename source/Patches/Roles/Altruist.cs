@@ -4,11 +4,11 @@ namespace TownOfUs.Roles
 {
     public class Altruist : Role
     {
-
-        public bool ReviveUsed;
         public bool CurrentlyReviving;
         public DeadBody CurrentTarget;
-        
+
+        public bool ReviveUsed;
+
         public Altruist(PlayerControl player) : base(player)
         {
             Name = "Altruist";

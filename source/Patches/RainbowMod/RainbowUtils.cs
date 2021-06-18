@@ -1,41 +1,42 @@
+using System;
+using UnityEngine;
 
-    using System;
-    using UnityEngine;
-
+namespace TownOfUs.RainbowMod
+{
     public class RainbowUtils
-	{
-		private static readonly int BackColor = Shader.PropertyToID("_BackColor");
-		private static readonly int BodyColor = Shader.PropertyToID("_BodyColor");
+    {
+        private static readonly int BackColor = Shader.PropertyToID("_BackColor");
+        private static readonly int BodyColor = Shader.PropertyToID("_BodyColor");
         private static readonly int VisorColor = Shader.PropertyToID("_VisorColor");
 
-        
+
         public static Color Rainbow => new HSBColor(PP(0, 1, 0.3f), 1, 1).ToColor();
         public static Color RainbowShadow => Shadow(Rainbow);
-        
+
         /*public static Color Galaxy => new HSBColor(PP(0.5f, 0.87f, 0.4f), 1, 1).ToColor();
         public static Color GalaxyShadow => Shadow(Galaxy);
         
         public static Color Fire => new HSBColor(PP(0f, 0.17f, 0.4f), 1, 1).ToColor();
         public static Color FireShadow => Shadow(Fire);*/
-        
-        
+
+
         public static float PP(float min, float max, float mul)
         {
-            return min + Mathf.PingPong(Time.time * mul, max-min);
+            return min + Mathf.PingPong(Time.time * mul, max - min);
         }
 
         public static Color Shadow(Color color)
         {
             return new Color(color.r - 0.3f, color.g - 0.3f, color.b - 0.3f);
         }
-        
-		public static void SetRainbow(Renderer rend)
-		{
-			rend.material.SetColor(BackColor, RainbowShadow);
-			rend.material.SetColor(BodyColor, Rainbow);
-			rend.material.SetColor(VisorColor, Palette.VisorColor);
-		}
-        
+
+        public static void SetRainbow(Renderer rend)
+        {
+            rend.material.SetColor(BackColor, RainbowShadow);
+            rend.material.SetColor(BodyColor, Rainbow);
+            rend.material.SetColor(VisorColor, Palette.VisorColor);
+        }
+
         /*public static void SetGalaxy(Renderer rend)
         {
             rend.material.SetColor(BackColor, GalaxyShadow);
@@ -50,11 +51,12 @@
             rend.material.SetColor(VisorColor, Palette.VisorColor);
         }*/
 
-		public static bool IsRainbow(int id)
+        public static bool IsRainbow(int id)
         {
             try
             {
-                return (int) Palette.ShortColorNames[id] == 999997;
+                // return (int) Palette.ShortColorNames[id] == 999997;
+                return false;
             }
             catch
             {
@@ -69,11 +71,11 @@
         {
             return Palette.ShortColorNames[id] == "FIRE";
         }*/
-	}
-	
-	[Serializable]
+    }
+
+    [Serializable]
     public struct HSBColor
-    { 
+    {
         public float h;
         public float s;
         public float b;
@@ -114,10 +116,7 @@
 
             var max = Mathf.Max(r, Mathf.Max(g, b));
 
-            if (max <= 0)
-            {
-                return ret;
-            }
+            if (max <= 0) return ret;
 
             var min = Mathf.Min(r, Mathf.Min(g, b));
             var dif = max - min;
@@ -125,26 +124,15 @@
             if (max > min)
             {
                 if (g == max)
-                {
                     ret.h = (b - r) / dif * 60f + 120f;
-                }
                 else if (b == max)
-                {
                     ret.h = (r - g) / dif * 60f + 240f;
-                }
                 else if (b > g)
-                {
                     ret.h = (g - b) / dif * 60f + 360f;
-                }
                 else
-                {
                     ret.h = (g - b) / dif * 60f;
-                }
 
-                if (ret.h < 0)
-                {
-                    ret.h = ret.h + 360f;
-                }
+                if (ret.h < 0) ret.h = ret.h + 360f;
             }
             else
             {
@@ -152,7 +140,7 @@
             }
 
             ret.h *= 1f / 360f;
-            ret.s = (dif / max) * 1f;
+            ret.s = dif / max * 1f;
             ret.b = max;
 
             return ret;
@@ -294,3 +282,4 @@
                       ToColor(new HSBColor(new Color(0.643137f, 0.321568f, 0.329411f))));
         }
     }
+}

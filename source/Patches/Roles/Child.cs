@@ -1,27 +1,26 @@
-using Hazel;
+using UnityEngine;
 
 namespace TownOfUs.Roles
 {
     public class Child : Role
     {
-        public bool Dead = false;
-        
+        public bool Dead;
+
         public Child(PlayerControl player) : base(player)
         {
             Name = "Child";
             ImpostorText = () => "No one will harm you";
             TaskText = () => "You won't be harmed";
-            Color = UnityEngine.Color.white;
+            Color = Color.white;
             RoleType = RoleEnum.Child;
         }
 
         public void Wins()
         {
             Dead = true;
-
         }
 
-        internal override bool CheckEndCriteria(ShipStatus __instance)
+        internal override bool EABBNOODFGL(ShipStatus __instance)
         {
             //System.Console.WriteLine("REACHES HERE2.75");
             if (!Dead) return true;
@@ -30,7 +29,6 @@ namespace TownOfUs.Roles
             //System.Console.WriteLine("REACHES HERE4");
             Utils.EndGame();
             return false;
-
         }
     }
 }

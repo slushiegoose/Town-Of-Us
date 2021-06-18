@@ -25,7 +25,7 @@ namespace TownOfUs
         SetJanitor,
         SetArsonist,
         SetAltruist,
-        SetButtonBarry,
+        SetAssassin,
 
         SetTorch,
         SetDiseased,
@@ -33,12 +33,12 @@ namespace TownOfUs
         SetTiebreaker,
         SetDrunk,
         SetBigBoi,
-        
+        SetButtonBarry,
+
         SetCrewmate,
         SetImpostor,
-        
-       
-        
+
+
         LoveWin,
         GlitchWin,
         ArsonistWin,
@@ -48,7 +48,7 @@ namespace TownOfUs
         GlitchLose,
         ArsonistLose,
         NobodyWins,
-        
+
         JanitorClean,
         FixLights,
         EngineerFix,
@@ -68,13 +68,16 @@ namespace TownOfUs
         Ignite,
         AltruistRevive,
         BarryButton,
+        Drag,
+        Drop,
+        AssassinKill,
 
         SetGlitch,
         BypassKill,
         SetMimic,
         RpcResetAnim,
         SetHacked,
-        
+
         ExecutionerToJester,
 
 

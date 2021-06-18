@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "TKfVOdHyYrMCmET2+QgAu6XmUtjYNGGn6C7tcSe+JDu6+xSSApeG32EL7yTClTyx4YyeoTZwaENvpsQBULgdHA==",
+  "success": true,
+  "projectFilePath": "/home/ashwat/Projects/town-of-us-public/source/TownOfUs.csproj",
+  "expectedPackageFiles": [
+    "/home/ashwat/.nuget/packages/reactor.msbuild/0.1.2/reactor.msbuild.0.1.2.nupkg.sha512"
+  ],
+  "logs": []
+}

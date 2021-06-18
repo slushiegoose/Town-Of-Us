@@ -1,0 +1,7 @@
+/home/ashwat/Projects/town-of-us-public/source/obj/Debug/netstandard2.1/TownOfUs.csprojAssemblyReference.cache
+/home/ashwat/Projects/town-of-us-public/source/obj/Debug/netstandard2.1/TownOfUs.AssemblyInfoInputs.cache
+/home/ashwat/Projects/town-of-us-public/source/obj/Debug/netstandard2.1/TownOfUs.AssemblyInfo.cs
+/home/ashwat/Projects/town-of-us-public/source/obj/Debug/netstandard2.1/TownOfUs.csproj.CoreCompileInputs.cache
+/home/ashwat/Projects/town-of-us-public/source/bin/Debug/netstandard2.1/TownOfUs.deps.json
+/home/ashwat/Projects/town-of-us-public/source/bin/Debug/netstandard2.1/TownOfUs.dll
+/home/ashwat/Projects/town-of-us-public/source/obj/Debug/netstandard2.1/TownOfUs.dll

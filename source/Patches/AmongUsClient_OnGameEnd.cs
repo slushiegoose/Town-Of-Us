@@ -8,13 +8,12 @@ namespace TownOfUs
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
     public class AmongUsClient_OnGameEnd
     {
-        public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] GameOverReason reason, [HarmonyArgument(0)] bool showAd)
+        public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] GameOverReason reason,
+            [HarmonyArgument(0)] bool showAd)
         {
             Utils.potentialWinners.Clear();
             foreach (var player in PlayerControl.AllPlayerControls)
-            {
                 Utils.potentialWinners.Add(new WinningPlayerData(player.Data));
-            }
         }
     }
 
@@ -23,14 +22,15 @@ namespace TownOfUs
     {
         public static void Prefix()
         {
-
             var jester = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Jester && ((Jester) x).VotedOut);
-            var executioner = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Executioner && ((Executioner) x).TargetVotedOut);
+            var executioner = Role.AllRoles.FirstOrDefault(x =>
+                x.RoleType == RoleEnum.Executioner && ((Executioner) x).TargetVotedOut);
             if (Role.NobodyWins)
             {
                 TempData.winners = new List<WinningPlayerData>();
                 return;
             }
+
             if (jester != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == jester.PlayerName).ToList();
@@ -40,13 +40,15 @@ namespace TownOfUs
                     win.IsDead = false;
                     TempData.winners.Add(win);
                 }
+
                 return;
             }
+
             if (executioner != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == executioner.PlayerName).ToList();
                 TempData.winners = new List<WinningPlayerData>();
-                foreach(var win in winners) TempData.winners.Add(win);
+                foreach (var win in winners) TempData.winners.Add(win);
                 return;
             }
 
@@ -57,11 +59,13 @@ namespace TownOfUs
             {
                 var lover1 = (Lover) lover;
                 var lover2 = lover1.OtherLover;
-                var winners = Utils.potentialWinners.Where(x => x.Name == lover1.PlayerName || x.Name == lover2.PlayerName).ToList();
+                var winners = Utils.potentialWinners
+                    .Where(x => x.Name == lover1.PlayerName || x.Name == lover2.PlayerName).ToList();
                 TempData.winners = new List<WinningPlayerData>();
-                foreach(var win in winners) TempData.winners.Add(win);
+                foreach (var win in winners) TempData.winners.Add(win);
                 return;
             }
+
             var child = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Child && ((Child) x).Dead);
             if (child != null)
             {
@@ -74,22 +78,18 @@ namespace TownOfUs
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == glitch.PlayerName).ToList();
                 TempData.winners = new List<WinningPlayerData>();
-                foreach(var win in winners) TempData.winners.Add(win);
+                foreach (var win in winners) TempData.winners.Add(win);
                 return;
-                
             }
-            
-            var arsonist = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
+
+            var arsonist =
+                Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
             if (arsonist != null)
             {
                 var winners = Utils.potentialWinners.Where(x => x.Name == arsonist.PlayerName).ToList();
                 TempData.winners = new List<WinningPlayerData>();
-                foreach(var win in winners) TempData.winners.Add(win);
-                return;
-                
+                foreach (var win in winners) TempData.winners.Add(win);
             }
-
-
         }
     }
 }

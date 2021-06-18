@@ -6,6 +6,6 @@ namespace TownOfUs
         Sheriff,
         Shifter,
         Lover,
-        Glitch,
+        Glitch
     }
 }

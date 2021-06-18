@@ -1,30 +1,18 @@
 using System;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace TownOfUs.Roles
 {
     public class Morphling : Role
 
     {
-
-        public PlayerControl SampledPlayer;
         public KillButtonManager _morphButton;
-        public KillButtonManager MorphButton
-        {
-            get { return _morphButton;}
-            set
-            {
-                _morphButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
-            }
-        }
+        public PlayerControl closestPlayer;
         public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
-        public PlayerControl closestPlayer;
-        public bool Morphed => TimeRemaining > 0f;
-        public float TimeRemaining = 0f;
+
+        public PlayerControl SampledPlayer;
+        public float TimeRemaining;
 
         public Morphling(PlayerControl player) : base(player)
         {
@@ -35,6 +23,19 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Morphling;
             Faction = Faction.Impostors;
         }
+
+        public KillButtonManager MorphButton
+        {
+            get => _morphButton;
+            set
+            {
+                _morphButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public bool Morphed => TimeRemaining > 0f;
 
 
         public void Morph()
