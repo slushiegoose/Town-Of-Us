@@ -9,6 +9,7 @@ namespace TownOfUs.CustomHats
     {
         private static bool modded;
 
+        // TODO Revert this once hats are properly implemented.
         public static Sprite EmptySprite = null;// TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
 
         private static readonly List<HatData> _hatDatas = new List<HatData>
@@ -293,6 +294,7 @@ namespace TownOfUs.CustomHats
             public int framecount;
         }
 
+        // TODO Revert this once hats are reimplemented.
         //[HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
         public static class HatManagerPatch
         {
