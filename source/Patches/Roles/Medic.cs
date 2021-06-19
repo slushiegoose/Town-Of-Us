@@ -4,12 +4,6 @@ namespace TownOfUs.Roles
 {
     public class Medic : Role
     {
-        
-        public PlayerControl ClosestPlayer { get; set; }
-        public bool UsedAbility { get; set; } = false;
-        public PlayerControl ShieldedPlayer { get; set; }
-        public PlayerControl exShielded { get; set; }
-        
         public Medic(PlayerControl player) : base(player)
         {
             Name = "Medic";
@@ -19,5 +13,10 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Medic;
             ShieldedPlayer = null;
         }
+
+        public PlayerControl ClosestPlayer { get; set; }
+        public bool UsedAbility { get; set; } = false;
+        public PlayerControl ShieldedPlayer { get; set; }
+        public PlayerControl exShielded { get; set; }
     }
 }

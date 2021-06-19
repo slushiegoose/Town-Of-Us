@@ -5,9 +5,9 @@ namespace TownOfUs.Roles
 {
     public class Swapper : Role
     {
+        public readonly List<GameObject> Buttons = new List<GameObject>();
 
         public readonly List<bool> ListOfActives = new List<bool>();
-        public readonly List<GameObject> Buttons = new List<GameObject>();
 
 
         public Swapper(PlayerControl player) : base(player)

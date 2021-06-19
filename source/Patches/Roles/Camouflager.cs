@@ -7,21 +7,9 @@ namespace TownOfUs.Roles
 
     {
         public KillButtonManager _camouflageButton;
-        public bool Camouflaged => TimeRemaining > 0f;
-        public float TimeRemaining = 0f;
-        public DateTime LastCamouflaged;
         public bool Enabled;
-        
-        public KillButtonManager CamouflageButton
-        {
-            get { return _camouflageButton;}
-            set
-            {
-                _camouflageButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
-            }
-        }
+        public DateTime LastCamouflaged;
+        public float TimeRemaining;
 
         public Camouflager(PlayerControl player) : base(player)
         {
@@ -31,6 +19,19 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Camouflager;
             Faction = Faction.Impostors;
+        }
+
+        public bool Camouflaged => TimeRemaining > 0f;
+
+        public KillButtonManager CamouflageButton
+        {
+            get => _camouflageButton;
+            set
+            {
+                _camouflageButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public void Camouflage()
@@ -46,7 +47,7 @@ namespace TownOfUs.Roles
             LastCamouflaged = DateTime.UtcNow;
             Utils.UnCamouflage();
         }
-        
+
         public float CamouflageTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -56,7 +57,5 @@ namespace TownOfUs.Roles
             if (flag2) return 0;
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
-
-
     }
 }

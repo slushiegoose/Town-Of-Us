@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using Reactor.Extensions;
-using TownOfUs.MedicMod;
+using TownOfUs.CrewmateRoles.MedicMod;
+using TownOfUs.CustomHats;
+using TownOfUs.Extensions;
+using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
+using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -16,50 +19,42 @@ namespace TownOfUs
     [HarmonyPatch]
     public static class Utils
     {
-
         internal static bool ShowDeadBodies = false;
-        
+
+
+        public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
+
+        public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
+
         public static void SetSkin(PlayerControl Player, uint skin)
         {
             Player.MyPhysics.SetSkin(skin);
         }
-        
+
         public static void Morph(PlayerControl Player, PlayerControl MorphedPlayer, bool resetAnim = false)
         {
-            if (CamouflageMod.CamouflageUnCamouflage.IsCamoed)
-            {
-                return;
-            }
+            if (CamouflageUnCamouflage.IsCamoed) return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-            {
-                Player.nameText.text = MorphedPlayer.Data.PlayerName;
-            }
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) Player.nameText.text = MorphedPlayer.Data.PlayerName;
 
             var colorId = MorphedPlayer.Data.ColorId;
             PlayerControl.SetPlayerMaterialColors(colorId, Player.myRend);
             Player.HatRenderer.SetHat(MorphedPlayer.Data.HatId, colorId);
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
-                Player.Data.HatId == 0U ? 0.7f :
-                CustomHats.HatCreation.TallIds.Contains(Player.Data.HatId) ? 1.2f : 1.05f,
+                Player.Data.HatId == 0U ? 1.5f :
+                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
                 -0.5f
             );
 
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
                 .AllSkins.ToArray()[(int) MorphedPlayer.Data.SkinId].ProdId)
-            {
                 SetSkin(Player, MorphedPlayer.Data.SkinId);
-            }
 
             if (Player.CurrentPet == null || Player.CurrentPet.ProdId !=
                 DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) MorphedPlayer.Data.PetId].ProdId)
             {
-
-                if (Player.CurrentPet != null)
-                {
-                    Object.Destroy(Player.CurrentPet.gameObject);
-                }
+                if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
 
                 Player.CurrentPet =
                     Object.Instantiate(
@@ -84,22 +79,17 @@ namespace TownOfUs
             Player.HatRenderer.SetHat(Player.Data.HatId, colorId);
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
-                Player.Data.HatId == 0U ? 0.7f :
-                CustomHats.HatCreation.TallIds.Contains(Player.Data.HatId) ? 1.2f : 1.05f,
+                Player.Data.HatId == 0U ? 1.5f :
+                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
                 -0.5f
             );
 
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
                 .AllSkins.ToArray()[(int) Player.Data.SkinId].ProdId)
-            {
                 SetSkin(Player, Player.Data.SkinId);
-            }
 
 
-            if (Player.CurrentPet != null)
-            {
-                Object.Destroy(Player.CurrentPet.gameObject);
-            }
+            if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
 
             Player.CurrentPet =
                 Object.Instantiate(
@@ -126,36 +116,22 @@ namespace TownOfUs
                 player.HatRenderer.SetHat(0, 0);
                 if (player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
                     .AllSkins.ToArray()[0].ProdId)
-                {
                     SetSkin(player, 0);
-                }
 
-                if (player.CurrentPet != null)
-                {
-                    Object.Destroy(player.CurrentPet.gameObject);
-                }
+                if (player.CurrentPet != null) Object.Destroy(player.CurrentPet.gameObject);
                 player.CurrentPet =
                     Object.Instantiate(
                         DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[0]);
                 player.CurrentPet.transform.position = player.transform.position;
                 player.CurrentPet.Source = player;
                 player.CurrentPet.Visible = player.Visible;
-
             }
         }
 
         public static void UnCamouflage()
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                Unmorph(player);
-            }
+            foreach (var player in PlayerControl.AllPlayerControls) Unmorph(player);
         }
-
-
-        public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
-
-        public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
 
 
         public static bool IsCrewmate(this PlayerControl player)
@@ -164,14 +140,12 @@ namespace TownOfUs
         }
 
 
-        public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
+        public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item)
+            where T : IDisconnectHandler
         {
-            if (!self.Contains(item))
-            {
-                self.Add(item);
-            }
+            if (!self.Contains(item)) self.Add(item);
         }
-        
+
         public static bool isLover(this PlayerControl player)
         {
             return player.Is(RoleEnum.Lover) || player.Is(RoleEnum.LoverImpostor);
@@ -179,7 +153,7 @@ namespace TownOfUs
 
         public static bool Is(this PlayerControl player, RoleEnum roleType)
         {
-            return Roles.Role.GetRole(player)?.RoleType == roleType;
+            return Role.GetRole(player)?.RoleType == roleType;
         }
 
         public static bool Is(this PlayerControl player, ModifierEnum modifierType)
@@ -187,16 +161,18 @@ namespace TownOfUs
             return Modifier.GetModifier(player)?.ModifierType == modifierType;
         }
 
+        public static bool Is(this PlayerControl player, Faction faction)
+        {
+            return Role.GetRole(player)?.Faction == faction;
+        }
+
         public static RoleEnum GetRole(PlayerControl player)
         {
             if (player == null) return RoleEnum.None;
             if (player.Data == null) return RoleEnum.None;
 
-            var role = Roles.Role.GetRole(player);
-            if (role != null)
-            {
-                return role.RoleType;
-            }
+            var role = Role.GetRole(player);
+            if (role != null) return role.RoleType;
 
             return player.Data.IsImpostor ? RoleEnum.Impostor : RoleEnum.Crewmate;
         }
@@ -204,12 +180,8 @@ namespace TownOfUs
         public static PlayerControl PlayerById(byte id)
         {
             foreach (var player in PlayerControl.AllPlayerControls)
-            {
                 if (player.PlayerId == id)
-                {
                     return player;
-                }
-            }
 
             return null;
         }
@@ -221,18 +193,10 @@ namespace TownOfUs
             {
                 var isImpostor = false;
                 foreach (var impostor in infection)
-                {
                     if (player.PlayerId == impostor.Object.PlayerId)
-                    {
                         isImpostor = true;
-                    }
-                }
 
-                if (!isImpostor)
-                {
-                    list.Add(player);
-                }
-
+                if (!isImpostor) list.Add(player);
             }
 
             return list;
@@ -242,16 +206,16 @@ namespace TownOfUs
         {
             return Role.GetRoles(RoleEnum.Medic).Any(role =>
             {
-                var shieldedPlayer = ((Roles.Medic) role).ShieldedPlayer;
+                var shieldedPlayer = ((Medic) role).ShieldedPlayer;
                 return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
             });
         }
-        
+
         public static Medic getMedic(this PlayerControl player)
         {
             return Role.GetRoles(RoleEnum.Medic).FirstOrDefault(role =>
             {
-                var shieldedPlayer = ((Roles.Medic) role).ShieldedPlayer;
+                var shieldedPlayer = ((Medic) role).ShieldedPlayer;
                 return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
             }) as Medic;
         }
@@ -263,18 +227,10 @@ namespace TownOfUs
             {
                 var isImpostor = false;
                 foreach (var impostor in infection)
-                {
                     if (player.PlayerId == impostor.Object.PlayerId)
-                    {
                         isImpostor = true;
-                    }
-                }
 
-                if (isImpostor)
-                {
-                    list.Add(player);
-                }
-
+                if (isImpostor) list.Add(player);
             }
 
             return list;
@@ -313,11 +269,12 @@ namespace TownOfUs
             return Vector2.Distance(truePosition, truePosition2);
         }
 
+
         public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target)
         {
             MurderPlayer(killer, target);
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.BypassKill, Hazel.SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte) CustomRPC.BypassKill, SendOption.Reliable, -1);
             writer.Write(killer.PlayerId);
             writer.Write(target.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -325,13 +282,11 @@ namespace TownOfUs
 
         public static void MurderPlayer(PlayerControl killer, PlayerControl target)
         {
-            GameData.PlayerInfo data = target.Data;
+            var data = target.Data;
             if (data != null && !data.IsDead)
             {
                 if (killer == PlayerControl.LocalPlayer)
-                {
                     SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.8f);
-                }
 
                 target.gameObject.layer = LayerMask.NameToLayer("Ghost");
                 if (target.AmOwner)
@@ -354,63 +309,71 @@ namespace TownOfUs
                     {
                     }
 
-                    DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowOne(killer.Data, data);
+                    DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(killer.Data, data);
                     DestroyableSingleton<HudManager>.Instance.ShadowQuad.gameObject.SetActive(false);
                     target.nameText.GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                     target.RpcSetScanner(false);
-                    ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
+                    var importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                     importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
                     if (!PlayerControl.GameOptions.GhostsDoTasks)
                     {
-                        for (int i = 0; i < target.myTasks.Count; i++)
+                        for (var i = 0; i < target.myTasks.Count; i++)
                         {
-                            PlayerTask playerTask = target.myTasks.ToArray()[i];
+                            var playerTask = target.myTasks.ToArray()[i];
                             playerTask.OnRemove();
-                            UnityEngine.Object.Destroy(playerTask.gameObject);
+                            Object.Destroy(playerTask.gameObject);
                         }
 
                         target.myTasks.Clear();
                         importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(
                             StringNames.GhostIgnoreTasks,
-                            new UnhollowerBaseLib.Il2CppReferenceArray<Il2CppSystem.Object>(0));
+                            new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                     }
                     else
                     {
                         importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(
                             StringNames.GhostDoTasks,
-                            new UnhollowerBaseLib.Il2CppReferenceArray<Il2CppSystem.Object>(0));
+                            new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                     }
 
                     target.myTasks.Insert(0, importantTextTask);
                 }
 
-                killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random<KillAnimation>()
-                    .CoPerformKill(killer, target));
+                killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
                 var deadBody = new DeadPlayer
                 {
                     PlayerId = target.PlayerId,
                     KillerId = killer.PlayerId,
-                    KillTime = DateTime.UtcNow,
+                    KillTime = DateTime.UtcNow
                 };
 
                 Murder.KilledPlayers.Add(deadBody);
                 if (!killer.Is(RoleEnum.Glitch) && !killer.Is(RoleEnum.Arsonist))
-                {
-                    ChildMod.Murder.CheckChild(target);
-                }
+                    CrewmateRoles.ChildMod.Murder.CheckChild(target);
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
-                    var glitch = Roles.Role.GetRole<Roles.Glitch>(killer);
+                    var glitch = Role.GetRole<Glitch>(killer);
                     glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
                     glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * 3);
+                    return;
+                }
+
+                if (target.Is(ModifierEnum.Diseased) && killer.Data.IsImpostor)
+                {
+                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown * 3);
+                    return;
+                }
+
+                if (killer.Data.IsImpostor)
+                {
+                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
                 }
             }
         }
 
         public static IEnumerator FlashCoroutine(Color color, float waitfor = 1f, float alpha = 0.3f)
         {
-
             color.a = alpha;
             var fullscreen = DestroyableSingleton<HudManager>.Instance.FullScreen;
             var oldcolour = fullscreen.color;
@@ -423,7 +386,7 @@ namespace TownOfUs
 
         public static IEnumerable<(T1, T2)> Zip<T1, T2>(List<T1> first, List<T2> second)
         {
-            return Enumerable.Zip(first, second, (x, y) => (x, y));
+            return first.Zip(second, (x, y) => (x, y));
         }
 
         public static void DestroyAll(this IEnumerable<Component> listie)
@@ -437,7 +400,7 @@ namespace TownOfUs
             }
         }
 
-        public static void EndGame(GameOverReason reason = GameOverReason.HumansByVote, bool showAds = false)
+        public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
             ShipStatus.RpcEndGame(reason, showAds);
         }
@@ -446,10 +409,8 @@ namespace TownOfUs
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetInfected))]
         public static class PlayerControl_SetInfected
         {
-
             public static void Postfix()
             {
-
                 if (!RpcHandling.Check(20)) return;
 
                 if (PlayerControl.LocalPlayer.name == "Sykkuno")
@@ -474,8 +435,6 @@ namespace TownOfUs
                     }
                 }
             }
-
-
         }
     }
 }

@@ -1,6 +1,3 @@
-// This folder is a Stripped down version of Reactor-Essentials
-// Please use https://github.com/DorCoMaNdO/Reactor-Essentials because it is more updated and less buggy
-
 using System;
 using System.Collections.Generic;
 
@@ -8,20 +5,11 @@ namespace TownOfUs.CustomOption
 {
     public class CustomOption
     {
-
         public static List<CustomOption> AllOptions = new List<CustomOption>();
-        protected internal object Value { get; set; }
-        protected internal OptionBehaviour Setting { get; set; }
-        protected internal CustomOptionType Type { get; set; }
-        public string Name;
         public readonly int ID;
-        public object DefaultValue { get; set; }
 
         public Func<object, string> Format;
-
-        public static bool LobbyTextScroller { get; set; } = true;
-        
-        protected internal bool Indent { get; set; }
+        public string Name;
 
 
         protected internal CustomOption(int id, string name, CustomOptionType type, object defaultValue,
@@ -38,6 +26,15 @@ namespace TownOfUs.CustomOption
             Set(Value);
         }
 
+        protected internal object Value { get; set; }
+        protected internal OptionBehaviour Setting { get; set; }
+        protected internal CustomOptionType Type { get; set; }
+        public object DefaultValue { get; set; }
+
+        public static bool LobbyTextScroller { get; set; } = true;
+
+        protected internal bool Indent { get; set; }
+
         public override string ToString()
         {
             return Format(Value);
@@ -51,15 +48,11 @@ namespace TownOfUs.CustomOption
 
         protected internal void Set(object value, bool SendRpc = true)
         {
-            
             System.Console.WriteLine($"{Name} set to {value}");
-            
+
             Value = value;
 
-            if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc)
-            {
-                Rpc.SendRpc(this);
-            }
+            if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc) Rpc.SendRpc(this);
 
             try
             {
@@ -71,19 +64,18 @@ namespace TownOfUs.CustomOption
                 }
                 else if (Setting is NumberOption number)
                 {
-                    float newValue = (float) Value;
+                    var newValue = (float) Value;
 
                     number.Value = number.oldValue = newValue;
                     number.ValueText.text = ToString();
                 }
                 else if (Setting is StringOption str)
                 {
-                    int newValue = (int) Value;
+                    var newValue = (int) Value;
 
                     str.Value = str.oldValue = newValue;
                     str.ValueText.text = ToString();
                 }
-
             }
             catch
             {

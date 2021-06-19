@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.IO;
 using HarmonyLib;
 using UnityEngine;
@@ -8,6 +8,7 @@ namespace TownOfUs.RainbowMod
 {
     public class PlayerTabPatch
     {
+        
 
         [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
         public static class OnEnablePatch
@@ -26,7 +27,7 @@ namespace TownOfUs.RainbowMod
             {
                 void Inner()
                 {
-                    SaveManager.BodyColor = (byte)(i < 12 ? i : 0);
+                    SaveManager.Property_25 = (byte)(i < 12 ? i : 0);
                 }
 
                 return Inner;
@@ -36,4 +37,5 @@ namespace TownOfUs.RainbowMod
     }
     
     
-}
+}*/
+

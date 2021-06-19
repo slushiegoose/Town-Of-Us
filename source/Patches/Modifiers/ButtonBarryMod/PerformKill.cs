@@ -17,7 +17,7 @@ namespace TownOfUs.Modifiers.ButtonBarryMod
             if (role.ButtonUsed) return false;
             if (PlayerControl.LocalPlayer.RemainingEmergencies <= 0) return false;
             if (!__instance.enabled) return false;
-            
+
             System.Console.WriteLine("Reached here!");
 
             role.ButtonUsed = true;
@@ -29,14 +29,13 @@ namespace TownOfUs.Modifiers.ButtonBarryMod
             {
                 MeetingRoomManager.Instance.reporter = PlayerControl.LocalPlayer;
                 MeetingRoomManager.Instance.target = null;
-                AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-                if (ShipStatus.Instance.CheckTaskCompletion())
-                {
-                    return false;
-                }
+                AmongUsClient.Instance.DisconnectHandlers.AddUnique(
+                    MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
+                if (ShipStatus.Instance.CheckTaskCompletion()) return false;
                 DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.RpcStartMeeting(null);
             }
+
             return false;
         }
     }

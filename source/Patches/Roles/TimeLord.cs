@@ -1,14 +1,11 @@
 using System;
+using TownOfUs.CrewmateRoles.TimeLordMod;
 using UnityEngine;
 
 namespace TownOfUs.Roles
 {
     public class TimeLord : Role
     {
-
-        public DateTime StartRewind { get; set;}
-        public DateTime FinishRewind { get; set;}
-        
         public TimeLord(PlayerControl player) : base(player)
         {
             Name = "Time Lord";
@@ -18,7 +15,10 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.TimeLord;
             Scale = 1.4f;
         }
-        
+
+        public DateTime StartRewind { get; set; }
+        public DateTime FinishRewind { get; set; }
+
         public float TimeLordRewindTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -27,10 +27,10 @@ namespace TownOfUs.Roles
             TimeSpan timespan;
             float num;
 
-            if (TimeLordMod.RecordRewind.rewinding)
+            if (RecordRewind.rewinding)
             {
                 timespan = utcNow - StartRewind;
-                num = (CustomGameOptions.RewindDuration * 1000f)/3f;
+                num = CustomGameOptions.RewindDuration * 1000f / 3f;
             }
             else
             {
@@ -47,7 +47,7 @@ namespace TownOfUs.Roles
 
         public float GetCooldown()
         {
-            return TimeLordMod.RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.SheriffKillCd;
+            return RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.SheriffKillCd;
         }
     }
 }

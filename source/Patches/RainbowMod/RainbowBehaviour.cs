@@ -8,20 +8,15 @@ namespace TownOfUs.RainbowMod
         public Renderer Renderer;
         public int Id;
 
-        public void AddRend(Renderer rend, int id)
+        public RainbowBehaviour(IntPtr ptr) : base(ptr)
         {
-            Renderer = rend;
-            Id = id;
         }
 
         public void Update()
         {
             if (Renderer == null) return;
-            
-            if (RainbowUtils.IsRainbow(Id))
-            {
-                RainbowUtils.SetRainbow(Renderer);
-            }
+
+            if (RainbowUtils.IsRainbow(Id)) RainbowUtils.SetRainbow(Renderer);
             /*else if (RainbowUtils.IsGalaxy(Id))
             {
                 RainbowUtils.SetGalaxy(Renderer);
@@ -31,7 +26,11 @@ namespace TownOfUs.RainbowMod
                 RainbowUtils.SetFire(Renderer);
             }*/
         }
-        
-        public RainbowBehaviour(IntPtr ptr) : base(ptr) {}
+
+        public void AddRend(Renderer rend, int id)
+        {
+            Renderer = rend;
+            Id = id;
+        }
     }
 }

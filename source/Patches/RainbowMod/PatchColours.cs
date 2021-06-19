@@ -1,15 +1,16 @@
 using HarmonyLib;
+using Il2CppSystem;
 using UnhollowerBaseLib;
 
 namespace TownOfUs.RainbowMod
 {
-    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString),
-        new[] {typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>)})]
+    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames),
+        typeof(Il2CppReferenceArray<Object>))]
     public class PatchColours
     {
         public static bool Prefix(ref string __result, [HarmonyArgument(0)] StringNames name)
         {
-            switch ((int)name)
+            switch ((int) name)
             {
                 case 999991:
                     __result = "MELON";
@@ -54,12 +55,23 @@ namespace TownOfUs.RainbowMod
                     __result = "Rainbow";
                     return false;
                 case 999989:
-                    __result = "Lilac";
+                    __result = "Lavender";
                     return false;
                 case 999999:
-                    __result = "LILAC";
+                    __result = "LVNDR";
                     return false;
-                
+                case 999988:
+                    __result = "Fuschia";
+                    return false;
+                case 999998:
+                    __result = "FEWSH";
+                    return false;
+                case 888881:
+                    __result = "LULU";
+                    return false;
+                case 888891:
+                    __result = "Lulu";
+                    return false;
             }
 
             return true;

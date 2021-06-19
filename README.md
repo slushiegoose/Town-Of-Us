@@ -2,7 +2,7 @@
 [![Discord](./Images/Polus.png)](https://discord.gg/polus)
 
 ![LOGO](./Images/TOU-logo.png)
-![Roles](./Images/Roles.png)
+![Roles](./Images/Roles1.png)
 
 An Among Us mod that adds a bunch of roles, modifiers and game settings
 
@@ -30,7 +30,6 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [The Glitch](#the-glitch)
 - [Executioner](#executioner)
 - [Arsonist](#arsonist)
-- [Phantom](#phantom)
 
 **Impostor Roles**
 - [Janitor](#janitor)
@@ -39,8 +38,6 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Miner](#miner)
 - [Swooper](#swooper)
 - [Assassin](#assassin)
-- [Undertaker](#undertaker)
-- [Underdog](#underdog)
 
 **Modifiers**
 - [Torch](#torch)
@@ -57,7 +54,9 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2021.6.15s & 2021.6.15e | v2.1.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.1/TownOfUs-v2.1.1.zip) |
+| 2021.6.15s & 2021.6.15e | v2.1.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.3/TownOfUs213_1.zip) |
+| 2021.6.15s & 2021.6.15e | v2.1.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.2/TownOfUs212_1.zip) |
+| 2021.6.15s & 2021.6.15e | v2.1.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.1/TownOfUs211_1.zip) |
 | 2021.5.10s | v2.0.4 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.4/TownOfUs-v2.0.4.zip) |
 | 2021.5.10s | v2.0.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.3/TownOfUs-v2.0.3.zip) |
 | 2021.4.12s & 2021.4.14s | v2.0.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.0.2/TownOfUs-v2.0.2.zip) |
@@ -74,8 +73,19 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 <details>
   <summary> Changelog </summary>
  <details>
+  <summary> v2.1.3 </summary>
+  <ul> <li> Fix the launch issue </li> </ul>
+  <ul> <li> Fix for the swooper role </li> </ul>
+  <ul> <li> Fix for the janitor role </li> </ul>
+  <ul> <li> Minor enhancements and bug fixes </li> </ul>
+ </details>
+ <details>
+  <summary> v2.1.2 </summary>
+  <ul> <li> Crucial bug fixes </li> </ul>
+ </details>
+ <details>
   <summary> v2.1.1 </summary>
-  <ul> <li> 2021.6.15s support and Epic Games compatibility </li> </ul>
+  <ul> <li> 2021.6.15 support, Epic Games compatibility and Assassin Role </li> </ul>
  </details>
   <details>
   <summary> v2.0.4 </summary>
@@ -242,7 +252,7 @@ A first launch may take up to 5 minutes, so be patient if it doesn't launch imme
 ![Install](https://i.imgur.com/pvBAyZN.png)
 <br/>
 ## Issues
-If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/bYSaT74KzT) to receive help.
+If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/polus) to receive help.
 
 -----------------------
 # Roles
@@ -539,16 +549,6 @@ Upon Igniting every player, they win the game.
 | Game keeps going so long as Arsonist is alive | Whether the game keeps going while the Arsonist remains | Toggle | False |
 
 -----------------------
-## Phantom
-### **Team: Neutral**
-The Phantom is a Neutral role with its own win condition.\
-They become half-invisible when they die, they have to complete all their tasks without getting caught to win the game.
-### Game Options
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
-
------------------------
 # Impostor Roles
 ## Janitor
 ### **Team: Impostors**
@@ -632,32 +632,6 @@ If they guessed wrong, they die instead.
 | Assassin Guess Crewmate | Whether the Assassin can Guess "Crewmate" | Toggle | False |
 | Assassin Guess Neutral  | Whether the Assassin can Guess Neutral roles | Toggle | False |
 | Assassin Multiple Kill  | Whether the Assassin can kill more than once per meeting | Toggle | True |
-
------------------------
-
-## Undertaker
-### **Team: Impostors**
-
-The Undertaker is an Impostor that can drag and drop bodies.
-
-### Game Options
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Undertaker | The percentage probability of the Undertaker appearing | Percentage | 0% |
-| Undertaker Cooldown | The cooldown of the Undertaker drag button | Time | 25.0s |
-
------------------------
-
-## Underdog
-### **Team: Impostors**
-
-The Underdog is an Impostor that has a prolonged kill cooldowns initially.\
-Once their partner dies their kill cooldown is shortened.
-
-### Game Options
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Underdog | The percentage probability of the Underdog appearing | Percentage | 0% |
 
 -----------------------
 

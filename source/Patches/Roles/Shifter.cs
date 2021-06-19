@@ -5,10 +5,6 @@ namespace TownOfUs.Roles
 {
     public class Shifter : Role
     {
-
-        public PlayerControl ClosestPlayer { get; set;}
-        public DateTime LastShifted { get; set;}
-        
         public Shifter(PlayerControl player) : base(player)
         {
             Name = "Shifter";
@@ -18,21 +14,23 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Shifter;
             Faction = Faction.Neutral;
         }
-        
+
+        public PlayerControl ClosestPlayer { get; set; }
+        public DateTime LastShifted { get; set; }
+
         public void Loses()
         {
             Player.Data.IsImpostor = true;
         }
-        
+
         public float ShifterShiftTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastShifted;
             var num = CustomGameOptions.ShifterCd * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
             if (flag2) return 0;
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
-        
     }
 }

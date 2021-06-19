@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace TownOfUs.Roles.Modifiers
 {
     public class Tiebreaker : Modifier
@@ -6,7 +8,7 @@ namespace TownOfUs.Roles.Modifiers
         {
             Name = "Tiebreaker";
             TaskText = () => "Your vote breaks ties";
-            Color = new UnityEngine.Color(0.6f, 0.9f, 0.6f);
+            Color = new Color(0.6f, 0.9f, 0.6f);
             ModifierType = ModifierEnum.Tiebreaker;
         }
     }
