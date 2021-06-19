@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -116,7 +116,7 @@ namespace TownOfUs
                 // WolfVoteSprite = CreateSprite("TownOfUs.Resources.Vote1.png");
                 //BirthdayVoteSprite = CreateSprite("TownOfUs.Resources.Vote2.png");
 
-                // PalettePatch.Load();
+                PalettePatch.Load();
                 ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
                 ClassInjector.RegisterTypeInIl2Cpp<HatAnimator>();
 

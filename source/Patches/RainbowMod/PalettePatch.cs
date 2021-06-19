@@ -1,5 +1,4 @@
-﻿using Assets.CoreScripts;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TownOfUs.RainbowMod
 {

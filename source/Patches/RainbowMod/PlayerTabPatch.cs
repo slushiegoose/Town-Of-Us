@@ -1,13 +1,11 @@
-﻿using System;
-using System.IO;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace TownOfUs.RainbowMod
 {
-    [HarmonyPatch(typeof(PlayerTab), "OnEnable")]
-    public class FourColumnColor
+    [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
+    public class PlayerTabPatch
     {
         public static bool Prefix(PlayerTab __instance)
         {
@@ -21,14 +19,14 @@ namespace TownOfUs.RainbowMod
             {
                 var x = __instance.XRange.Lerp((i % 4) / 4f) + 0.25f;
                 var y = __instance.YStart - (i / 4) * 0.55f;
-                var colorChip = UnityEngine.Object.Instantiate(__instance.ColorTabPrefab, __instance.ColorTabArea, true);
+                var colorChip = Object.Instantiate(__instance.ColorTabPrefab, __instance.ColorTabArea, true);
                 colorChip.transform.localScale *= 0.8f;
                 colorChip.transform.localPosition = new Vector3(x, y, -1f);
-                var colorId = i;
+                var colorId = (byte)i;
                 colorChip.Button.OnClick.AddListener((UnityAction)delegate ()
                 {
                     __instance.SelectColor(colorId);
-                    SaveManager.BodyColor = (byte)colorId;
+                    if (colorId <= 17) SaveManager.BodyColor = colorId;
                 });
                 colorChip.Inner.color = colors[i];
                 __instance.ColorChips.Add(colorChip);
