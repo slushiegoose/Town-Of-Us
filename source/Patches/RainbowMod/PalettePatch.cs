@@ -1,3 +1,4 @@
+﻿using Assets.CoreScripts;
 using UnityEngine;
 
 namespace TownOfUs.RainbowMod
@@ -8,31 +9,33 @@ namespace TownOfUs.RainbowMod
         {
             var array = new[]
             {
-                StringNames.VitalsRED,
-                StringNames.VitalsBLUE,
-                StringNames.VitalsGRN,
-                StringNames.VitalsPINK,
-                StringNames.VitalsORGN,
-                StringNames.VitalsYLOW,
-                StringNames.VitalsBLAK,
-                StringNames.VitalsWHTE,
-                StringNames.VitalsPURP,
-                StringNames.VitalsBRWN,
-                StringNames.VitalsCYAN,
-                StringNames.VitalsLIME,
+                StringNames.ColorRed,
+                StringNames.ColorBlue,
+                StringNames.ColorGreen,
+                StringNames.ColorPink,
+                StringNames.ColorOrange,
+                StringNames.ColorYellow,
+                StringNames.ColorBlack,
+                StringNames.ColorWhite,
+                StringNames.ColorPurple,
+                StringNames.ColorBrown,
+                StringNames.ColorCyan,
+                StringNames.ColorLime,
+                StringNames.ColorMaroon,
+                StringNames.ColorRose,
+                StringNames.ColorBanana,
+                StringNames.ColorGray,
+                StringNames.ColorTan,
+                StringNames.ColorCoral,
                 // New colours
-                (StringNames) 999991, //"MELON",
-                (StringNames) 999992, //"CHOCO",
-                (StringNames) 999993, //"LTBLUE",
-                (StringNames) 999994, //"BEIGE",
-                (StringNames) 999995, //"LTPINK",
-                (StringNames) 999996, //"TURQ",
-                (StringNames) 999999, //"LILAC",
-                (StringNames) 999998, //"BLUSH"
-                (StringNames) 888881, //"LULU",
-                (StringNames) 999997 //"RNBOW",
-                /*"GLXY",
-                "FIRE",*/
+                (StringNames)999990,//"Watermelon",
+                (StringNames)999991,//"Chocolate",
+                (StringNames)999992,//"Sky Blue",
+                (StringNames)999993,//"Beige",
+                (StringNames)999994,//"Hot Pink",
+                (StringNames)999995,//"Turquoise",
+                (StringNames)999996,//"Lilac",
+                (StringNames)999997,//"Rainbow",
             };
             var array2 = new[]
             {
@@ -48,6 +51,12 @@ namespace TownOfUs.RainbowMod
                 new Color32(113, 73, 30, byte.MaxValue),
                 new Color32(56, byte.MaxValue, 221, byte.MaxValue),
                 new Color32(80, 240, 57, byte.MaxValue),
+                Palette.FromHex(6233390),
+                Palette.FromHex(15515859),
+                Palette.FromHex(15787944),
+                Palette.FromHex(7701907),
+                Palette.FromHex(9537655),
+                Palette.FromHex(14115940),
                 // New colours
                 new Color32(168, 50, 62, byte.MaxValue),
                 new Color32(60, 48, 44, byte.MaxValue),
@@ -56,11 +65,7 @@ namespace TownOfUs.RainbowMod
                 new Color32(236, 61, 255, byte.MaxValue),
                 new Color32(61, 255, 181, byte.MaxValue),
                 new Color32(186, 161, 255, byte.MaxValue),
-                new Color32(255, 163, 231, byte.MaxValue),
-                new Color32(197, 53, 110, byte.MaxValue),
-                new Color32(0, 0, 0, byte.MaxValue)
-                /*new Color32(0, 0, 0, byte.MaxValue),
-                new Color32(0, 0, 0, byte.MaxValue),*/
+                new Color32(0, 0, 0, byte.MaxValue),
             };
             var array3 = new[]
             {
@@ -76,6 +81,12 @@ namespace TownOfUs.RainbowMod
                 new Color32(94, 38, 21, byte.MaxValue),
                 new Color32(36, 169, 191, byte.MaxValue),
                 new Color32(21, 168, 66, byte.MaxValue),
+                Palette.FromHex(4263706),
+                Palette.FromHex(14586547),
+                Palette.FromHex(13810825),
+                Palette.FromHex(4609636),
+                Palette.FromHex(5325118),
+                Palette.FromHex(11813730),
                 // New colours
                 new Color32(101, 30, 37, byte.MaxValue),
                 new Color32(30, 24, 22, byte.MaxValue),
@@ -84,41 +95,12 @@ namespace TownOfUs.RainbowMod
                 new Color32(118, 31, 128, byte.MaxValue),
                 new Color32(31, 128, 91, byte.MaxValue),
                 new Color32(93, 81, 128, byte.MaxValue),
-                new Color32(179, 114, 162, byte.MaxValue),
-                new Color32(99, 27, 55, byte.MaxValue),
-                new Color32(0, 0, 0, byte.MaxValue)
-                /*new Color32(0, 0, 0, byte.MaxValue),
-                new Color32(0, 0, 0, byte.MaxValue),*/
+                new Color32(0, 0, 0, byte.MaxValue),
             };
-            var array4 = new[]
-            {
-                StringNames.ColorRed,
-                StringNames.ColorBlue,
-                StringNames.ColorGreen,
-                StringNames.ColorPink,
-                StringNames.ColorOrange,
-                StringNames.ColorYellow,
-                StringNames.ColorBlack,
-                StringNames.ColorWhite,
-                StringNames.ColorPurple,
-                StringNames.ColorBrown,
-                StringNames.ColorCyan,
-                StringNames.ColorLime,
-                // New colours
-                (StringNames) 999981, //"Watermelon",
-                (StringNames) 999982, //"Chocolate",
-                (StringNames) 999983, //"Sky Blue",
-                (StringNames) 999984, //"Beige",
-                (StringNames) 999985, //"Hot Pink",
-                (StringNames) 999986, //"Turquoise",
-                (StringNames) 999989, //"Lilac",
-                (StringNames) 999988, //"Blush",
-                (StringNames) 888891, //"Lulu",
-                (StringNames) 999987 //"Rainbow"
-            };
+
+            Palette.ColorNames = array;
             Palette.PlayerColors = array2;
             Palette.ShadowColors = array3;
-            // MedScanMinigame. = array4;
         }
     }
 }
