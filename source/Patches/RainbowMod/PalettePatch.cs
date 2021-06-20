@@ -6,7 +6,7 @@ namespace TownOfUs.RainbowMod
     {
         public static void Load()
         {
-            var array = new[]
+            Palette.ColorNames = new[]
             {
                 StringNames.ColorRed,
                 StringNames.ColorBlue,
@@ -36,7 +36,7 @@ namespace TownOfUs.RainbowMod
                 (StringNames)999996,//"Lilac",
                 (StringNames)999997,//"Rainbow",
             };
-            var array2 = new[]
+            Palette.PlayerColors = new[]
             {
                 new Color32(198, 17, 17, byte.MaxValue),
                 new Color32(19, 46, 210, byte.MaxValue),
@@ -66,7 +66,7 @@ namespace TownOfUs.RainbowMod
                 new Color32(186, 161, 255, byte.MaxValue),
                 new Color32(0, 0, 0, byte.MaxValue),
             };
-            var array3 = new[]
+            Palette.ShadowColors = new[]
             {
                 new Color32(122, 8, 56, byte.MaxValue),
                 new Color32(9, 21, 142, byte.MaxValue),
@@ -96,10 +96,6 @@ namespace TownOfUs.RainbowMod
                 new Color32(93, 81, 128, byte.MaxValue),
                 new Color32(0, 0, 0, byte.MaxValue),
             };
-
-            Palette.ColorNames = array;
-            Palette.PlayerColors = array2;
-            Palette.ShadowColors = array3;
         }
     }
 }
