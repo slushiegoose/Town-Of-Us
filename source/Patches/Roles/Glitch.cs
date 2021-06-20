@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +40,7 @@ namespace TownOfUs.Roles
             Faction = Faction.Neutral;
         }
 
-        public PlayerControl ClosestPlayer { get; set; }
-        public double DistClosest { get; set; }
+        public PlayerControl ClosestPlayer;
         public DateTime LastMimic { get; set; }
         public DateTime LastHack { get; set; }
         public DateTime LastKill { get; set; }
@@ -109,10 +108,7 @@ namespace TownOfUs.Roles
         {
             if (!Player.Data.IsDead)
             {
-                ClosestPlayer = Utils.getClosestPlayer(Player);
-
-                if (ClosestPlayer != null && Player != null)
-                    DistClosest = Utils.getDistBetweenPlayers(Player, ClosestPlayer);
+                Utils.SetClosestPlayer(ref ClosestPlayer);
             }
 
             Player.nameText.color = Color;
@@ -446,7 +442,7 @@ namespace TownOfUs.Roles
                 __instance.KillButton.SetTarget(null);
                 __gInstance.KillTarget = null;
 
-                if (__gInstance.DistClosest < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance])
+                if (__instance.KillButton.isActiveAndEnabled)
                 {
                     __instance.KillButton.SetTarget(__gInstance.ClosestPlayer);
                     __gInstance.KillTarget = __gInstance.ClosestPlayer;
@@ -509,7 +505,7 @@ namespace TownOfUs.Roles
                 __gInstance.HackButton.SetTarget(null);
                 __gInstance.HackTarget = null;
 
-                if (__gInstance.DistClosest < GameOptionsData.KillDistances[CustomGameOptions.GlitchHackDistance])
+                if (__gInstance.HackButton.isActiveAndEnabled)
                 {
                     __gInstance.HackButton.SetTarget(__gInstance.ClosestPlayer);
                     __gInstance.HackTarget = __gInstance.ClosestPlayer;

@@ -271,16 +271,28 @@ namespace TownOfUs
         )
         {
             if (!button.isActiveAndEnabled) return;
+
+            button.SetTarget(
+                SetClosestPlayer(ref closestPlayer, maxDistance, targets)
+            );
+        }
+
+        public static PlayerControl SetClosestPlayer(
+            ref PlayerControl closestPlayer,
+            float maxDistance = float.NaN,
+            List<PlayerControl> targets = null
+        )
+        {
             if (maxDistance == float.NaN)
                 maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-            closestPlayer = getClosestPlayer(
+            var player = getClosestPlayer(
                 PlayerControl.LocalPlayer,
                 targets ?? PlayerControl.AllPlayerControls.ToArray().ToList()
             );
-            var closeEnough = closestPlayer == null || (
-                getDistBetweenPlayers(PlayerControl.LocalPlayer, closestPlayer) < maxDistance
+            var closeEnough = player == null || (
+                getDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance
             );
-            button.SetTarget(closeEnough ? closestPlayer : null);
+            return closestPlayer = closeEnough ? player : null;
         }
 
 
