@@ -283,7 +283,7 @@ namespace TownOfUs
             List<PlayerControl> targets = null
         )
         {
-            if (maxDistance == float.NaN)
+            if (float.IsNaN(maxDistance))
                 maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var player = getClosestPlayer(
                 PlayerControl.LocalPlayer,
