@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -52,13 +52,12 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
             role.IgniteButton.SetCoolDown(0f, 1f);
             __instance.KillButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.DouseCd);
-            role.closestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
-            var distance = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.closestPlayer);
-            var flag9 = distance < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-            if (flag9 && __instance.KillButton.isActiveAndEnabled && !role.IgniteUsed)
-                __instance.KillButton.SetTarget(role.closestPlayer);
-            else
-                __instance.KillButton.SetTarget(null);
+
+            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(
+                player => !role.DousedPlayers.Contains(player.PlayerId)
+            ).ToList();
+
+            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notDoused);
 
 
             if (!role.IgniteButton.isCoolingDown & role.IgniteButton.isActiveAndEnabled & !role.IgniteUsed &

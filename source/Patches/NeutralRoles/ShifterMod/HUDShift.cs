@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 
 namespace TownOfUs.NeutralRoles.ShifterMod
@@ -35,10 +35,8 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 shiftButton.gameObject.SetActive(!MeetingHud.Instance);
                 shiftButton.isActive = !MeetingHud.Instance;
                 shiftButton.SetCoolDown(role.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
-                role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
-                var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-                var flag9 = distBetweenPlayers < maxDistance;
-                if (flag9 && __instance.enabled) shiftButton.SetTarget(role.ClosestPlayer);
+
+                Utils.SetTarget(ref role.ClosestPlayer, shiftButton);
             }
         }
     }
