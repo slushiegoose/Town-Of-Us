@@ -507,8 +507,13 @@ namespace TownOfUs.Roles
 
                 if (__gInstance.HackButton.isActiveAndEnabled)
                 {
-                    __gInstance.HackButton.SetTarget(__gInstance.ClosestPlayer);
-                    __gInstance.HackTarget = __gInstance.ClosestPlayer;
+                    PlayerControl closestPlayer = null;
+                    Utils.SetTarget(
+                        ref closestPlayer,
+                        __gInstance.HackButton,
+                        GameOptionsData.KillDistances[CustomGameOptions.GlitchHackDistance]
+                    );
+                    __gInstance.HackTarget = closestPlayer;
                 }
 
                 if (__gInstance.HackTarget != null)
