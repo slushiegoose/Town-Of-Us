@@ -381,14 +381,13 @@ A report can contain the name of the killer or the color type (Darker/Lighter)
 - Brown - Darker
 - Cyan - Lighter
 - Lime - Lighter
-- Watermelon - Darker
-- Chocolate - Darker
-- Sky Blue - Lighter
-- Beige - Darker
-- Hot Pink - Lighter
-- Turquoise - Lighter
-- Lilac - Lighter
-- Rainbow - Lighter
+- Maroon - Darker
+- Rose - Lighter
+- Banana - Lighter
+- Gray - Lighter
+- Tan - Lighter
+- Coral - Lighter
+
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
