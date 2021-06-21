@@ -35,28 +35,24 @@ namespace TownOfUs.CrewmateRoles.MedicMod
 
             var colors = new Dictionary<int, string>
             {
-                {0, "darker"},
-                {1, "darker"},
-                {2, "darker"},
-                {3, "lighter"},
-                {4, "lighter"},
-                {5, "lighter"},
-                {6, "darker"},
-                {7, "lighter"},
-                {8, "darker"},
-                {9, "darker"},
-                {10, "lighter"},
-                {11, "lighter"},
-                {12, "darker"},
-                {13, "darker"},
-                {14, "lighter"},
-                {15, "darker"},
-                {16, "lighter"},
-                {17, "lighter"},
-                {18, "lighter"},
-                {19, "lighter"},
-                {20, "lighter"},
-                {21, "lighter"}
+                {0, "darker"}, //red
+                {1, "darker"}, //blue
+                {2, "darker"}, //green
+                {3, "lighter"}, //pink
+                {4, "lighter"}, //orange
+                {5, "lighter"}, //yellow
+                {6, "darker"}, //black
+                {7, "lighter"}, //white
+                {8, "darker"}, //purple
+                {9, "darker"}, //brown
+                {10, "lighter"}, //cyan
+                {11, "lighter"}, //lime
+                {12, "darker"}, //maroon
+                {13, "ligther"}, //rose
+                {14, "lighter"}, //banana
+                {15, "lighter"}, //grey
+                {16, "darker"}, //tan
+                {17, "lighter"} //coral
             };
             var typeOfColor = colors[br.Killer.Data.ColorId];
             return
