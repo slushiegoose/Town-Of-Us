@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -9,11 +9,12 @@ namespace TownOfUs.CustomHats
     {
         private static bool modded;
 
-        public static Sprite EmptySprite = TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
+        public static Sprite EmptySprite = null;//TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
 
 
         private static readonly List<HatData> _hatDatas = new List<HatData>
         {
+            /*
             new HatData
             {
                 name = "glitch", bounce = false, highUp = false, offset = new Vector2(0f, 0.1f),
@@ -215,7 +216,7 @@ namespace TownOfUs.CustomHats
             {
                 name = "trans_2", bounce = false, highUp = true, offset = new Vector2(-0.1f, 0.1f),
                 author = "TheLastShaymin"
-            }
+            }*/
         };
 
         public static List<uint> TallIds = new List<uint>();
@@ -297,7 +298,7 @@ namespace TownOfUs.CustomHats
             public int framecount;
         }
 
-        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
+        //[HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
         public static class HatManagerPatch
         {
             private static bool Prefix(HatManager __instance)
@@ -331,7 +332,7 @@ namespace TownOfUs.CustomHats
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetHat))]
+        //[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetHat))]
         public static class PlayerControl_SetHat
         {
             public static void Postfix(PlayerControl __instance, uint __0, int __1)
