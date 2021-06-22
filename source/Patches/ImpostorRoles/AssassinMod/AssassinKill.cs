@@ -39,7 +39,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
         )
         {
             var hudManager = DestroyableSingleton<HudManager>.Instance;
-            if (!checkLover)
+            if (checkLover)
             {
                 SoundManager.Instance.PlaySound(player.KillSfx, false, 0.8f);
                 hudManager.KillOverlay.ShowKillAnimation(player.Data, player.Data);
