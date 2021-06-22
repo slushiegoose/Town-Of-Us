@@ -17,13 +17,14 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
         private static bool IsExempt(PlayerVoteArea voteArea) {
             if (voteArea.AmDead) return true;
-            var role = Role.GetRole(voteArea);
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
             if (
+                player == null ||
                 player.Data.IsImpostor ||
                 player.Data.IsDead ||
                 player.Data.Disconnected
             ) return true;
+            var role = Role.GetRole(player);
             return role != null && role.Criteria();
         }
 
