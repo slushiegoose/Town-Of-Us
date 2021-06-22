@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
@@ -54,7 +54,11 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             foreach (var playerId in role.DousedPlayers)
             {
                 var player = Utils.PlayerById(playerId);
-                if (player.Data.IsDead) continue;
+                if (
+                    player == null ||
+                    player.Data.Disconnected ||
+                    player.Data.IsDead
+                ) continue;
                 Utils.MurderPlayer(player, player);
             }
 

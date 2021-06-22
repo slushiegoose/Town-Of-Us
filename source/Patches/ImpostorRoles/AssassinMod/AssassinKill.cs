@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Hazel;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -59,9 +59,8 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                         var playerById = GameData.Instance.GetPlayerById(state2.TargetPlayerId);
                         if (playerById != null)
                         {
-                            var clientIdFromCharacter =
-                                AmongUsClient.Instance.GetClientIdFromCharacter(playerById.Object);
-                            if (clientIdFromCharacter != -1) RpcClearVote(clientIdFromCharacter);
+                            var clientId = AmongUsClient.Instance.GetClientIdFromCharacter(playerById.Object);
+                            if (clientId != -1) RpcClearVote(clientId);
                         }
                     }
             }
@@ -72,6 +71,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 state.AmDead = true;
                 //System.Console.WriteLine(state.TargetPlayerId + " and I am the host: " + AmongUsClient.Instance.AmHost);
                 state.Overlay.gameObject.SetActive(true);
+                state.XMark.gameObject.SetActive(true);
                 // state.Overlay.transform.GetChild(0).gameObject.SetActive(true);x
 
                 //System.Console.WriteLine(state.Overlay.gameObject.active);
