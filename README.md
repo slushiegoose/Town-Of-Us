@@ -385,7 +385,7 @@ A report can contain the name of the killer or the color type (Darker/Lighter)
 - Rose - Lighter
 - Banana - Lighter
 - Gray - Lighter
-- Tan - Lighter
+- Tan - Darker
 - Coral - Lighter
 
 ### Game Options
