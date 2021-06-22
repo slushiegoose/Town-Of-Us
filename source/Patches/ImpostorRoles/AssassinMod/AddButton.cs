@@ -116,6 +116,11 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 AssassinKill.RpcMurderPlayer(toDie);
                 role.RemainingKills--;
                 ShowHideButtons.HideSingle(role, targetId, toDie == role.Player);
+                if (toDie.isLover() && CustomGameOptions.BothLoversDie)
+                {
+                    var lover = ((Lover)playerRole).OtherLover.Player;
+                    ShowHideButtons.HideSingle(role, lover.PlayerId, false);
+                }
             }
 
             return Listener;
