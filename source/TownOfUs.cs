@@ -102,7 +102,7 @@ namespace TownOfUs
                 GuessSprite = CreateSprite("TownOfUs.Resources.Guess.png");
 
 
-                // PalettePatch.Load();
+                PalettePatch.Load();
                 ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
                 ClassInjector.RegisterTypeInIl2Cpp<HatAnimator>();
 
