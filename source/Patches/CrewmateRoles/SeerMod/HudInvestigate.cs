@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
 
@@ -20,7 +20,6 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) return;
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var investigateButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
             var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
@@ -36,12 +35,13 @@ namespace TownOfUs.CrewmateRoles.SeerMod
                 investigateButton.gameObject.SetActive(!MeetingHud.Instance);
                 investigateButton.isActive = !MeetingHud.Instance;
                 investigateButton.SetCoolDown(role.SeerTimer(), CustomGameOptions.SeerCd);
-                role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer,
-                    PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId))
-                        .ToList());
-                var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-                var flag9 = distBetweenPlayers < maxDistance;
-                if (flag9 && __instance.enabled) investigateButton.SetTarget(role.ClosestPlayer);
+
+                var notInvestigated = PlayerControl.AllPlayerControls
+                    .ToArray()
+                    .Where(x => !role.Investigated.Contains(x.PlayerId))
+                    .ToList();
+
+                Utils.SetTarget(ref role.ClosestPlayer, investigateButton, float.NaN, notInvestigated);
             }
         }
     }

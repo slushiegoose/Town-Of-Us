@@ -236,19 +236,22 @@ namespace TownOfUs
             return list;
         }
 
-        public static PlayerControl getClosestPlayer(PlayerControl refplayer, List<PlayerControl> AllPlayers)
+        public static PlayerControl getClosestPlayer(PlayerControl refPlayer, List<PlayerControl> AllPlayers)
         {
             var num = double.MaxValue;
+            var refPosition = refPlayer.GetTruePosition();
             PlayerControl result = null;
             foreach (var player in AllPlayers)
             {
-                var flag3 = player.Data.IsDead;
-                if (flag3) continue;
-                var flag = player.PlayerId != refplayer.PlayerId;
-                if (!flag) continue;
-                var distBetweenPlayers = getDistBetweenPlayers(player, refplayer);
-                var flag2 = distBetweenPlayers < num;
-                if (!flag2) continue;
+                if (player.Data.IsDead || player.PlayerId == refPlayer.PlayerId || !player.Collider.enabled) continue;
+                var playerPosition = player.GetTruePosition();
+                var distBetweenPlayers = Vector2.Distance(refPosition, playerPosition);
+                var isClosest = distBetweenPlayers < num;
+                if (!isClosest) continue;
+                var vector = playerPosition - refPosition;
+                if (PhysicsHelpers.AnyNonTriggersBetween(
+                    refPosition, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask
+                )) continue;
                 num = distBetweenPlayers;
                 result = player;
             }
@@ -259,6 +262,37 @@ namespace TownOfUs
         public static PlayerControl getClosestPlayer(PlayerControl refplayer)
         {
             return getClosestPlayer(refplayer, PlayerControl.AllPlayerControls.ToArray().ToList());
+        }
+        public static void SetTarget(
+            ref PlayerControl closestPlayer,
+            KillButtonManager button,
+            float maxDistance = float.NaN,
+            List<PlayerControl> targets = null
+        )
+        {
+            if (!button.isActiveAndEnabled) return;
+
+            button.SetTarget(
+                SetClosestPlayer(ref closestPlayer, maxDistance, targets)
+            );
+        }
+
+        public static PlayerControl SetClosestPlayer(
+            ref PlayerControl closestPlayer,
+            float maxDistance = float.NaN,
+            List<PlayerControl> targets = null
+        )
+        {
+            if (float.IsNaN(maxDistance))
+                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var player = getClosestPlayer(
+                PlayerControl.LocalPlayer,
+                targets ?? PlayerControl.AllPlayerControls.ToArray().ToList()
+            );
+            var closeEnough = player == null || (
+                getDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance
+            );
+            return closestPlayer = closeEnough ? player : null;
         }
 
 

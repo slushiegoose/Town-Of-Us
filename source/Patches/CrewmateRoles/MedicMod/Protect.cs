@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
 
@@ -15,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
-            if (role.UsedAbility) return false;
+            if (role.UsedAbility || role.ClosestPlayer == null) return false;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                 (byte) CustomRPC.Protect, SendOption.Reliable, -1);

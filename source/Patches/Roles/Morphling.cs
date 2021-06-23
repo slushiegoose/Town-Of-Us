@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -7,7 +7,7 @@ namespace TownOfUs.Roles
 
     {
         public KillButtonManager _morphButton;
-        public PlayerControl closestPlayer;
+        public PlayerControl ClosestPlayer;
         public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
 
