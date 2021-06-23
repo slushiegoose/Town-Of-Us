@@ -61,6 +61,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 {23, "lighter"},// turquoise
                 {24, "lighter"},// lilac
                 {25, "lighter"},// rainbow
+                {26, "lighter"},// azure
             };
             var typeOfColor = colors[br.Killer.Data.ColorId];
             return
