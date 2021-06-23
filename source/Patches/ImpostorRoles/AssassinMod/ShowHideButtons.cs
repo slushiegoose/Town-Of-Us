@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine.UI;
 
@@ -9,7 +9,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
     {
         public static void HideButtons(Assassin role)
         {
-            foreach (var (cycle, guess) in role.Buttons)
+            foreach (var (_, (cycle, guess)) in role.Buttons)
             {
                 if (cycle == null) continue;
                 cycle.SetActive(false);
@@ -21,23 +21,31 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             }
         }
 
-        public static void HideSingle(Assassin role, int index, bool isDead)
+        public static void HideSingle(
+            Assassin role,
+            byte targetId,
+            bool killedSelf
+        )
         {
-            if (isDead || role.RemainingKills == 0 || !CustomGameOptions.AssassinMultiKill)
+            if (
+                killedSelf ||
+                role.RemainingKills == 0 ||
+                !CustomGameOptions.AssassinMultiKill
+            )
             {
                 HideButtons(role);
                 return;
             }
 
-            var (cycle, guess) = role.Buttons[index];
+            var (cycle, guess) = role.Buttons[targetId];
             if (cycle == null) return;
             cycle.SetActive(false);
             guess.SetActive(false);
 
             cycle.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
             guess.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
-            role.Buttons[index] = (null, null);
-            role.Guesses.Remove(index);
+            role.Buttons[targetId] = (null, null);
+            role.Guesses.Remove(targetId);
         }
 
 

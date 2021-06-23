@@ -73,11 +73,14 @@ namespace TownOfUs.Roles
 
         public bool CheckEveryoneDoused()
         {
+            var arsoId = Player.PlayerId;
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.PlayerId == Player.PlayerId) continue;
-                if (player.Data.IsDead) continue;
-                if (player.Data.Disconnected) continue;
+                if (
+                    player.PlayerId == arsoId ||
+                    player.Data.IsDead ||
+                    player.Data.Disconnected
+                ) continue;
                 if (!DousedPlayers.Contains(player.PlayerId)) return false;
             }
 
