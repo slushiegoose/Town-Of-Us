@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
@@ -30,19 +30,19 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
 
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
             if (!__instance.isActiveAndEnabled) return false;
-            if (role.closestPlayer == null) return false;
+            if (role.ClosestPlayer == null) return false;
             if (role.DouseTimer() != 0) return false;
-            if (role.DousedPlayers.Contains(role.closestPlayer.PlayerId)) return false;
-            var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.closestPlayer);
+            if (role.DousedPlayers.Contains(role.ClosestPlayer.PlayerId)) return false;
+            var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
             var flag3 = distBetweenPlayers <
                         GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             if (!flag3) return false;
             var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                 (byte) CustomRPC.Douse, SendOption.Reliable, -1);
             writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer2.Write(role.closestPlayer.PlayerId);
+            writer2.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer2);
-            role.DousedPlayers.Add(role.closestPlayer.PlayerId);
+            role.DousedPlayers.Add(role.ClosestPlayer.PlayerId);
             role.LastDoused = DateTime.UtcNow;
 
             __instance.SetTarget(null);
@@ -54,7 +54,11 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             foreach (var playerId in role.DousedPlayers)
             {
                 var player = Utils.PlayerById(playerId);
-                if (player.Data.IsDead) continue;
+                if (
+                    player == null ||
+                    player.Data.Disconnected ||
+                    player.Data.IsDead
+                ) continue;
                 Utils.MurderPlayer(player, player);
             }
 

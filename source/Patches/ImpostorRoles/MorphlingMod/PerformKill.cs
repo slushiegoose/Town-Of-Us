@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
@@ -19,7 +19,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (!PlayerControl.LocalPlayer.CanMove) return false;
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
-            var target = role.closestPlayer;
+            var target = role.ClosestPlayer;
             if (__instance == role.MorphButton)
             {
                 if (!__instance.isActiveAndEnabled) return false;

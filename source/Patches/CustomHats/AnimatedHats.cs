@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using UnityEngine;
 
@@ -51,7 +51,7 @@ namespace TownOfUs.CustomHats
         }
     }
 
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Start))]
+    //[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Start))]
     public static class AddAnimation
     {
         public static void Postfix(PlayerControl __instance)

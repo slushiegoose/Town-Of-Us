@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
@@ -10,7 +10,7 @@ namespace TownOfUs.Roles
     {
         private KillButtonManager _igniteButton;
         public bool ArsonistWins;
-        public PlayerControl closestPlayer;
+        public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new List<byte>();
         public bool IgniteUsed;
         public DateTime LastDoused;
@@ -73,11 +73,14 @@ namespace TownOfUs.Roles
 
         public bool CheckEveryoneDoused()
         {
+            var arsoId = Player.PlayerId;
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.PlayerId == Player.PlayerId) continue;
-                if (player.Data.IsDead) continue;
-                if (player.Data.Disconnected) continue;
+                if (
+                    player.PlayerId == arsoId ||
+                    player.Data.IsDead ||
+                    player.Data.Disconnected
+                ) continue;
                 if (!DousedPlayers.Contains(player.PlayerId)) return false;
             }
 
