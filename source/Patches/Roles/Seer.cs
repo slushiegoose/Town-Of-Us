@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TownOfUs.CrewmateRoles.SeerMod;
 using UnityEngine;
@@ -18,7 +18,7 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Seer;
         }
 
-        public PlayerControl ClosestPlayer { get; set; }
+        public PlayerControl ClosestPlayer;
         public DateTime LastInvestigated { get; set; }
 
         public float SeerTimer()

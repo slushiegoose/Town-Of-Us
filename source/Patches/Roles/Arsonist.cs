@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
@@ -10,7 +10,7 @@ namespace TownOfUs.Roles
     {
         private KillButtonManager _igniteButton;
         public bool ArsonistWins;
-        public PlayerControl closestPlayer;
+        public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new List<byte>();
         public bool IgniteUsed;
         public DateTime LastDoused;
