@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -9,7 +9,7 @@ namespace TownOfUs.CustomHats
     {
         private static bool modded;
 
-        public static Sprite EmptySprite = null;// TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
+        public static Sprite EmptySprite = null;//TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
 
 
         private static readonly List<HatData> _hatDatas = new List<HatData>
