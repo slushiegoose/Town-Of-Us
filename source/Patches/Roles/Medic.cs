@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TownOfUs.Roles
 {
@@ -14,7 +14,7 @@ namespace TownOfUs.Roles
             ShieldedPlayer = null;
         }
 
-        public PlayerControl ClosestPlayer { get; set; }
+        public PlayerControl ClosestPlayer;
         public bool UsedAbility { get; set; } = false;
         public PlayerControl ShieldedPlayer { get; set; }
         public PlayerControl exShielded { get; set; }

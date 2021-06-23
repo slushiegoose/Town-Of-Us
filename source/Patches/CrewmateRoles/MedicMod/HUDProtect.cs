@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
@@ -20,8 +20,6 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-
 
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
 
@@ -36,10 +34,8 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 protectButton.gameObject.SetActive(!MeetingHud.Instance);
                 protectButton.isActive = !MeetingHud.Instance;
                 protectButton.SetCoolDown(0f, 1f);
-                role.ClosestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
-                var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-                var flag9 = distBetweenPlayers < maxDistance;
-                if (flag9 && __instance.enabled && !role.UsedAbility) protectButton.SetTarget(role.ClosestPlayer);
+                if (role.UsedAbility) return;
+                Utils.SetTarget(ref role.ClosestPlayer, protectButton);
             }
         }
     }

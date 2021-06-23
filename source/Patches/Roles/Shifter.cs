@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -15,7 +15,7 @@ namespace TownOfUs.Roles
             Faction = Faction.Neutral;
         }
 
-        public PlayerControl ClosestPlayer { get; set; }
+        public PlayerControl ClosestPlayer;
         public DateTime LastShifted { get; set; }
 
         public void Loses()
