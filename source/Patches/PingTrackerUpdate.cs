@@ -80,7 +80,7 @@ namespace TownOfUs
                 (!MeetingHud.Instance
                     ? "<color=#00FF00FF>slushiegoose ft. edisonparklive</color>" +
                       GenerateHatText()
-                    : ""*/);
+                    : "")*/;
         }
     }
 }
