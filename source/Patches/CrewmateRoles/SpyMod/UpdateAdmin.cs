@@ -13,6 +13,9 @@ namespace TownOfUs.CrewmateRoles.SpyMod
             __instance.isSab = sabotaged;
             __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : Color.green);
             __instance.SabotageText.gameObject.SetActive(sabotaged);
+            if (sabotaged)
+                foreach (var area in __instance.CountAreas)
+                    area.UpdateCount(0);
         }
 
         public static void UpdateBlips(CounterArea area, List<int> colorMapping)
@@ -27,7 +30,6 @@ namespace TownOfUs.CrewmateRoles.SpyMod
                 {
                     PlayerControl.SetPlayerMaterialColors(colorMapping[i], sprite);
                 }
-
             }
         }
 
