@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -35,18 +35,7 @@ namespace TownOfUs.ImpostorRoles.MorphlingMod
             if (role.MorphButton.renderer.sprite == SampleSprite)
             {
                 role.MorphButton.SetCoolDown(0f, 1f);
-                role.closestPlayer = Utils.getClosestPlayer(PlayerControl.LocalPlayer);
-                var distance = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.closestPlayer);
-                var flag9 = distance < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-                if (flag9 && role.MorphButton.isActiveAndEnabled)
-                {
-                    role.MorphButton.SetTarget(role.closestPlayer);
-                    __instance.KillButton.SetTarget(role.closestPlayer);
-                }
-                else
-                {
-                    role.MorphButton.SetTarget(null);
-                }
+                Utils.SetTarget(ref role.ClosestPlayer, role.MorphButton);
             }
             else
             {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -14,7 +14,7 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Sheriff;
         }
 
-        public PlayerControl ClosestPlayer { get; set; }
+        public PlayerControl ClosestPlayer;
         public DateTime LastKilled { get; set; }
 
         public float SheriffKillTimer()

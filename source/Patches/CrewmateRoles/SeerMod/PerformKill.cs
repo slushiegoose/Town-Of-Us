@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
@@ -15,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.SeerMod
             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Seer);
             if (!flag) return true;
             var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
-            if (!PlayerControl.LocalPlayer.CanMove) return false;
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null) return false;
             var flag2 = role.SeerTimer() == 0f;
             if (!flag2) return false;
             if (!__instance.enabled) return false;

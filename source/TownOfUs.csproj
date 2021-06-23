@@ -23,7 +23,4 @@
     <EmbeddedResource Include="Resources\*" />
     <EmbeddedResource Include="Resources\Hats\**\*.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Patches\CrewmateRoles" />
-  </ItemGroup>
 </Project>

@@ -404,3 +404,8 @@ Desktop.ini
 
 # Local History for Visual Studio Code
 .history/
+
+# Misc
+
+.editorconfig
+TownOfUs.sln

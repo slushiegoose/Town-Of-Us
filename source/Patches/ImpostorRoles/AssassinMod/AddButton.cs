@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
@@ -15,88 +15,112 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
         private static Sprite GuessSprite => TownOfUs.GuessSprite;
 
-        public static void GenButton(Assassin role, int index, bool isDead)
+        private static bool IsExempt(PlayerVoteArea voteArea) {
+            if (voteArea.AmDead) return true;
+            var player = Utils.PlayerById(voteArea.TargetPlayerId);
+            if (
+                player == null ||
+                player.Data.IsImpostor ||
+                player.Data.IsDead ||
+                player.Data.Disconnected
+            ) return true;
+            var role = Role.GetRole(player);
+            return role != null && role.Criteria();
+        }
+
+
+        public static void GenButton(Assassin role, PlayerVoteArea voteArea)
         {
-            if (isDead)
+            var targetId = voteArea.TargetPlayerId;
+            if (IsExempt(voteArea))
             {
-                role.Buttons.Add((null, null));
+                role.Buttons[targetId] = (null, null);
                 return;
             }
 
-            var confirmButton = MeetingHud.Instance.playerStates[index].Buttons.transform.GetChild(0).gameObject;
+            var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var parent = confirmButton.transform.parent.parent;
 
-            var cycle = Object.Instantiate(confirmButton, MeetingHud.Instance.playerStates[index].transform);
-            cycle.GetComponent<SpriteRenderer>().sprite = CycleSprite;
+            var cycle = Object.Instantiate(confirmButton, voteArea.transform);
+            var cycleRenderer = cycle.GetComponent<SpriteRenderer>();
+            cycleRenderer.sprite = CycleSprite;
             cycle.transform.position = confirmButton.transform.position - new Vector3(0.5f, -0.15f, 0f);
             cycle.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             cycle.layer = 5;
             cycle.transform.parent = parent;
-            cycle.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
-            cycle.GetComponent<PassiveButton>().OnClick.AddListener(Cycle(role, index));
-            var s = cycle.GetComponent<SpriteRenderer>().sprite.bounds.size;
-            cycle.GetComponent<BoxCollider2D>().size = s;
-            cycle.GetComponent<BoxCollider2D>().offset = Vector2.zero;
+            var cycleEvent = new Button.ButtonClickedEvent();
+            cycleEvent.AddListener(Cycle(role, voteArea));
+            cycle.GetComponent<PassiveButton>().OnClick = cycleEvent;
+            var cycleCollider = cycle.GetComponent<BoxCollider2D>();
+            cycleCollider.size = cycleRenderer.sprite.bounds.size;
+            cycleCollider.offset = Vector2.zero;
             cycle.transform.GetChild(0).gameObject.Destroy();
 
 
-            var guess = Object.Instantiate(confirmButton, MeetingHud.Instance.playerStates[index].transform);
-            guess.GetComponent<SpriteRenderer>().sprite = GuessSprite;
+            var guess = Object.Instantiate(confirmButton, voteArea.transform);
+            var guessRenderer = guess.GetComponent<SpriteRenderer>();
+            guessRenderer.sprite = GuessSprite;
             guess.transform.position = confirmButton.transform.position - new Vector3(0.5f, 0.15f, 0f);
             guess.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             guess.layer = 5;
             guess.transform.parent = parent;
-            guess.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
-            guess.GetComponent<PassiveButton>().OnClick.AddListener(Guess(role, index));
+            var guessEvent = new Button.ButtonClickedEvent();
+            guessEvent.AddListener(Guess(role, voteArea));
+            guess.GetComponent<PassiveButton>().OnClick = guessEvent;
             var bounds = guess.GetComponent<SpriteRenderer>().bounds;
             bounds.size = new Vector3(0.52f, 0.3f, 0.16f);
-            var s2 = guess.GetComponent<SpriteRenderer>().sprite.bounds.size;
-            guess.GetComponent<BoxCollider2D>().size = s2;
-            guess.GetComponent<BoxCollider2D>().offset = Vector2.zero;
+            var guessCollider = guess.GetComponent<BoxCollider2D>();
+            guessCollider.size = guessRenderer.sprite.bounds.size;
+            guessCollider.offset = Vector2.zero;
             guess.transform.GetChild(0).gameObject.Destroy();
 
 
-            role.Guesses.Add(index, "None");
-            role.Buttons.Add((cycle, guess));
+            role.Guesses.Add(targetId, "None");
+            role.Buttons[targetId] = (cycle, guess);
         }
 
-        private static Action Cycle(Assassin role, int index)
+        private static Action Cycle(Assassin role, PlayerVoteArea voteArea)
         {
             void Listener()
             {
                 if (MeetingHud.Instance.state == MeetingHud.VoteStates.Discussion) return;
-                var currentGuess = role.Guesses[index];
-                int guessIndex;
-                if (currentGuess == "None")
-                    guessIndex = -1;
-                else
-                    guessIndex = role.PossibleGuesses.IndexOf(currentGuess);
+                var currentGuess = role.Guesses[voteArea.TargetPlayerId];
+                var guessIndex = currentGuess == "None"
+                    ? -1
+                    : role.PossibleGuesses.IndexOf(currentGuess);
+                if (++guessIndex == role.PossibleGuesses.Count)
+                    guessIndex = 0;
 
-                guessIndex++;
-                guessIndex %= role.PossibleGuesses.Count;
-
-                role.Guesses[index] = role.PossibleGuesses[guessIndex];
+                role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
             }
 
             return Listener;
         }
 
-        private static Action Guess(Assassin role, int index)
+        private static Action Guess(Assassin role, PlayerVoteArea voteArea)
         {
             void Listener()
             {
-                if (MeetingHud.Instance.state == MeetingHud.VoteStates.Discussion) return;
-                var state = MeetingHud.Instance.playerStates[index];
-                var currentGuess = role.Guesses[index];
+                if (
+                    MeetingHud.Instance.state == MeetingHud.VoteStates.Discussion ||
+                    IsExempt(voteArea)
+                ) return;
+                var targetId = voteArea.TargetPlayerId;
+                var currentGuess = role.Guesses[targetId];
                 if (currentGuess == "None") return;
 
-                var playerRole = Role.GetRole(state);
+                var playerRole = Role.GetRole(voteArea);
 
                 var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
 
                 AssassinKill.RpcMurderPlayer(toDie);
                 role.RemainingKills--;
-                ShowHideButtons.HideSingle(role, index, toDie == role.Player);
+                ShowHideButtons.HideSingle(role, targetId, toDie == role.Player);
+                if (toDie.isLover() && CustomGameOptions.BothLoversDie)
+                {
+                    var lover = ((Lover)playerRole).OtherLover.Player;
+                    ShowHideButtons.HideSingle(role, lover.PlayerId, false);
+                }
             }
 
             return Listener;
@@ -117,13 +141,9 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
             var assassinRole = Role.GetRole<Assassin>(PlayerControl.LocalPlayer);
             if (assassinRole.RemainingKills <= 0) return;
-            for (var i = 0; i < __instance.playerStates.Length; i++)
+            foreach (var voteArea in __instance.playerStates)
             {
-                var isDead = __instance.playerStates[i].AmDead;
-                var isImp = Role.GetRole(__instance.playerStates[i]).Faction == Faction.Impostors;
-                var canSeeRole = Role.GetRole(__instance.playerStates[i]).Criteria();
-
-                GenButton(assassinRole, i, isDead || isImp || canSeeRole);
+                GenButton(assassinRole, voteArea);
             }
         }
     }

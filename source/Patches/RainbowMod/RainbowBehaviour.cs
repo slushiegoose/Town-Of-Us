@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.RainbowMod
@@ -8,29 +8,22 @@ namespace TownOfUs.RainbowMod
         public Renderer Renderer;
         public int Id;
 
-        public RainbowBehaviour(IntPtr ptr) : base(ptr)
+        public void AddRend(Renderer rend, int id)
         {
+            Renderer = rend;
+            Id = id;
         }
 
         public void Update()
         {
             if (Renderer == null) return;
 
-            if (RainbowUtils.IsRainbow(Id)) RainbowUtils.SetRainbow(Renderer);
-            /*else if (RainbowUtils.IsGalaxy(Id))
+            if (RainbowUtils.IsRainbow(Id))
             {
-                RainbowUtils.SetGalaxy(Renderer);
+                RainbowUtils.SetRainbow(Renderer);
             }
-            else if (RainbowUtils.IsFire(Id))
-            {
-                RainbowUtils.SetFire(Renderer);
-            }*/
         }
 
-        public void AddRend(Renderer rend, int id)
-        {
-            Renderer = rend;
-            Id = id;
-        }
+        public RainbowBehaviour(IntPtr ptr) : base(ptr) { }
     }
 }
