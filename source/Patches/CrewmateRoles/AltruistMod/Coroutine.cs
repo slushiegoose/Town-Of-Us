@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +26,13 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             if (AmongUsClient.Instance.AmHost) Utils.RpcMurderPlayer(role.Player, role.Player);
 
-            if (CustomGameOptions.AltruistTargetBody)
-                if (target != null)
-                    Object.Destroy(target.gameObject);
+            if (CustomGameOptions.AltruistTargetBody && target != null)
+            {
+                Object.Destroy(target.gameObject);
+                MeetingIntroPatch.DeadPlayers.Add(
+                    GameData.Instance.GetPlayerById(parentId)
+                );
+            }
 
             var startTime = DateTime.UtcNow;
             while (true)
@@ -42,9 +46,14 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
                 if (MeetingHud.Instance) yield break;
             }
 
+            var altruist = role.Player;
             var altruistBody = Object.FindObjectsOfType<DeadBody>()
-                .FirstOrDefault(b => b.ParentId == role.Player.PlayerId);
-            if (altruistBody != null) Object.Destroy(altruistBody.gameObject);
+                .FirstOrDefault(b => b.ParentId == altruist.PlayerId);
+            if (altruistBody != null)
+            {
+                Object.Destroy(altruistBody.gameObject);
+                MeetingIntroPatch.DeadPlayers.Add(altruist.Data);
+            }
 
             var player = Utils.PlayerById(parentId);
 
