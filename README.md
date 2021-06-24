@@ -76,7 +76,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 <details>
   <summary> Changelog </summary>
   <details>
-  <summary> v2.1.3 </summary>
+  <summary> v2.1.4 </summary>
   <ul> <li> New Role (Phantom, Undertaker, Underdog) </li> </ul>
   <ul> <li> Custom Color </li> </ul>
   <ul> <li> Hat </li> </ul>
