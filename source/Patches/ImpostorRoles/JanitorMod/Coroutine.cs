@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -26,6 +26,9 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
             }
 
             Object.Destroy(body.gameObject);
+            MeetingIntroPatch.DeadPlayers.Add(
+                GameData.Instance.GetPlayerById(body.ParentId)
+            );
         }
     }
 }
