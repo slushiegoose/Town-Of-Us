@@ -90,6 +90,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
   <ul> <li> Fix for the Arsonist </li> </ul>
   <ul> <li> Fix for the Assassin </li> </ul>
   <ul> <li> Fix for the Phantom </li> </ul>
+  <ul> <li> Modded Handshake </li> </ul>
   <ul> <li> Child is removed </li> </ul>
   <ul> <li> Minor enhancements and bug fixes </li> </ul>
  </details>
