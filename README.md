@@ -79,7 +79,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
   <summary> v2.1.4 </summary>
   <ul> <li> New Role (Phantom, Undertaker, Underdog) </li> </ul>
   <ul> <li> Custom Color </li> </ul>
-  <ul> <li> Hat </li> </ul>
+  <ul> <li> Hats </li> </ul>
   <ul> <li> Fix for launching issues </li> </ul>
   <ul> <li> Fix for the Voting issues </li> </ul>
   <ul> <li> Fix for the disconnect issue</li> </ul>
@@ -89,6 +89,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
   <ul> <li> Fix for the Mayor </li> </ul>
   <ul> <li> Fix for the Arsonist </li> </ul>
   <ul> <li> Fix for the Assassin </li> </ul>
+  <ul> <li> Fix for the Phantom </li> </ul>
   <ul> <li> Child is removed </li> </ul>
   <ul> <li> Minor enhancements and bug fixes </li> </ul>
  </details>
