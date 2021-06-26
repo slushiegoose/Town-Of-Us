@@ -2,7 +2,7 @@
 [![Discord](./Images/Polus.png)](https://discord.gg/polus)
 
 ![LOGO](./Images/TOU-logo.png)
-![Roles](./Images/Roles.png)
+![Roles](./Images/Roles3.png)
 
 An Among Us mod that adds a bunch of roles, modifiers and game settings
 
