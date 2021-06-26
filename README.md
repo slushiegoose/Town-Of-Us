@@ -2,7 +2,7 @@
 [![Discord](./Images/Polus.png)](https://discord.gg/polus)
 
 ![LOGO](./Images/TOU-logo.png)
-![Roles](./Images/Roles1.png)
+![Roles](./Images/Roles.png)
 
 An Among Us mod that adds a bunch of roles, modifiers and game settings
 
@@ -19,7 +19,6 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Time Lord](#time-lord)
 - [Medic](#medic)
 - [Seer](#seer)
-- [Child](#child)
 - [Spy](#spy)
 - [Snitch](#snitch)
 - [Altruist](#altruist)
@@ -30,6 +29,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [The Glitch](#the-glitch)
 - [Executioner](#executioner)
 - [Arsonist](#arsonist)
+- [Phantom](#phantom)
 
 **Impostor Roles**
 - [Janitor](#janitor)
@@ -38,6 +38,8 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - [Miner](#miner)
 - [Swooper](#swooper)
 - [Assassin](#assassin)
+- [Underdog](#underdog)
+- [Undertaker](#undertaker)
 
 **Modifiers**
 - [Torch](#torch)
@@ -54,6 +56,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2021.6.15s & 2021.6.15e | v2.1.4 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.4/TownOfUs214_1.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.3/TownOfUs213_1.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.2/TownOfUs212_1.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.1 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.1/TownOfUs211_1.zip) |
@@ -72,6 +75,25 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 <details>
   <summary> Changelog </summary>
+  <details>
+  <summary> v2.1.4 </summary>
+  <ul> <li> New Role (Phantom, Undertaker, Underdog) </li> </ul>
+  <ul> <li> Custom Color </li> </ul>
+  <ul> <li> Hats </li> </ul>
+  <ul> <li> Fix for launching issues </li> </ul>
+  <ul> <li> Fix for the Voting issues </li> </ul>
+  <ul> <li> Fix for the disconnect issue</li> </ul>
+  <ul> <li> Fix for the username placement </li> </ul>
+  <ul> <li> Fix for the Medic  </li> </ul>
+  <ul> <li> Fix for the Spy </li> </ul>
+  <ul> <li> Fix for the Mayor </li> </ul>
+  <ul> <li> Fix for the Arsonist </li> </ul>
+  <ul> <li> Fix for the Assassin </li> </ul>
+  <ul> <li> Fix for the Phantom </li> </ul>
+  <ul> <li> Modded Handshake </li> </ul>
+  <ul> <li> Child is removed </li> </ul>
+  <ul> <li> Minor enhancements and bug fixes </li> </ul>
+ </details>
  <details>
   <summary> v2.1.3 </summary>
   <ul> <li> Fix the launch issue </li> </ul>
@@ -395,6 +417,8 @@ A report can contain the name of the killer or the color type (Darker/Lighter)
 - Turquoise - Lighter
 - Lilac - Lighter
 - Rainbow - Lighter
+- Azure - Lighter
+
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
@@ -421,17 +445,6 @@ If the Seer investigates someone, the Seer's name will change color to inform th
 | Info that Seer sees | Whether the Seer sees the Role or the Team of a player | Role / Team | Role |
 | Who Sees That They Are Revealed | Which roles see the Seer's identity once the Seer has seen their role | Crewmates / Impostors + Neutral / All / Nobody | Crewmates |
 | Neutrals show up as Impostors | When the Info is set to Team, Neutral roles show up as Red, like Impostors | Toggle | False |
-
------------------------
-## Child
-### **Team: Crewmates**
-
-The Child is a Crewmate that cannot be killed or voted out.\
-If that does happen, everybody loses.
-### Game Options
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Child | The percentage probability of the Child appearing | Percentage | 0% |
 
 -----------------------
 ## Spy
@@ -555,6 +568,17 @@ Upon Igniting every player, they win the game.
 | Game keeps going so long as Arsonist is alive | Whether the game keeps going while the Arsonist remains | Toggle | False |
 
 -----------------------
+## Phantom
+### **Team: Neutral**
+
+The Phantom is a Neutral role with its own win condition.\
+They become half-invisible when they die and has to complete all their tasks without getting caught.
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
+
+-----------------------
 # Impostor Roles
 ## Janitor
 ### **Team: Impostors**
@@ -638,6 +662,30 @@ If they guessed wrong, they die instead.
 | Assassin Guess Crewmate | Whether the Assassin can Guess "Crewmate" | Toggle | False |
 | Assassin Guess Neutral  | Whether the Assassin can Guess Neutral roles | Toggle | False |
 | Assassin Multiple Kill  | Whether the Assassin can kill more than once per meeting | Toggle | True |
+
+-----------------------
+## Undertaker
+### **Team: Impostors**
+
+The Undertaker is an Impostor that can drag and drop bodies.
+
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Undertaker | The percentage probability of the Undertaker appearing | Percentage | 0% |
+| Undertaker Drag Cooldown | The cooldown of the Undertaker Drag ability | Time | 25s |
+
+-----------------------
+## Underdog
+### **Team: Impostors**
+
+The Underdog is an Impostor with a prolonged kill cooldown.\
+Once their partener dies they will have their kill cooldown shortened.
+
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Underdog | The percentage probability of the Underdog appearing | Percentage | 0% |
 
 -----------------------
 
@@ -757,4 +805,3 @@ v1.2.0 has Essentials embedded and can be found [here](https://github.com/slushi
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>
 <p align="center">© Innersloth LLC.</p>
-
