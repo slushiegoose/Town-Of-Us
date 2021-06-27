@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <GameProvider>Static</GameProvider>
-    <GameVersion>../AmongUs/</GameVersion>
+    <GameVersion>../../AmongUsModded2021615s/</GameVersion>
   </PropertyGroup>
 
   <ItemGroup>

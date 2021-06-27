@@ -21,6 +21,10 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             if (flag2) return false;
             if (!__instance.enabled) return false;
             var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            if (role == null)
+                return false;
+            if (role.CurrentTarget == null)
+                return false;
             if (Vector2.Distance(role.CurrentTarget.TruePosition,
                 PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance) return false;
             var playerId = role.CurrentTarget.ParentId;

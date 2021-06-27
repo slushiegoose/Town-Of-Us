@@ -13,6 +13,7 @@ using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using PerformKill = TownOfUs.ImpostorRoles.UnderdogMod.PerformKill;
 
 namespace TownOfUs
 {
@@ -382,8 +383,6 @@ namespace TownOfUs
                 };
 
                 Murder.KilledPlayers.Add(deadBody);
-                if (!killer.Is(RoleEnum.Glitch) && !killer.Is(RoleEnum.Arsonist))
-                    CrewmateRoles.ChildMod.Murder.CheckChild(target);
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
@@ -399,6 +398,12 @@ namespace TownOfUs
                     return;
                 }
 
+                if (killer.Is(RoleEnum.Underdog))
+                {
+                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown * (PerformKill.LastImp() ? 0.5f : 1.5f));
+                    return;
+                }
+
                 if (killer.Data.IsImpostor)
                 {
                     killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
@@ -409,13 +414,21 @@ namespace TownOfUs
         public static IEnumerator FlashCoroutine(Color color, float waitfor = 1f, float alpha = 0.3f)
         {
             color.a = alpha;
-            var fullscreen = DestroyableSingleton<HudManager>.Instance.FullScreen;
-            var oldcolour = fullscreen.color;
-            fullscreen.enabled = true;
-            fullscreen.color = color;
+            if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
+            {
+                var fullscreen = DestroyableSingleton<HudManager>.Instance.FullScreen;
+                var oldcolour = fullscreen.color;
+                fullscreen.enabled = true;
+                fullscreen.color = color;
+            }
+            
             yield return new WaitForSeconds(waitfor);
-            fullscreen.enabled = false;
-            fullscreen.color = oldcolour;
+
+            if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
+            {
+                var fullscreen = DestroyableSingleton<HudManager>.Instance.FullScreen;
+                fullscreen.enabled = false;
+            }
         }
 
         public static IEnumerable<(T1, T2)> Zip<T1, T2>(List<T1> first, List<T2> second)

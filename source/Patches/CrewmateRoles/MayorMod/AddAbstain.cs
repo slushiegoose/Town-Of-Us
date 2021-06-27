@@ -26,7 +26,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                 var skip = __instance.SkipVoteButton;
                 role.Abstain = Object.Instantiate(skip, skip.transform.parent);
                 role.Abstain.Parent = __instance;
-                role.Abstain.SetTargetPlayerId(254);
+                role.Abstain.SetTargetPlayerId(251);
                 role.Abstain.transform.localPosition = skip.transform.localPosition +
                                                        new Vector3(0f, -0.17f, 0f);
                 skip.transform.localPosition += new Vector3(0f, 0.20f, 0f);
@@ -71,7 +71,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) return;
                 var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-                if (__0 != 11) mayorRole.Abstain.ClearButtons();
+                if (__0 != 251) mayorRole.Abstain.ClearButtons();
 
                 UpdateButton(mayorRole, __instance);
             }

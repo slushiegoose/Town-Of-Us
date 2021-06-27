@@ -21,7 +21,6 @@ namespace TownOfUs.Roles
             { "Medic", new Color(0f, 0.4f, 0f, 1f) },
             { "Seer", new Color(1f, 0.8f, 0.5f, 1f) },
             { "Spy", new Color(0.8f, 0.64f, 0.8f, 1f) },
-            { "Child", Color.white },
             { "Snitch", new Color(0.83f, 0.69f, 0.22f, 1f) },
             { "Altruist", new Color(0.4f, 0f, 0f, 1f) }
         };

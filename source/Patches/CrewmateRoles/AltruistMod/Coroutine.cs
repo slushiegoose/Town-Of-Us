@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using InnerNet;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -47,6 +48,8 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             var player = Utils.PlayerById(parentId);
 
+            // if (player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
+            //     yield break;
 
             player.Revive();
             Murder.KilledPlayers.Remove(

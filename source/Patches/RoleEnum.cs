@@ -15,18 +15,20 @@ namespace TownOfUs
         Medic,
         Seer,
         Executioner,
-        Child,
         Spy,
         Snitch,
         Arsonist,
         Altruist,
+        Phantom,
 
         Miner,
         Swooper,
         Morphling,
         Camouflager,
         Janitor,
+        Undertaker,
         Assassin,
+        Underdog,
 
 
         Glitch,

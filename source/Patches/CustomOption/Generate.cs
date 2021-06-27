@@ -14,7 +14,6 @@ namespace TownOfUs.CustomOption
         public static CustomNumberOption TimeLordOn;
         public static CustomNumberOption MedicOn;
         public static CustomNumberOption SeerOn;
-        public static CustomNumberOption ChildOn;
         public static CustomNumberOption SpyOn;
         public static CustomNumberOption SnitchOn;
         public static CustomNumberOption AltruistOn;
@@ -27,6 +26,7 @@ namespace TownOfUs.CustomOption
         public static CustomNumberOption GlitchOn;
         public static CustomNumberOption ExecutionerOn;
         public static CustomNumberOption ArsonistOn;
+        public static CustomNumberOption PhantomOn;
 
 
         public static CustomHeaderOption ImpostorRoles;
@@ -35,7 +35,9 @@ namespace TownOfUs.CustomOption
         public static CustomNumberOption CamouflagerOn;
         public static CustomNumberOption MinerOn;
         public static CustomNumberOption SwooperOn;
+        public static CustomNumberOption UndertakerOn;
         public static CustomNumberOption AssassinOn;
+        public static CustomNumberOption UnderdogOn;
 
 
         /*
@@ -154,6 +156,9 @@ namespace TownOfUs.CustomOption
         public static CustomNumberOption DouseCooldown;
         public static CustomToggleOption ArsonistGameEnd;
 
+        public static CustomHeaderOption Undertaker;
+        public static CustomNumberOption DragCooldown;
+
         public static CustomHeaderOption Assassin;
         public static CustomNumberOption AssassinKills;
         public static CustomToggleOption AssassinGuessNeutrals;
@@ -190,7 +195,6 @@ namespace TownOfUs.CustomOption
                 PercentFormat);
             SeerOn = new CustomNumberOption(true, num++, "<color=#FFCC80FF>Seer</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
-            ChildOn = new CustomNumberOption(true, num++, "Child", 0f, 0f, 100f, 5f, PercentFormat);
             SpyOn = new CustomNumberOption(true, num++, "<color=#CCA3CCFF>Spy</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
             SnitchOn = new CustomNumberOption(true, num++, "<color=#D4AF37FF>Snitch</color>", 0f, 0f, 100f, 5f,
@@ -210,6 +214,8 @@ namespace TownOfUs.CustomOption
                 5f, PercentFormat);
             ArsonistOn = new CustomNumberOption(true, num++, "<color=#FF4D00FF>Arsonist</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
+            PhantomOn = new CustomNumberOption(true, num++, "<color=#662962>Phantom</color>", 0f, 0f, 100f, 5f,
+                PercentFormat);
 
             ImpostorRoles = new CustomHeaderOption(num++, "Impostor Roles");
             JanitorOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Janitor</color>", 0f, 0f, 100f, 5f,
@@ -222,7 +228,11 @@ namespace TownOfUs.CustomOption
                 PercentFormat);
             SwooperOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Swooper</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
+            UndertakerOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Undertaker</color>", 0f, 0f, 100f, 5f,
+                PercentFormat);
             AssassinOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Assassin</color>", 0f, 0f, 100f, 5f,
+                PercentFormat);
+            UnderdogOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Underdog</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
 
             Modifiers = new CustomHeaderOption(num++, "Modifiers");
@@ -428,6 +438,9 @@ namespace TownOfUs.CustomOption
                 new CustomNumberOption(num++, "Swoop Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
             SwoopDuration =
                 new CustomNumberOption(num++, "Swoop Duration", 10, 5, 15, 1f, CooldownFormat);
+
+            Undertaker = new CustomHeaderOption(num++, "<color=#FF0000FF>Undertaker</color>");
+            DragCooldown = new CustomNumberOption(num++, "Drag Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
 
             Assassin = new CustomHeaderOption(num++, "<color=#FF0000FF>Assassin</color>");
             AssassinKills = new CustomNumberOption(num++, "Number of Assassin Kills", 1, 1, 5, 1);

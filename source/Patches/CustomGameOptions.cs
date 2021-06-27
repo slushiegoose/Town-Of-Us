@@ -25,14 +25,16 @@ namespace TownOfUs
         public static int MorphlingOn => (int) Generate.MorphlingOn.Get();
         public static int CamouflagerOn => (int) Generate.CamouflagerOn.Get();
         public static int ExecutionerOn => (int) Generate.ExecutionerOn.Get();
-        public static int ChildOn => (int) Generate.ChildOn.Get();
         public static int SpyOn => (int) Generate.SpyOn.Get();
         public static int SnitchOn => (int) Generate.SnitchOn.Get();
         public static int MinerOn => (int) Generate.MinerOn.Get();
         public static int SwooperOn => (int) Generate.SwooperOn.Get();
         public static int ArsonistOn => (int) Generate.ArsonistOn.Get();
         public static int AltruistOn => (int) Generate.AltruistOn.Get();
+        public static int UndertakerOn => (int) Generate.UndertakerOn.Get();
         public static int AssassinOn => (int) Generate.AssassinOn.Get();
+        public static int UnderdogOn => (int) Generate.UnderdogOn.Get();
+        public static int PhantomOn => (int) Generate.PhantomOn.Get();
         public static int TorchOn => (int) Generate.TorchOn.Get();
         public static int DiseasedOn => (int) Generate.DiseasedOn.Get();
         public static int FlashOn => (int) Generate.FlashOn.Get();
@@ -105,6 +107,7 @@ namespace TownOfUs
         public static float ReviveDuration => Generate.ReviveDuration.Get();
         public static bool AltruistTargetBody => Generate.AltruistTargetBody.Get();
         public static bool SheriffBodyReport => Generate.SheriffBodyReport.Get();
+        public static float DragCd => Generate.DragCooldown.Get();
         public static bool AssassinGuessNeutrals => Generate.AssassinGuessNeutrals.Get();
         public static bool AssassinCrewmateGuess => Generate.AssassinCrewmateGuess.Get();
         public static int AssassinKills => (int) Generate.AssassinKills.Get();

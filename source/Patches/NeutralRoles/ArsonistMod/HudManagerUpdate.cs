@@ -33,6 +33,9 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             foreach (var playerId in role.DousedPlayers)
             {
                 var player = Utils.PlayerById(playerId);
+                if (player.Data.Disconnected || player.Data.IsDead)
+                    continue;
+
                 player.myRend.material.SetColor("_VisorColor", role.Color);
                 player.nameText.color = Color.black;
             }

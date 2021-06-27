@@ -20,7 +20,7 @@ namespace TownOfUs
                         !(
                             playerInfo._object.Is(RoleEnum.Jester) || playerInfo._object.Is(RoleEnum.Shifter) ||
                             playerInfo._object.Is(RoleEnum.Glitch) || playerInfo._object.Is(RoleEnum.Executioner) ||
-                            playerInfo._object.Is(RoleEnum.Arsonist)
+                            playerInfo._object.Is(RoleEnum.Arsonist) || playerInfo._object.Is(RoleEnum.Phantom)
                         ))
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)
                         {
@@ -36,65 +36,24 @@ namespace TownOfUs
         [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
         private class Console_CanUse
         {
-            private static bool Prefix(Console __instance, GameData.PlayerInfo __0, out bool __1, out bool __2)
+            private static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
             {
-                var num = float.MaxValue;
-                var @object = __0.Object;
+                var playerControl = playerInfo.Object;
 
-                var flag = @object.Is(RoleEnum.Glitch) || @object.Is(RoleEnum.Jester) ||
-                           @object.Is(RoleEnum.Shifter) || @object.Is(RoleEnum.Executioner) ||
-                           @object.Is(RoleEnum.Arsonist);
+                var flag = playerControl.Is(RoleEnum.Glitch)
+                           || playerControl.Is(RoleEnum.Jester)
+                           || playerControl.Is(RoleEnum.Shifter)
+                           || playerControl.Is(RoleEnum.Executioner)
+                           || playerControl.Is(RoleEnum.Arsonist);
 
-                var truePosition = @object.GetTruePosition();
-                var position = __instance.transform.position;
-                __2 = (!__0.IsDead || PlayerControl.GameOptions.GhostsDoTasks && !__instance.GhostsIgnored) &&
-                      @object.CanMove &&
-                      (__instance.AllowImpostor || !flag && !__0.IsImpostor) &&
-                      (!__instance.onlySameRoom || MethodRewrites.InRoom(__instance, truePosition)) &&
-                      (!__instance.onlyFromBelow || truePosition.y < position.y) &&
-                      MethodRewrites.FindTask(__instance, @object);
-                __1 = __2;
-                if (__1)
+                // If the console is not a sabotage repair console
+                if (flag && !__instance.AllowImpostor)
                 {
-                    num = Vector2.Distance(truePosition, __instance.transform.position);
-                    __1 &= num <= __instance.UsableDistance;
-                    if (__instance.checkWalls)
-                        __1 &= !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShadowMask, false);
+                    __result = float.MaxValue;
+                    return false;
                 }
 
-                return false;
-            }
-        }
-
-        private class MethodRewrites
-        {
-            public static bool InRoom(Console __instance, Vector2 truePos)
-            {
-                var plainShipRoom = ShipStatus.Instance.FastRooms[__instance.Room];
-                if (!plainShipRoom || !plainShipRoom.roomArea) return false;
-
-                bool result;
-                try
-                {
-                    result = plainShipRoom.roomArea.OverlapPoint(truePos);
-                }
-                catch
-                {
-                    result = false;
-                }
-
-                return result;
-            }
-
-            public static PlayerTask FindTask(Console __instance, PlayerControl pc)
-            {
-                for (var i = 0; i < pc.myTasks.Count; i++)
-                {
-                    var playerTask = pc.myTasks.ToArray()[i];
-                    if (!playerTask.IsComplete && playerTask.ValidConsole(__instance)) return playerTask;
-                }
-
-                return null;
+                return true;
             }
         }
     }

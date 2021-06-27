@@ -17,7 +17,6 @@ namespace TownOfUs
         SetCamouflager,
         SetExecutioner,
         SetTarget,
-        SetChild,
         SetSpy,
         SetSnitch,
         SetMiner,
@@ -25,7 +24,9 @@ namespace TownOfUs
         SetJanitor,
         SetArsonist,
         SetAltruist,
+        SetUndertaker,
         SetAssassin,
+        SetUnderdog,
 
         SetTorch,
         SetDiseased,
@@ -35,6 +36,10 @@ namespace TownOfUs
         SetBigBoi,
         SetButtonBarry,
 
+        SetPhantom,
+        PhantomDied,
+        CatchPhantom,
+
         SetCrewmate,
         SetImpostor,
 
@@ -42,12 +47,14 @@ namespace TownOfUs
         LoveWin,
         GlitchWin,
         ArsonistWin,
+        PhantomWin,
         JesterLose,
         ExecutionerLose,
         ShifterLose,
         GlitchLose,
         ArsonistLose,
         NobodyWins,
+        PhantomLose,
 
         JanitorClean,
         FixLights,

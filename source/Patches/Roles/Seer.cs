@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TownOfUs.CrewmateRoles.SeerMod;
 using UnityEngine;

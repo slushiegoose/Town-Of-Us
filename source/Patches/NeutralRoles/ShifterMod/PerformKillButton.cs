@@ -195,6 +195,8 @@ namespace TownOfUs.NeutralRoles.ShifterMod
 
                     break;
 
+                case RoleEnum.Underdog:
+                case RoleEnum.Undertaker:
                 case RoleEnum.Assassin:
                 case RoleEnum.Swooper:
                 case RoleEnum.Miner:
@@ -205,7 +207,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 case RoleEnum.Impostor:
                 case RoleEnum.Glitch:
                 case RoleEnum.Shifter:
-                case RoleEnum.Child:
                     shifter.Data.IsImpostor = true;
                     shifter.MurderPlayer(shifter);
                     shifter.Data.IsImpostor = false;

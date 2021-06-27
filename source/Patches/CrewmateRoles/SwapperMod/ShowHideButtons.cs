@@ -95,7 +95,7 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                     var maxIdx = self.MaxPair(out var tie);
 
                     PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Meeting was a tie = {tie}");
-                    var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => v.PlayerId == maxIdx.Key);
+                    var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
                     for (var i = 0; i < __instance.playerStates.Length; i++)
                     {
                         var playerVoteArea = __instance.playerStates[i];
@@ -106,9 +106,16 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
                         };
                     }
 
-                    __instance.exiledPlayer = tie ? null : exiled;
-                    __instance.wasTie = tie;
-                    __instance.RpcVotingComplete(array, __instance.exiledPlayer, tie);
+                    __instance.RpcVotingComplete(array, exiled, tie);
+                    
+                    foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                            (byte) CustomRPC.SetExtraVotes, SendOption.Reliable, -1);
+                        writer.Write(role.Player.PlayerId);
+                        writer.WriteBytesAndSize(((Mayor) role).ExtraVotes.ToArray());
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
                 }
 
                 return false;

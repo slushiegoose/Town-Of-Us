@@ -1,6 +1,8 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Events;
+using Object = UnityEngine.Object;
 
 namespace TownOfUs.RainbowMod
 {
@@ -23,11 +25,11 @@ namespace TownOfUs.RainbowMod
                 colorChip.transform.localScale *= 0.8f;
                 colorChip.transform.localPosition = new Vector3(x, y, -1f);
                 var colorId = (byte)i;
-                colorChip.Button.OnClick.AddListener((UnityAction)delegate ()
+                colorChip.Button.OnClick.AddListener((Action) (() =>
                 {
                     __instance.SelectColor(colorId);
                     if (colorId <= 17) SaveManager.BodyColor = colorId;
-                });
+                }));
                 colorChip.Inner.color = colors[i];
                 __instance.ColorChips.Add(colorChip);
             }

@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs
@@ -6,29 +7,46 @@ namespace TownOfUs
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class PlayerVentTimeExtension
     {
-        private static bool CheckImpostors(PlayerControl player)
+        private static bool CheckUndertaker(PlayerControl player)
         {
-            if (player.Is(RoleEnum.Morphling)) return false;
-            if (player.Is(RoleEnum.Swooper)) return false;
+            var role = Role.GetRole<Undertaker>(player);
+            return player.Data.IsDead || role.CurrentlyDragging != null;
+        }
+        public static bool Prefix(Vent __instance, out float __result,
+            [HarmonyArgument(0)] GameData.PlayerInfo playerInfo,
+            [HarmonyArgument(1)] out bool canUse,
+            [HarmonyArgument(2)] out bool couldUse)
+        {
+            __result = float.MaxValue;
 
-            return (player.Data.IsImpostor || player.Is(RoleEnum.Engineer)) && !player.Data.IsDead;
+            var player = playerInfo.Object;
+            if (player.Is(RoleEnum.Morphling)
+                || player.Is(RoleEnum.Swooper)
+                || (player.Is(RoleEnum.Phantom) && !player.CanMove)
+                || (player.Is(RoleEnum.Undertaker) && CheckUndertaker(player)))
+            {
+                return canUse = couldUse = false;
+            }
+
+
+            if (player.Is(RoleEnum.Engineer) && !player.Data.IsDead)
+            {
+                
+                canUse = couldUse = false;
+                playerInfo.IsImpostor = true;
+                return true;
+            }
+            
+            canUse = couldUse = false;
+            return true;
         }
 
-
-        public static bool Prefix(Vent __instance, ref float __result, [HarmonyArgument(0)] GameData.PlayerInfo pc,
-            [HarmonyArgument(1)] out bool canUse, [HarmonyArgument(2)] out bool couldUse)
+        public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo)
         {
-            var num = float.MaxValue;
-            var localPlayer = pc.Object;
-            couldUse = CheckImpostors(localPlayer);
-            canUse = couldUse;
-
-            num = Vector2.Distance(localPlayer.GetTruePosition(), __instance.transform.position);
-            canUse &= num <= __instance.UsableDistance;
-
-
-            __result = num;
-            return false;
+            if (playerInfo.Object.Is(RoleEnum.Engineer))
+            {
+                playerInfo.IsImpostor = false;
+            }
         }
     }
 }

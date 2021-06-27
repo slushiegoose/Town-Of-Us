@@ -552,7 +552,7 @@ namespace TownOfUs.Roles
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor))
+                    if (!(player.Data != null && player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor))
                     {
                         player.nameText.text = player.name;
                         player.nameText.color = Color.white;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -18,7 +18,7 @@ using UnityEngine.SceneManagement;
 
 namespace TownOfUs
 {
-    [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", "2.1.3")]
+    [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", "2.1.4")]
     public class TownOfUs : BasePlugin
     {
         public static Sprite JanitorClean;
@@ -50,7 +50,8 @@ namespace TownOfUs
         public static Sprite GuessSprite;
 
 
-        public static Sprite WolfVoteSprite;
+        public static Sprite DragSprite;
+        public static Sprite DropSprite;
 
         private static DLoadImage _iCallLoadImage;
 
@@ -65,85 +66,82 @@ namespace TownOfUs
 
         public override void Load()
         {
-            try
-            {
-                PluginSingleton<TownOfUs>.Instance = this;
+            PluginSingleton<TownOfUs>.Instance = this;
 
-                System.Console.WriteLine("000.000.000.000/000000000000000000");
+            System.Console.WriteLine("000.000.000.000/000000000000000000");
 
-                _harmony = new Harmony("com.slushiegoose.townofus");
+            _harmony = new Harmony("com.slushiegoose.townofus");
 
-                Generate.GenerateAll();
+            Generate.GenerateAll();
 
-                JanitorClean = CreateSprite("TownOfUs.Resources.Janitor.png");
-                EngineerFix = CreateSprite("TownOfUs.Resources.Engineer.png");
-                SwapperSwitch = CreateSprite("TownOfUs.Resources.SwapperSwitch.png");
-                SwapperSwitchDisabled = CreateSprite("TownOfUs.Resources.SwapperSwitchDisabled.png");
-                Shift = CreateSprite("TownOfUs.Resources.Shift.png");
-                Footprint = CreateSprite("TownOfUs.Resources.Footprint.png");
-                Rewind = CreateSprite("TownOfUs.Resources.Rewind.png");
-                NormalKill = CreateSprite("TownOfUs.Resources.NormalKill.png");
-                ShiftKill = CreateSprite("TownOfUs.Resources.ShiftKill.png");
-                MedicSprite = CreateSprite("TownOfUs.Resources.Medic.png");
-                SeerSprite = CreateSprite("TownOfUs.Resources.Seer.png");
-                SampleSprite = CreateSprite("TownOfUs.Resources.Sample.png");
-                MorphSprite = CreateSprite("TownOfUs.Resources.Morph.png");
-                Camouflage = CreateSprite("TownOfUs.Resources.Camouflage.png");
-                Arrow = CreateSprite("TownOfUs.Resources.Arrow.png");
-                Abstain = CreateSprite("TownOfUs.Resources.Abstain.png");
-                MineSprite = CreateSprite("TownOfUs.Resources.Mine.png");
-                SwoopSprite = CreateSprite("TownOfUs.Resources.Swoop.png");
-                DouseSprite = CreateSprite("TownOfUs.Resources.Douse.png");
-                IgniteSprite = CreateSprite("TownOfUs.Resources.Ignite.png");
-                ReviveSprite = CreateSprite("TownOfUs.Resources.Revive.png");
-                ButtonSprite = CreateSprite("TownOfUs.Resources.Button.png");
-                PolusSprite = CreateSprite("TownOfUs.Resources.polus.gg.png");
-                CycleSprite = CreateSprite("TownOfUs.Resources.Cycle.png");
-                GuessSprite = CreateSprite("TownOfUs.Resources.Guess.png");
+            JanitorClean = CreateSprite("TownOfUs.Resources.Janitor.png");
+            EngineerFix = CreateSprite("TownOfUs.Resources.Engineer.png");
+            //EngineerArrow = CreateSprite("TownOfUs.Resources.EngineerArrow.png");
+            SwapperSwitch = CreateSprite("TownOfUs.Resources.SwapperSwitch.png");
+            SwapperSwitchDisabled = CreateSprite("TownOfUs.Resources.SwapperSwitchDisabled.png");
+            Shift = CreateSprite("TownOfUs.Resources.Shift.png");
+            Kill = CreateSprite("TownOfUs.Resources.Kill.png");
+            Footprint = CreateSprite("TownOfUs.Resources.Footprint.png");
+            Rewind = CreateSprite("TownOfUs.Resources.Rewind.png");
+            NormalKill = CreateSprite("TownOfUs.Resources.NormalKill.png");
+            ShiftKill = CreateSprite("TownOfUs.Resources.ShiftKill.png");
+            MedicSprite = CreateSprite("TownOfUs.Resources.Medic.png");
+            SeerSprite = CreateSprite("TownOfUs.Resources.Seer.png");
+            SampleSprite = CreateSprite("TownOfUs.Resources.Sample.png");
+            MorphSprite = CreateSprite("TownOfUs.Resources.Morph.png");
+            Camouflage = CreateSprite("TownOfUs.Resources.Camouflage.png");
+            Arrow = CreateSprite("TownOfUs.Resources.Arrow.png");
+            Abstain = CreateSprite("TownOfUs.Resources.Abstain.png");
+            MineSprite = CreateSprite("TownOfUs.Resources.Mine.png");
+            SwoopSprite = CreateSprite("TownOfUs.Resources.Swoop.png");
+            DouseSprite = CreateSprite("TownOfUs.Resources.Douse.png");
+            IgniteSprite = CreateSprite("TownOfUs.Resources.Ignite.png");
+            ReviveSprite = CreateSprite("TownOfUs.Resources.Revive.png");
+            ButtonSprite = CreateSprite("TownOfUs.Resources.Button.png");
+            DragSprite = CreateSprite("TownOfUs.Resources.Drag.png");
+            DropSprite = CreateSprite("TownOfUs.Resources.Drop.png");
+            PolusSprite = CreateSprite("TownOfUs.Resources.polus.gg.png");
+            CycleSprite = CreateSprite("TownOfUs.Resources.Cycle.png");
+            GuessSprite = CreateSprite("TownOfUs.Resources.Guess.png");
 
 
-                PalettePatch.Load();
-                ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
-                ClassInjector.RegisterTypeInIl2Cpp<HatAnimator>();
+            PalettePatch.Load();
+            ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
 
-                // RegisterInIl2CppAttribute.Register();
-                ClassInjector.RegisterTypeInIl2Cpp<Coroutines.Component>();
+            // RegisterInIl2CppAttribute.Register();
+            ClassInjector.RegisterTypeInIl2Cpp<Coroutines.Component>();
 
-                var gameObject = new GameObject(nameof(TownOfUs)).DontDestroy();
-                gameObject.AddComponent<Coroutines.Component>();
+            var gameObject = new GameObject(nameof(TownOfUs)).DontDestroy();
+            gameObject.AddComponent<Coroutines.Component>();
 
-                Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
-                Port = Config.Bind("Custom", "Port", (ushort) 22023);
-                var defaultRegions = ServerManager.DefaultRegions.ToList();
-                var ip = Ip.Value;
-                if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
-                    foreach (var address in Dns.GetHostAddresses(Ip.Value))
-                    {
-                        if (address.AddressFamily != AddressFamily.InterNetwork)
-                            continue;
-                        ip = address.ToString();
-                        break;
-                    }
-
-                // ServerManager.Instance.AddOrUpdateRegion(new StaticRegionInfo(
-                // 	"Custom-Server", StringNames.NoTranslation, ip, new ServerInfo[]
-                // 	{
-                // 		new ServerInfo("Custom-Server", ip, Port.Value)
-                // 	}
-                // ).Cast<IRegionInfo>());
-
-                ServerManager.DefaultRegions = defaultRegions.ToArray();
-
-                SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>) ((scene, loadSceneMode) =>
+            Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
+            Port = Config.Bind("Custom", "Port", (ushort) 22023);
+            var defaultRegions = ServerManager.DefaultRegions.ToList();
+            var ip = Ip.Value;
+            if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
+                foreach (var address in Dns.GetHostAddresses(Ip.Value))
                 {
-                    ModManager.Instance.ShowModStamp();
-                }));
-                _harmony.PatchAll();
-            }
-            catch (Exception e)
+                    if (address.AddressFamily != AddressFamily.InterNetwork)
+                        continue;
+                    ip = address.ToString();
+                    break;
+                }
+
+            // ServerManager.Instance.AddOrUpdateRegion(new StaticRegionInfo(
+            // 	"Custom-Server", StringNames.NoTranslation, ip, new ServerInfo[]
+            // 	{
+            // 		new ServerInfo("Custom-Server", ip, Port.Value)
+            // 	}
+            // ).Cast<IRegionInfo>());
+
+            ServerManager.DefaultRegions = defaultRegions.ToArray();
+
+            SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>) ((scene, loadSceneMode) =>
             {
-                Log.LogError($"{e.Message}. Stack: {e.StackTrace}");
-            }
+                ModManager.Instance.ShowModStamp();
+            }));
+
+            _harmony.PatchAll();
         }
 
         public static Sprite CreateSprite(string name, bool hat = false)

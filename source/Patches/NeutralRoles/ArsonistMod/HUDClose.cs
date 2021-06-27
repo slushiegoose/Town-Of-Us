@@ -15,7 +15,8 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             {
                 var arsonist = (Arsonist) role;
                 arsonist.LastDoused = DateTime.UtcNow;
-                arsonist.LastDoused = arsonist.LastDoused.AddSeconds(-10.0);
+                // Stops arsonist timer from being lowered by 10 seconds after meetings
+                // arsonist.LastDoused = arsonist.LastDoused.AddSeconds(-10.0);
             }
         }
     }
