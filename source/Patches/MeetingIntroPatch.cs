@@ -1,8 +1,9 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
-using UnityEngine;
-using PlayerData = GameData.PlayerInfo;
 using UnhollowerBaseLib;
+
+using PlayerData = GameData.PlayerInfo;
+
 namespace TownOfUs
 {
     
@@ -31,7 +32,7 @@ namespace TownOfUs
                     if (!players.Contains(playerData))
                         players.Add(playerData);
                 }
-                deadPlayers = new Il2CppReferenceArray<PlayerData>(players.ToArray());
+                deadPlayers = players.ToArray();
                 DeadPlayers.Clear();
             }
         }
