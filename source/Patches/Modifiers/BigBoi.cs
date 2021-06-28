@@ -7,6 +7,14 @@ namespace TownOfUs.Modifiers
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static void Postfix(HudManager __instance)
         {
+            foreach (var player in PlayerControl.AllPlayerControls.ToArray())
+            {
+                if (player.Is(ModifierEnum.BigBoi))
+                {
+                    player.transform.localScale = new UnityEngine.Vector3(1f, 1f, 1f);
+                    break;
+                }
+            }
             /*var bodies = Object.FindObjectsOfType<DeadBody>();
             foreach (var body in bodies)
             {
@@ -19,7 +27,6 @@ namespace TownOfUs.Modifiers
                         body.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
                     }
                 }
-                
             }*/
         }
 
