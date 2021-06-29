@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.UnderdogMod
@@ -8,11 +9,9 @@ namespace TownOfUs.ImpostorRoles.UnderdogMod
     {
         public static void Postfix()
         {
-            var localPlayer = PlayerControl.LocalPlayer;
-            if (localPlayer.Is(RoleEnum.Underdog))
-                localPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown * (
-                    PerformKill.LastImp() ? 0.5f : 1.5f
-                ));
+            var role = Role.GetRole(PlayerControl.LocalPlayer);
+            if (role?.RoleType == RoleEnum.Underdog)
+                ((Underdog)role).SetKillTimer();
         }
     }
 }

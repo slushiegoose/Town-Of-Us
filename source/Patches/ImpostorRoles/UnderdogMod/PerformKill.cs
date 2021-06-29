@@ -1,5 +1,6 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
+using TownOfUs.Roles;
 
 namespace TownOfUs.ImpostorRoles.UnderdogMod
 {
@@ -8,14 +9,15 @@ namespace TownOfUs.ImpostorRoles.UnderdogMod
     {
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
-            if (__instance.Is(RoleEnum.Underdog))
-                __instance.SetKillTimer(PlayerControl.GameOptions.KillCooldown * (LastImp() ? 0.5f : 1.5f));
+            var role = Role.GetRole(__instance);
+            if (role?.RoleType == RoleEnum.Underdog)
+                ((Underdog)role).SetKillTimer();
         }
 
         internal static bool LastImp()
         {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Data.IsImpostor && !x.Data.IsDead) ==
-                   1;
+            return PlayerControl.AllPlayerControls.ToArray()
+                .Count(x => x.Data.IsImpostor && !x.Data.IsDead) == 1;
         }
     }
 }
