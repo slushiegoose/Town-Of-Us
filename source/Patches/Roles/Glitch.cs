@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Extensions;
-using TownOfUs.Patches.Roles.Modifiers;
 using TownOfUs.Roles.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;

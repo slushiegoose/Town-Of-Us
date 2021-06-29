@@ -1,5 +1,4 @@
 using TownOfUs.Extensions;
-using TownOfUs.Patches.Roles.Modifiers;
 using UnityEngine;
 
 namespace TownOfUs.Roles.Modifiers

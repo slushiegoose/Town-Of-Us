@@ -1,4 +1,4 @@
-﻿namespace TownOfUs.Patches.Roles.Modifiers
+﻿namespace TownOfUs.Roles
 {
     public interface IVisualAlteration
     {

@@ -1,6 +1,5 @@
 using System;
 using TownOfUs.Extensions;
-using TownOfUs.Patches.Roles.Modifiers;
 using TownOfUs.Roles.Modifiers;
 using UnityEngine;
 

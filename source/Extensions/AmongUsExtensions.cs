@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TownOfUs.Patches.Roles.Modifiers;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
 
