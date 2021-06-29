@@ -5,13 +5,19 @@ using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ArsonistMod
 {
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPatch]
     public class HudManagerUpdate
     {
         public static Sprite IgniteSprite => TownOfUs.IgniteSprite;
 
-        public static void UpdateMeeting(MeetingHud __instance, Arsonist role)
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
+        [HarmonyPostfix]
+        public static void UpdateMeeting(MeetingHud __instance)
         {
+            var localPlayer = PlayerControl.LocalPlayer;
+            var _role = Role.GetRole(localPlayer);
+            if (_role?.RoleType != RoleEnum.Arsonist) return;
+            var role = (Arsonist)_role;
             foreach (var state in __instance.playerStates)
             {
                 var player = PlayerControl.AllPlayerControls.ToArray()
@@ -21,6 +27,7 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             }
         }
 
+        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1) return;
@@ -29,11 +36,11 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist)) return;
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, role);
             foreach (var playerId in role.DousedPlayers)
             {
                 var player = Utils.PlayerById(playerId);
-                if (player.Data.Disconnected || player.Data.IsDead)
+                var data = player?.Data;
+                if (data == null || data.Disconnected || data.IsDead)
                     continue;
 
                 player.myRend.material.SetColor("_VisorColor", role.Color);
