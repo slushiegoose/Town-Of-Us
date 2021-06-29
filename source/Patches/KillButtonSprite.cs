@@ -14,7 +14,6 @@ namespace TownOfUs
 
         private static Sprite Revive => TownOfUs.ReviveSprite;
 
-        private static Sprite Kill => TownOfUs.Kill;
         private static Sprite Button => TownOfUs.ButtonSprite;
 
 
