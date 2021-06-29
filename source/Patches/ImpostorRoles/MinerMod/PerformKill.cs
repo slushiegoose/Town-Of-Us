@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using TownOfUs.Roles;
 using UnityEngine;
 using Object = UnityEngine.Object;

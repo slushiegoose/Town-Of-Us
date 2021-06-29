@@ -6,7 +6,7 @@ using HarmonyLib;
 using Hazel;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CustomHats;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;

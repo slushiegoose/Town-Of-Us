@@ -5,8 +5,9 @@ using System.Linq;
 using System.Reflection;
 using Hazel;
 using InnerNet;
+using Reactor;
 using TownOfUs.CrewmateRoles.MedicMod;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
