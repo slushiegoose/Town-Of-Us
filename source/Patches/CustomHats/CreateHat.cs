@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HarmonyLib;
-using TownOfUs.Roles;
+using Reactor;
 using UnityEngine;
 
 namespace TownOfUs.CustomHats
@@ -9,7 +9,7 @@ namespace TownOfUs.CustomHats
     public class HatCreation
     {
         public const string TouHatIdentifier = "TownOfUsHat";
-        
+
         private static bool modded;
 
         public static Sprite EmptySprite = TownOfUs.CreateSprite("TownOfUs.Resources.Hats.transparent.png", true);
@@ -71,8 +71,8 @@ namespace TownOfUs.CustomHats
                         System.Console.WriteLine("Adding hats");
                         modded = true;
                         List<HatData> hatDatas = new List<HatData>();
-                        
-                        hatDatas.AddRange(GenerateHat("hats", 65));
+
+                        hatDatas.AddRange(GenerateHat());
 
                         var hatId = 0;
                         foreach (var hatData in hatDatas)
@@ -103,16 +103,21 @@ namespace TownOfUs.CustomHats
                 }
             }
 
-            private static List<HatData> GenerateHat(string prefix, int finalHatNumber)
+            private static List<HatData> GenerateHat()
             {
+                const string prefix = "TownOfUs.Resources.Hats.";
+
                 var hatDatas = new List<HatData>();
-                for (var id = 0; id <= finalHatNumber; id++)
+                foreach (var resourceName in typeof(TownOfUs).Assembly.GetManifestResourceNames())
                 {
+                    if (!resourceName.StartsWith(prefix))
+                        continue;
+
                     hatDatas.Add(new HatData
                     {
                         author = "",
                         bounce = false,
-                        name = $"{prefix}{id:0000}",
+                        name = resourceName[prefix.Length..^4],
                         offset = new Vector2(-0.1f, 0.35f),
                         highUp = false,
                         new_hat = true

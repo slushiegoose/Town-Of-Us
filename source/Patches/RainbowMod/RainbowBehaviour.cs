@@ -1,13 +1,17 @@
 ﻿using System;
+using Reactor;
+using UnhollowerBaseLib.Attributes;
 using UnityEngine;
 
 namespace TownOfUs.RainbowMod
 {
+    [RegisterInIl2Cpp]
     public class RainbowBehaviour : MonoBehaviour
     {
         public Renderer Renderer;
         public int Id;
 
+        [HideFromIl2Cpp]
         public void AddRend(Renderer rend, int id)
         {
             Renderer = rend;
@@ -24,6 +28,8 @@ namespace TownOfUs.RainbowMod
             }
         }
 
-        public RainbowBehaviour(IntPtr ptr) : base(ptr) { }
+        public RainbowBehaviour(IntPtr ptr) : base(ptr)
+        {
+        }
     }
 }

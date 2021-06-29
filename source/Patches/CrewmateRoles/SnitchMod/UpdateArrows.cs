@@ -1,6 +1,6 @@
 using System.Linq;
 using HarmonyLib;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using TownOfUs.Roles;
 
 namespace TownOfUs.CrewmateRoles.SnitchMod

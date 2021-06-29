@@ -1,9 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using HarmonyLib;
 using Hazel;
 using InnerNet;
+using Reactor;
 using UnityEngine;
 
 namespace TownOfUs.Handshake

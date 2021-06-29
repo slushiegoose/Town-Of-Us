@@ -7,20 +7,22 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.IL2CPP;
 using HarmonyLib;
-using TownOfUs.CustomHats;
+using Reactor;
 using TownOfUs.CustomOption;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using TownOfUs.RainbowMod;
 using UnhollowerBaseLib;
-using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace TownOfUs
 {
-    [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", "2.1.4")]
+    [BepInPlugin(Id)]
+    [BepInDependency(ReactorPlugin.Id)]
     public class TownOfUs : BasePlugin
     {
+        public const string Id = "com.slushiegoose.townofus";
+
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
         public static Sprite SwapperSwitch;
@@ -66,11 +68,9 @@ namespace TownOfUs
 
         public override void Load()
         {
-            PluginSingleton<TownOfUs>.Instance = this;
-
             System.Console.WriteLine("000.000.000.000/000000000000000000");
 
-            _harmony = new Harmony("com.slushiegoose.townofus");
+            _harmony = new Harmony(Id);
 
             Generate.GenerateAll();
 
@@ -106,13 +106,6 @@ namespace TownOfUs
 
 
             PalettePatch.Load();
-            ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
-
-            // RegisterInIl2CppAttribute.Register();
-            ClassInjector.RegisterTypeInIl2Cpp<Coroutines.Component>();
-
-            var gameObject = new GameObject(nameof(TownOfUs)).DontDestroy();
-            gameObject.AddComponent<Coroutines.Component>();
 
             Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
             Port = Config.Bind("Custom", "Port", (ushort) 22023);

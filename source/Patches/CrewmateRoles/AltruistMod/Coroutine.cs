@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using InnerNet;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Roles;
 using UnityEngine;

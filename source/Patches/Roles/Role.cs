@@ -5,7 +5,7 @@ using HarmonyLib;
 using Hazel;
 using TMPro;
 using TownOfUs.CustomHats;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;

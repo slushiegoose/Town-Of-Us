@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using HarmonyLib;
 using TownOfUs.CustomOption;
-using TownOfUs.Extensions;
+using Reactor.Extensions;
 using UnityEngine;
 
 namespace TownOfUs
