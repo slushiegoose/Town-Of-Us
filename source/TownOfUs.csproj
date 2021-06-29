@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>TownOfUs</RootNamespace>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <GameProvider>Static</GameProvider>
-    <GameVersion>../../AmongUsModded2021615s/</GameVersion>
+    <GameVersion>../AmongUs</GameVersion>
   </PropertyGroup>
 
   <ItemGroup>
