@@ -4,20 +4,21 @@ using UnityEngine;
 
 namespace TownOfUs.Roles.Modifiers
 {
-    public class Flash : Modifier, IVisualAlteration
+    public class BigBoiModifier : Modifier, IVisualAlteration
     {
-        public Flash(PlayerControl player) : base(player)
+        public BigBoiModifier(PlayerControl player) : base(player)
         {
-            Name = "Flash";
-            TaskText = () => "Superspeed!";
+            Name = "Giant";
+            TaskText = () => "Super slow!";
             Color = new Color(1f, 0.5f, 0.5f, 1f);
-            ModifierType = ModifierEnum.Flash;
+            ModifierType = ModifierEnum.BigBoi;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             appearance = Player.GetDefaultAppearance();
-            appearance.SpeedFactor = 1.5f;
+            appearance.SpeedFactor = 0.5f;
+            appearance.SizeFactor = new Vector3(1.0f, 1.0f, 1.0f);
             return true;
         }
     }

@@ -1,18 +1,20 @@
-﻿using System;
+﻿using Hazel;
+using InnerNet;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Hazel;
-using InnerNet;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Extensions;
+using TownOfUs.Patches.Roles.Modifiers;
+using TownOfUs.Roles.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.Roles
 {
-    public class Glitch : Role
+    public class Glitch : Role, IVisualAlteration
     {
         public static AssetBundle bundle = loadBundle();
         public static Sprite MimicSprite = bundle.LoadAsset<Sprite>("MimicSprite").DontUnload();
@@ -54,7 +56,6 @@ namespace TownOfUs.Roles
         public PlayerControl MimicTarget { get; set; }
         public bool GlitchWins { get; set; }
 
-
         public static AssetBundle loadBundle()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -62,7 +63,6 @@ namespace TownOfUs.Roles
             var assets = stream.ReadFully();
             return AssetBundle.LoadFromMemory(assets);
         }
-
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
@@ -72,7 +72,7 @@ namespace TownOfUs.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(
                     PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.GlitchWin,
+                    (byte)CustomRPC.GlitchWin,
                     SendOption.Reliable,
                     -1
                 );
@@ -198,11 +198,10 @@ namespace TownOfUs.Roles
             return false;
         }
 
-
         public void RpcSetHacked(PlayerControl hacked)
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.SetHacked, SendOption.Reliable, -1);
+                (byte)CustomRPC.SetHacked, SendOption.Reliable, -1);
             writer.Write(hacked.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             SetHacked(hacked);
@@ -219,6 +218,20 @@ namespace TownOfUs.Roles
             Coroutines.Start(AbilityCoroutine.Mimic(this, mimicked));
         }
 
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        {
+            if (IsUsingMimic)
+            {
+                appearance = MimicTarget.GetDefaultAppearance();
+                var modifier = Modifier.GetModifier(MimicTarget);
+                if (modifier is IVisualAlteration alteration)
+                    alteration.TryGetModifiedAppearance(out appearance);
+                return true;
+            }
+
+            appearance = Player.GetDefaultAppearance();
+            return false;
+        }
 
         public static class AbilityCoroutine
         {
@@ -226,7 +239,7 @@ namespace TownOfUs.Roles
 
             public static IEnumerator Hack(Glitch __instance, PlayerControl hackPlayer)
             {
-                GameObject[] lockImg = {null, null, null, null};
+                GameObject[] lockImg = { null, null, null, null };
                 ImportantTextTask hackText;
 
                 if (tickDictionary.ContainsKey(hackPlayer.PlayerId))
@@ -264,7 +277,6 @@ namespace TownOfUs.Roles
                             HudManager.Instance.KillButton.renderer.color = Palette.DisabledClear;
                             HudManager.Instance.KillButton.renderer.material.SetFloat("_Desat", 1f);
                         }
-
 
                         if (HudManager.Instance.UseButton != null)
                         {
@@ -374,7 +386,7 @@ namespace TownOfUs.Roles
             public static IEnumerator Mimic(Glitch __instance, PlayerControl mimicPlayer)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.SetMimic, SendOption.Reliable, -1);
+                    (byte)CustomRPC.SetMimic, SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(mimicPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -407,7 +419,7 @@ namespace TownOfUs.Roles
                         Utils.Unmorph(__instance.Player);
 
                         var writer2 = AmongUsClient.Instance.StartRpcImmediately(
-                            PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.RpcResetAnim, SendOption.Reliable,
+                            PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RpcResetAnim, SendOption.Reliable,
                             -1);
                         writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer2.Write(mimicPlayer.PlayerId);
@@ -416,9 +428,8 @@ namespace TownOfUs.Roles
                     }
 
                     Utils.Morph(__instance.Player, mimicPlayer);
-                    __instance.MimicButton.SetCoolDown(CustomGameOptions.MimicDuration - (float) totalMimickTime,
+                    __instance.MimicButton.SetCoolDown(CustomGameOptions.MimicDuration - (float)totalMimickTime,
                         CustomGameOptions.MimicDuration);
-
 
                     yield return null;
                 }
@@ -436,7 +447,7 @@ namespace TownOfUs.Roles
                                                            !__gInstance.Player.Data.IsDead);
                 __instance.KillButton.SetCoolDown(
                     CustomGameOptions.GlitchKillCooldown -
-                    (float) (DateTime.UtcNow - __gInstance.LastKill).TotalSeconds,
+                    (float)(DateTime.UtcNow - __gInstance.LastKill).TotalSeconds,
                     CustomGameOptions.GlitchKillCooldown);
 
                 __instance.KillButton.SetTarget(null);
@@ -460,7 +471,7 @@ namespace TownOfUs.Roles
                     {
                         var medic = __gInstance.HackTarget.getMedic().Player.PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                            (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                         writer.Write(medic);
                         writer.Write(__gInstance.KillTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -468,7 +479,6 @@ namespace TownOfUs.Roles
 
                         StopKill.BreakShield(medic, __gInstance.KillTarget.PlayerId,
                             CustomGameOptions.ShieldBreaks);
-
 
                         return;
                     }
@@ -493,13 +503,12 @@ namespace TownOfUs.Roles
 
                 __gInstance.HackButton.renderer.sprite = HackSprite;
 
-
                 __gInstance.HackButton.gameObject.SetActive(__instance.UseButton.isActiveAndEnabled &&
                                                             !__gInstance.Player.Data.IsDead);
                 __gInstance.HackButton.transform.position = new Vector3(__gInstance.MimicButton.transform.position.x,
                     __instance.ReportButton.transform.position.y, __instance.ReportButton.transform.position.z);
                 __gInstance.HackButton.SetCoolDown(
-                    CustomGameOptions.HackCooldown - (float) (DateTime.UtcNow - __gInstance.LastHack).TotalSeconds,
+                    CustomGameOptions.HackCooldown - (float)(DateTime.UtcNow - __gInstance.LastHack).TotalSeconds,
                     CustomGameOptions.HackCooldown);
 
                 __gInstance.HackButton.SetTarget(null);
@@ -528,7 +537,7 @@ namespace TownOfUs.Roles
                     {
                         var medic = __gInstance.HackTarget.getMedic().Player.PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                            (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                         writer.Write(medic);
                         writer.Write(__gInstance.HackTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -560,7 +569,6 @@ namespace TownOfUs.Roles
 
                 __gInstance.MimicButton.renderer.sprite = MimicSprite;
 
-
                 __gInstance.MimicButton.gameObject.SetActive(__instance.UseButton.isActiveAndEnabled &&
                                                              !__gInstance.Player.Data.IsDead);
                 __gInstance.MimicButton.transform.position = new Vector3(
@@ -583,7 +591,7 @@ namespace TownOfUs.Roles
                 if (!__gInstance.IsUsingMimic)
                     __gInstance.MimicButton.SetCoolDown(
                         CustomGameOptions.MimicCooldown -
-                        (float) (DateTime.UtcNow - __gInstance.LastMimic).TotalSeconds,
+                        (float)(DateTime.UtcNow - __gInstance.LastMimic).TotalSeconds,
                         CustomGameOptions.MimicCooldown);
             }
 

@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using TownOfUs.Patches.Roles.Modifiers;
+using TownOfUs.Roles;
+using TownOfUs.Roles.Modifiers;
 
 namespace TownOfUs.Extensions
 {
@@ -38,6 +41,36 @@ namespace TownOfUs.Extensions
                 }
 
             return result;
+        }
+
+        public static VisualAppearance GetDefaultAppearance(this PlayerControl player)
+        {
+            return new VisualAppearance()
+            {
+                ColorId = player.Data.ColorId,
+                HatId = player.Data.HatId,
+                SkinId = player.Data.SkinId,
+                PetId = player.Data.PetId
+            };
+        }
+
+        public static bool TryGetAppearance(this PlayerControl player, IVisualAlteration modifier, out VisualAppearance appearance)
+        {
+            if (modifier != null)
+                return modifier.TryGetModifiedAppearance(out appearance);
+
+            appearance = player.GetDefaultAppearance();
+            return false;
+        }
+
+        public static VisualAppearance GetAppearance(this PlayerControl player)
+        {
+            if (player.TryGetAppearance(Role.GetRole(player) as IVisualAlteration, out var appearance))
+                return appearance;
+            else if (player.TryGetAppearance(Modifier.GetModifier(player) as IVisualAlteration, out appearance))
+                return appearance;
+            else
+                return player.GetDefaultAppearance();
         }
     }
 }
