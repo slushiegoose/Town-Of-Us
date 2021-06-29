@@ -8,9 +8,8 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public static class HUDClose
     {
-        public static void Postfix(Object obj)
+        public static void Postfix()
         {
-            if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Undertaker))
             {
                 var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
