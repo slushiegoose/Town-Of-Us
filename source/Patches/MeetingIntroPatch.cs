@@ -7,7 +7,6 @@ using PlayerData = GameData.PlayerInfo;
 
 namespace TownOfUs
 {
-    
     public static class MeetingIntroPatch
     {
         public static List<PlayerData> DeadPlayers =
