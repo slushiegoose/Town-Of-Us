@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace TownOfUs
@@ -54,7 +54,7 @@ namespace TownOfUs
             }
             else
             {
-                __instance.KillButton.renderer.sprite = Kill;
+                __instance.KillButton.renderer.sprite = TranslationController.Instance.GetImage(ImageNames.KillButton);
                 flag = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
             }
 
