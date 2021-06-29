@@ -32,11 +32,7 @@ namespace TownOfUs
                     if (!players.Contains(playerData))
                         players.Add(playerData);
                 }
-<<<<<<< HEAD
                 deadPlayers = players.ToArray();
-=======
-                deadPlayers = new Il2CppReferenceArray<PlayerData>(players.ToArray());
->>>>>>> a092cc6 (fix: show destroyed bodies as dead)
                 DeadPlayers.Clear();
             }
         }

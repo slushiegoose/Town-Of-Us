@@ -57,8 +57,8 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             var player = Utils.PlayerById(parentId);
 
-            // if (player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
-            //     yield break;
+            if (player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
+                yield break;
 
             player.Revive();
             Murder.KilledPlayers.Remove(
