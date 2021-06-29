@@ -14,7 +14,8 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             var body = role.CurrentlyDragging;
             if (body == null) return;
             var currentPosition = __instance.GetTruePosition();
-            var newPos = ((Vector2)__instance.transform.position) + body.myCollider.offset;
+            var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
+            var newPos = ((Vector2) __instance.transform.position) - (velocity / 3) + body.myCollider.offset;
             if (!PhysicsHelpers.AnythingBetween(
                 currentPosition,
                 newPos,
