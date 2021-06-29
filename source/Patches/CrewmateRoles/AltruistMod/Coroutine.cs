@@ -57,7 +57,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             var player = Utils.PlayerById(parentId);
 
-            if (player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
+            if (player == null)
                 yield break;
 
             player.Revive();
@@ -72,17 +72,20 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             {
                 var lover = Role.GetRole<Lover>(player).OtherLover.Player;
 
-                lover.Revive();
-                Murder.KilledPlayers.Remove(
-                    Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
-                revived.Add(lover);
-
-                var loverBody = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == lover.PlayerId);
-
-                if (loverBody != null)
+                if (lover?.Data != null && !lover.Data.Disconnected)
                 {
-                    lover.NetTransform.SnapTo(loverBody.TruePosition);
-                    Object.Destroy(loverBody.gameObject);
+                    lover.Revive();
+                    Murder.KilledPlayers.Remove(
+                        Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
+                    revived.Add(lover);
+
+                    var loverBody = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == lover.PlayerId);
+
+                    if (loverBody != null)
+                    {
+                        lover.NetTransform.SnapTo(loverBody.TruePosition);
+                        Object.Destroy(loverBody.gameObject);
+                    }
                 }
             }
 

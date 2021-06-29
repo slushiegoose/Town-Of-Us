@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Linq;
 using UnhollowerBaseLib;
 
 using PlayerData = GameData.PlayerInfo;
@@ -26,12 +27,8 @@ namespace TownOfUs
                 [HarmonyArgument(1)] ref Il2CppReferenceArray<PlayerData> deadPlayers
             )
             {
-                var players = new List<PlayerData>(deadPlayers);
-                foreach (var playerData in DeadPlayers)
-                {
-                    if (!players.Contains(playerData))
-                        players.Add(playerData);
-                }
+                var players = deadPlayers.ToHashSet();
+                players.UnionWith(DeadPlayers);
                 deadPlayers = players.ToArray();
                 DeadPlayers.Clear();
             }
