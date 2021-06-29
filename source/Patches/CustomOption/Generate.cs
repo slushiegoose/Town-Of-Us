@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace TownOfUs.CustomOption
 {
@@ -218,6 +218,8 @@ namespace TownOfUs.CustomOption
                 PercentFormat);
 
             ImpostorRoles = new CustomHeaderOption(num++, "Impostor Roles");
+            AssassinOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Assassin</color>", 0f, 0f, 100f, 5f,
+                PercentFormat);
             JanitorOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Janitor</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
             MorphlingOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Morphling</color>", 0f, 0f, 100f, 5f,
@@ -230,8 +232,7 @@ namespace TownOfUs.CustomOption
                 PercentFormat);
             UndertakerOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Undertaker</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
-            AssassinOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Assassin</color>", 0f, 0f, 100f, 5f,
-                PercentFormat);
+            
             UnderdogOn = new CustomNumberOption(true, num++, "<color=#FF0000FF>Underdog</color>", 0f, 0f, 100f, 5f,
                 PercentFormat);
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Extensions;
@@ -53,7 +53,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     var body = role.CurrentlyDragging;
-                    var renderer = role.CurrentlyDragging.GetComponent<SpriteRenderer>();
+                    var renderer = role.CurrentlyDragging.bodyRenderer;
                     role.CurrentlyDragging = null;
                     renderer.material.SetFloat("_Outline", 0f);
                     __instance.renderer.sprite = TownOfUs.DragSprite;
