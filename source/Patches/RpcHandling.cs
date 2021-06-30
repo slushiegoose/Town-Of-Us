@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -43,36 +43,6 @@ namespace TownOfUs
             var num = Random.RandomRangeInt(1, 101);
             return num <= probability;
         }
-
-        /*
-        private static void GenExe(List<GameData.PlayerInfo> infected, List<PlayerControl> crewmates)
-        {
-            PlayerControl pc;
-            var targets = Utils.getCrewmates(infected).Where(x =>
-            {
-                var role = Role.GetRole(x);
-                if (role == null) return true;
-                return role.Faction == Faction.Crewmates;
-            }).ToList();
-            if (targets.Count > 1)
-            {
-                var rand = Random.RandomRangeInt(0, targets.Count);
-                pc = targets[rand];
-                var role = Role.Gen(typeof(Executioner), crewmates.Where(x => x.PlayerId != pc.PlayerId).ToList(),
-                    CustomRPC.SetExecutioner);
-                if (role != null)
-                {
-                    crewmates.Remove(role.Player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.SetTarget, SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
-                    writer.Write(pc.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    ((Executioner) role).target = pc;
-                }
-            }
-        }*/
-
         private static void SortRoles(List<(Type, CustomRPC, int)> roles, int max = int.MaxValue)
         {
             roles.Shuffle();
@@ -89,6 +59,15 @@ namespace TownOfUs
 
         private static void GenEachRole(List<GameData.PlayerInfo> infected)
         {
+            if (TutorialManager.InstanceExists)
+            {
+                var role = Role.Gen<Role>(
+                    typeof(Engineer),
+                    PlayerControl.LocalPlayer,
+                    CustomRPC.SetEngineer
+                );
+                return;
+            }
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
             crewmates.Shuffle();

@@ -168,6 +168,16 @@ namespace TownOfUs
             return Role.GetRole(player)?.Faction == faction;
         }
 
+        public static bool IsAny(this PlayerControl player, RoleEnum[] roleTypes)
+        {
+            var role = Role.GetRole(player);
+            if (role == null)
+                return roleTypes.Contains(
+                    player.Data.IsImpostor ? RoleEnum.Impostor : RoleEnum.Crewmate
+                );
+            return roleTypes.Any(roleType => role.RoleType == roleType);
+        }
+
         public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors)
         {
             return PlayerControl.AllPlayerControls.ToArray().Where(
