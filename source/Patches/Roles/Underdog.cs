@@ -1,3 +1,5 @@
+﻿using TownOfUs.ImpostorRoles.UnderdogMod;
+
 namespace TownOfUs.Roles
 {
     public class Underdog : Role
@@ -10,6 +12,15 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Underdog;
             Faction = Faction.Impostors;
+        }
+
+        public float MaxTimer() => PlayerControl.GameOptions.KillCooldown * (
+            PerformKill.LastImp() ? 0.5f : 1.5f
+        );
+
+        public void SetKillTimer()
+        {
+            Player.SetKillTimer(MaxTimer());
         }
     }
 }

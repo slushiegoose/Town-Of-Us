@@ -1,17 +1,17 @@
-using HarmonyLib;
+﻿using HarmonyLib;
+using TownOfUs.Roles;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.UnderdogMod
 {
-    [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public static class HUDClose
     {
-        public static void Postfix(Object obj)
+        public static void Postfix()
         {
-            if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Underdog))
-                PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown *
-                                                       (PerformKill.LastImp() ? 0.5f : 1.5f));
+            var role = Role.GetRole(PlayerControl.LocalPlayer);
+            if (role?.RoleType == RoleEnum.Underdog)
+                ((Underdog)role).SetKillTimer();
         }
     }
 }
