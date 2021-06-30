@@ -23,6 +23,14 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                     string.IsNullOrEmpty(currentGuess)
                 ) continue;
 
+                var playerData = Utils.PlayerById(targetId)?.Data;
+                if (playerData == null || playerData.Disconnected)
+                {
+                    assassin.Guesses.Remove(targetId);
+                    ShowHideButtons.HideSingle(assassin, targetId, false);
+                    continue;
+                }
+
                 var nameText = "\n" + (currentGuess == "None"
                     ? "Guess"
                     : "<color=#" +
