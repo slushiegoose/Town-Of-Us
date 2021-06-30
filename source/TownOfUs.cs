@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -26,7 +26,6 @@ namespace TownOfUs
         public static Sprite SwapperSwitch;
         public static Sprite SwapperSwitchDisabled;
         public static Sprite Shift;
-        public static Sprite Kill;
         public static Sprite Footprint;
         public static Sprite Rewind;
         public static Sprite NormalKill;
@@ -76,11 +75,9 @@ namespace TownOfUs
 
             JanitorClean = CreateSprite("TownOfUs.Resources.Janitor.png");
             EngineerFix = CreateSprite("TownOfUs.Resources.Engineer.png");
-            //EngineerArrow = CreateSprite("TownOfUs.Resources.EngineerArrow.png");
             SwapperSwitch = CreateSprite("TownOfUs.Resources.SwapperSwitch.png");
             SwapperSwitchDisabled = CreateSprite("TownOfUs.Resources.SwapperSwitchDisabled.png");
             Shift = CreateSprite("TownOfUs.Resources.Shift.png");
-            Kill = CreateSprite("TownOfUs.Resources.Kill.png");
             Footprint = CreateSprite("TownOfUs.Resources.Footprint.png");
             Rewind = CreateSprite("TownOfUs.Resources.Rewind.png");
             NormalKill = CreateSprite("TownOfUs.Resources.NormalKill.png");

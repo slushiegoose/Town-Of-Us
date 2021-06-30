@@ -1,16 +1,15 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using TownOfUs.Roles;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.ImpostorRoles.UndertakerMod
 {
-    [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public static class HUDClose
     {
-        public static void Postfix(Object obj)
+        public static void Postfix()
         {
-            if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Undertaker))
             {
                 var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
