@@ -13,6 +13,12 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             var role = Role.GetRole<Undertaker>(__instance);
             var body = role.CurrentlyDragging;
             if (body == null) return;
+            if (__instance.Data.IsDead)
+            {
+                role.CurrentlyDragging = null;
+                body.bodyRenderer.material.SetFloat("_Outline", 0f);
+                return;
+            }
             var currentPosition = __instance.GetTruePosition();
             var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
             var newPos = ((Vector2) __instance.transform.position) - (velocity / 3) + body.myCollider.offset;
