@@ -21,11 +21,13 @@ namespace TownOfUs
             [HarmonyArgument(2)] out bool couldUse)
         {
             __result = float.MaxValue;
-            PlayerControl player = playerInfo.Object;
+            var player = playerInfo.Object;
+            var center = player.Collider.bounds.center;
+            var position = __instance.transform.position;
             if (player.inVent)
             {
                 couldUse = canUse = true;
-                __result = 0f;
+                __result = Vector2.Distance(center, position);
                 return false;
             }
 
@@ -43,8 +45,7 @@ namespace TownOfUs
             }
             if (canUse)
             {
-                Vector3 center = player.Collider.bounds.center;
-                Vector3 position = __instance.transform.position;
+                
                 __result = Vector2.Distance(center, position);
                 canUse &= __result <= __instance.UsableDistance &&
                     !PhysicsHelpers.AnythingBetween(
