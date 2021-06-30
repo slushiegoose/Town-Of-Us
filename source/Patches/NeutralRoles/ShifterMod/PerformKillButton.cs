@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
-using System.Linq;
 using HarmonyLib;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
+using System;
+using System.Collections;
+using System.Linq;
 using TownOfUs.CrewmateRoles.InvestigatorMod;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CrewmateRoles.SnitchMod;
@@ -47,7 +47,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 var medic = role.ClosestPlayer.getMedic().Player.PlayerId;
 
                 var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
                 writer1.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);
@@ -58,7 +58,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.Shift, SendOption.Reliable, -1);
+                (byte)CustomRPC.Shift, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -80,15 +80,14 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             var background = overlay.background;
             overlay.flameParent.SetActive(true);
             yield return new WaitForLerp(0.16666667f,
-                delegate(float t) { overlay.flameParent.transform.localScale = new Vector3(1f, t, 1f); });
+                delegate (float t) { overlay.flameParent.transform.localScale = new Vector3(1f, t, 1f); });
             yield return new WaitForSeconds(1f);
             yield return new WaitForLerp(0.16666667f,
-                delegate(float t) { overlay.flameParent.transform.localScale = new Vector3(1f, 1f - t, 1f); });
+                delegate (float t) { overlay.flameParent.transform.localScale = new Vector3(1f, 1f - t, 1f); });
             overlay.flameParent.SetActive(false);
             overlay.showAll = null;
             renderer.sprite = TownOfUs.NormalKill;
         }
-
 
         public static void Shift(Shifter shifterRole, PlayerControl other)
         {
@@ -128,7 +127,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
 
                     if (role == RoleEnum.Investigator) Footprint.DestroyAll(Role.GetRole<Investigator>(other));
 
-
                     newRole = Role.GetRole(other);
                     newRole.Player = shifter;
 
@@ -158,7 +156,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                         Modifier.ModifierDictionary.Add(shifter.PlayerId, modifier);
                     }
 
-
                     Role.RoleDictionary.Remove(shifter.PlayerId);
                     Role.RoleDictionary.Remove(other.PlayerId);
 
@@ -168,7 +165,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
 
                     foreach (var exeRole in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Executioner))
                     {
-                        var executioner = (Executioner) exeRole;
+                        var executioner = (Executioner)exeRole;
                         var target = executioner.target;
                         if (other == target)
                         {
@@ -191,7 +188,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                     {
                         new Crewmate(other);
                     }
-
 
                     break;
 

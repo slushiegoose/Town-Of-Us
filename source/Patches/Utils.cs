@@ -1,9 +1,9 @@
-﻿using System;
+﻿using HarmonyLib;
+using Hazel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
-using Hazel;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
@@ -22,7 +22,6 @@ namespace TownOfUs
     {
         internal static bool ShowDeadBodies = false;
 
-
         public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
 
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
@@ -36,11 +35,15 @@ namespace TownOfUs
         {
             if (CamouflageUnCamouflage.IsCamoed) return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) Player.nameText.text = MorphedPlayer.Data.PlayerName;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            {
+                Player.nameText.text = MorphedPlayer.Data.PlayerName;
+            }
 
-            var colorId = MorphedPlayer.Data.ColorId;
-            PlayerControl.SetPlayerMaterialColors(colorId, Player.myRend);
-            Player.HatRenderer.SetHat(MorphedPlayer.Data.HatId, colorId);
+            var targetAppearance = MorphedPlayer.GetDefaultAppearance();
+
+            PlayerControl.SetPlayerMaterialColors(targetAppearance.ColorId, Player.myRend);
+            Player.HatRenderer.SetHat(targetAppearance.HatId, targetAppearance.ColorId);
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
                 Player.Data.HatId == 0U ? 1.5f :
@@ -49,23 +52,23 @@ namespace TownOfUs
             );
 
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
-                .AllSkins.ToArray()[(int) MorphedPlayer.Data.SkinId].ProdId)
-                SetSkin(Player, MorphedPlayer.Data.SkinId);
+                .AllSkins.ToArray()[(int)targetAppearance.SkinId].ProdId)
+                SetSkin(Player, targetAppearance.SkinId);
 
             if (Player.CurrentPet == null || Player.CurrentPet.ProdId !=
-                DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) MorphedPlayer.Data.PetId].ProdId)
+                DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)targetAppearance.PetId].ProdId)
             {
                 if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
 
                 Player.CurrentPet =
                     Object.Instantiate(
-                        DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) MorphedPlayer.Data.PetId]);
+                        DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)targetAppearance.PetId]);
                 Player.CurrentPet.transform.position = Player.transform.position;
                 Player.CurrentPet.Source = Player;
                 Player.CurrentPet.Visible = Player.Visible;
             }
 
-            PlayerControl.SetPlayerMaterialColors(colorId, Player.CurrentPet.rend);
+            PlayerControl.SetPlayerMaterialColors(targetAppearance.ColorId, Player.CurrentPet.rend);
             /*if (resetAnim && !Player.inVent)
             {
                 Player.MyPhysics.ResetAnim();
@@ -74,33 +77,32 @@ namespace TownOfUs
 
         public static void Unmorph(PlayerControl Player)
         {
-            var colorId = Player.Data.ColorId;
+            var appearance = Player.GetDefaultAppearance();
+
             Player.nameText.text = Player.Data.PlayerName;
-            PlayerControl.SetPlayerMaterialColors(colorId, Player.myRend);
-            Player.HatRenderer.SetHat(Player.Data.HatId, colorId);
+            PlayerControl.SetPlayerMaterialColors(appearance.ColorId, Player.myRend);
+            Player.HatRenderer.SetHat(appearance.HatId, appearance.ColorId);
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
-                Player.Data.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
+                appearance.HatId == 0U ? 1.5f :
+                HatCreation.TallIds.Contains(appearance.HatId) ? 2.2f : 2.0f,
                 -0.5f
             );
 
             if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
-                .AllSkins.ToArray()[(int) Player.Data.SkinId].ProdId)
-                SetSkin(Player, Player.Data.SkinId);
-
+                .AllSkins.ToArray()[(int)appearance.SkinId].ProdId)
+                SetSkin(Player, appearance.SkinId);
 
             if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
 
             Player.CurrentPet =
                 Object.Instantiate(
-                    DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int) Player.Data.PetId]);
+                    DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)appearance.PetId]);
             Player.CurrentPet.transform.position = Player.transform.position;
             Player.CurrentPet.Source = Player;
             Player.CurrentPet.Visible = Player.Visible;
 
-
-            PlayerControl.SetPlayerMaterialColors(colorId, Player.CurrentPet.rend);
+            PlayerControl.SetPlayerMaterialColors(appearance.ColorId, Player.CurrentPet.rend);
 
             /*if (!Player.inVent)
             {
@@ -134,12 +136,10 @@ namespace TownOfUs
             foreach (var player in PlayerControl.AllPlayerControls) Unmorph(player);
         }
 
-
         public static bool IsCrewmate(this PlayerControl player)
         {
             return GetRole(player) == RoleEnum.Crewmate;
         }
-
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item)
             where T : IDisconnectHandler
@@ -207,7 +207,7 @@ namespace TownOfUs
         {
             return Role.GetRoles(RoleEnum.Medic).Any(role =>
             {
-                var shieldedPlayer = ((Medic) role).ShieldedPlayer;
+                var shieldedPlayer = ((Medic)role).ShieldedPlayer;
                 return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
             });
         }
@@ -216,7 +216,7 @@ namespace TownOfUs
         {
             return Role.GetRoles(RoleEnum.Medic).FirstOrDefault(role =>
             {
-                var shieldedPlayer = ((Medic) role).ShieldedPlayer;
+                var shieldedPlayer = ((Medic)role).ShieldedPlayer;
                 return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
             }) as Medic;
         }
@@ -296,7 +296,6 @@ namespace TownOfUs
             return closestPlayer = closeEnough ? player : null;
         }
 
-
         public static double getDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
         {
             var truePosition = refplayer.GetTruePosition();
@@ -304,12 +303,11 @@ namespace TownOfUs
             return Vector2.Distance(truePosition, truePosition2);
         }
 
-
         public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target)
         {
             MurderPlayer(killer, target);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.BypassKill, SendOption.Reliable, -1);
+                (byte)CustomRPC.BypassKill, SendOption.Reliable, -1);
             writer.Write(killer.PlayerId);
             writer.Write(target.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -421,7 +419,7 @@ namespace TownOfUs
                 fullscreen.enabled = true;
                 fullscreen.color = color;
             }
-            
+
             yield return new WaitForSeconds(waitfor);
 
             if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
@@ -451,7 +449,6 @@ namespace TownOfUs
         {
             ShipStatus.RpcEndGame(reason, showAds);
         }
-
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetInfected))]
         public static class PlayerControl_SetInfected
