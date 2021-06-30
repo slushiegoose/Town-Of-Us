@@ -9,15 +9,15 @@ using Random = UnityEngine.Random;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public class SetPhantom
     {
         public static PlayerControl WillBePhantom;
         public static Vector2 StartPosition;
 
-        public static void Postfix(MeetingHud __instance)
+        public static void Postfix(ExileController __instance)
         {
-            var exiled = __instance.exiledPlayer?.Object;
+            var exiled = __instance.exiled?.Object;
             var localPlayer = PlayerControl.LocalPlayer;
             if (!localPlayer.Data.IsDead && exiled != localPlayer) return;
             if (exiled == localPlayer && localPlayer.Is(RoleEnum.Jester)) return;
