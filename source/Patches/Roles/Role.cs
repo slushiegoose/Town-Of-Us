@@ -1,8 +1,8 @@
+using HarmonyLib;
+using Hazel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
-using Hazel;
 using TMPro;
 using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
@@ -87,15 +87,13 @@ namespace TownOfUs.Roles
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(Role)) return false;
-            return Equals((Role) obj);
+            return Equals((Role)obj);
         }
-
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Player, (int) RoleType);
+            return HashCode.Combine(Player, (int)RoleType);
         }
-
 
         //public static T Gen<T>()
 
@@ -134,7 +132,7 @@ namespace TownOfUs.Roles
                     var role = GetRole(x);
                     if (role == null) return false;
                     var flag2 = role.Faction == Faction.Neutral && !x.Is(RoleEnum.Glitch) && !x.Is(RoleEnum.Arsonist);
-                    var flag3 = x.Is(RoleEnum.Arsonist) && ((Arsonist) role).IgniteUsed && alives.Count > 1;
+                    var flag3 = x.Is(RoleEnum.Arsonist) && ((Arsonist)role).IgniteUsed && alives.Count > 1;
 
                     return flag2 || flag3;
                 });
@@ -146,7 +144,7 @@ namespace TownOfUs.Roles
             {
                 System.Console.WriteLine("NO IMPS NO CREWS");
                 var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.NobodyWins, SendOption.Reliable, -1);
+                    (byte)CustomRPC.NobodyWins, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
 
                 NobodyWinsFunc();
@@ -226,22 +224,24 @@ namespace TownOfUs.Roles
             var rand = Random.RandomRangeInt(0, crewmates.Count); //TODO - change
             var pc = crewmates[rand];
 
-            var role = Activator.CreateInstance(T, new object[] {pc});
+            var role = Activator.CreateInstance(T, new object[] { pc });
             var playerId = pc.PlayerId;
             crewmates.Remove(pc);
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) rpc,
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)rpc,
                 SendOption.Reliable, -1);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             return role as Role;
         }
 
-
         public static Role GetRole(PlayerControl player)
         {
-            return (from entry in RoleDictionary where entry.Key == player.PlayerId select entry.Value)
-                .FirstOrDefault();
+            if (player == null) return null;
+            if (RoleDictionary.TryGetValue(player.PlayerId, out var role))
+                return role;
+
+            return null;
         }
 
         public static T GetRole<T>(PlayerControl player) where T : Role
@@ -277,7 +277,7 @@ namespace TownOfUs.Roles
                     if (modifier != null)
                         ModifierText = Object.Instantiate(__instance.Title, __instance.Title.transform.parent, false);
                     //System.Console.WriteLine("MODIFIER TEXT PLEASE WORK");
-//                        Scale = ModifierText.scale;
+                    //                        Scale = ModifierText.scale;
                     else
                         ModifierText = null;
 
@@ -295,13 +295,12 @@ namespace TownOfUs.Roles
                     if (modifier != null)
                         ModifierText = Object.Instantiate(__instance.Title, __instance.Title.transform.parent, false);
                     //System.Console.WriteLine("MODIFIER TEXT PLEASE WORK");
-//                        Scale = ModifierText.scale;
+                    //                        Scale = ModifierText.scale;
                     else
                         ModifierText = null;
                     Lights.SetLights();
                 }
             }
-
 
             [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__14), nameof(IntroCutscene._CoBegin_d__14.MoveNext))]
             public static class IntroCutscene_CoBegin__d_MoveNext
@@ -315,7 +314,6 @@ namespace TownOfUs.Roles
                     if (role != null) role.IntroPrefix(__instance);
                 }
 
-
                 public static void Postfix(IntroCutscene._CoBegin_d__14 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
@@ -327,8 +325,8 @@ namespace TownOfUs.Roles
                         __instance.__4__this.ImpostorText.text = role.ImpostorText();
                         __instance.__4__this.ImpostorText.gameObject.SetActive(true);
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
-//                        TestScale = Mathf.Max(__instance.__this.Title.scale, TestScale);
-//                        __instance.__this.Title.scale = TestScale / role.Scale;
+                        //                        TestScale = Mathf.Max(__instance.__this.Title.scale, TestScale);
+                        //                        __instance.__this.Title.scale = TestScale / role.Scale;
                     }
                     /*else if (!__instance.isImpostor)
                     {
@@ -341,7 +339,7 @@ namespace TownOfUs.Roles
                         ModifierText.text = "<size=4>Modifier: " + modifier.Name + "</size>";
                         ModifierText.color = modifier.Color;
 
-//                       
+                        //
                         ModifierText.transform.position =
                             __instance.__4__this.transform.position - new Vector3(0f, 2.0f, 0f);
                         ModifierText.gameObject.SetActive(true);
@@ -349,7 +347,6 @@ namespace TownOfUs.Roles
                 }
             }
         }
-
 
         [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__83), nameof(PlayerControl._CoSetTasks_d__83.MoveNext))]
         public static class PlayerControl_SetTasks
@@ -360,7 +357,6 @@ namespace TownOfUs.Roles
                 var player = __instance.__4__this;
                 var role = GetRole(player);
                 var modifier = Modifier.GetModifier(player);
-
 
                 if (modifier != null)
                 {
@@ -396,10 +392,8 @@ namespace TownOfUs.Roles
                     button.transform.position = new Vector3(position.x,
                         instance.ReportButton.transform.position.y, position.z);
                 }
-
             }
         }*/
-
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
         public static class ShipStatus_KMPKPPGPNIH
@@ -451,17 +445,15 @@ namespace TownOfUs.Roles
             {
                 foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Snitch))
                 {
-                    ((Snitch) role).ImpArrows.DestroyAll();
-                    ((Snitch) role).SnitchArrows.DestroyAll();
+                    ((Snitch)role).ImpArrows.DestroyAll();
+                    ((Snitch)role).SnitchArrows.DestroyAll();
                 }
-
 
                 RoleDictionary.Clear();
                 Modifier.ModifierDictionary.Clear();
                 Lights.SetLights(Color.white);
             }
         }
-
 
         [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames),
             typeof(Il2CppReferenceArray<Il2CppSystem.Object>))]
@@ -477,14 +469,14 @@ namespace TownOfUs.Roles
                     case StringNames.ExileTextSN:
                     case StringNames.ExileTextPP:
                     case StringNames.ExileTextSP:
-                    {
-                        var info = ExileController.Instance.exiled;
-                        var role = GetRole(info.Object);
-                        if (role == null) return;
-                        var roleName = role.RoleType == RoleEnum.Glitch ? role.Name : $"The {role.Name}";
-                        __result = $"{info.PlayerName} was {roleName}.";
-                        return;
-                    }
+                        {
+                            var info = ExileController.Instance.exiled;
+                            var role = GetRole(info.Object);
+                            if (role == null) return;
+                            var roleName = role.RoleType == RoleEnum.Glitch ? role.Name : $"The {role.Name}";
+                            __result = $"{info.PlayerName} was {roleName}.";
+                            return;
+                        }
                 }
             }
         }
