@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TownOfUs.CustomHats;
@@ -12,8 +12,6 @@ namespace TownOfUs.Roles
         public Lover(PlayerControl player, int num, bool loverImpostor) : base(player)
         {
             var imp = num == 2 && loverImpostor;
-            Name = imp ? "Loving Impostor" : "Lover";
-            Color = new Color(1f, 0.4f, 0.8f, 1f);
             ImpostorText = () =>
                 "You are in " + ColorString + "Love</color> with " + ColorString + OtherLover.Player.name;
             TaskText = () => $"Stay alive with your love {OtherLover.Player.name} \n and win together";

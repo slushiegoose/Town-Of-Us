@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,6 @@ namespace TownOfUs.Roles
         }
 
         public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
-        protected internal string Name { get; set; }
 
         private PlayerControl _player { get; set; }
 
@@ -49,8 +48,9 @@ namespace TownOfUs.Roles
             }
         }
 
+        public string Name => GetName(RoleType, false);
+        public Color Color => GetColor(RoleType);
         protected float Scale { get; set; } = 1f;
-        protected internal Color Color { get; set; }
         protected internal RoleEnum RoleType { get; set; }
 
         protected internal bool Hidden { get; set; } = false;
@@ -262,6 +262,79 @@ namespace TownOfUs.Roles
         public static IEnumerable<Role> GetRoles(RoleEnum roletype)
         {
             return AllRoles.Where(x => x.RoleType == roletype);
+        }
+
+        public static Color GetColor(RoleEnum roleType) => roleType switch
+        {
+            RoleEnum.Sheriff => Color.yellow,
+            RoleEnum.Jester => new Color(1f, 0.75f, 0.8f, 1f),
+            RoleEnum.Engineer => new Color(1f, 0.65f, 0.04f, 1f),
+            RoleEnum.LoverImpostor => new Color(1f, 0.4f, 0.8f, 1f),
+            RoleEnum.Lover => new Color(1f, 0.4f, 0.8f, 1f),
+            RoleEnum.Mayor => new Color(0.44f, 0.31f, 0.66f, 1f),
+            RoleEnum.Swapper => new Color(0.4f, 0.9f, 0.4f, 1f),
+            RoleEnum.Investigator => new Color(0f, 0.7f, 0.7f, 1f),
+            RoleEnum.TimeLord => new Color(0f, 0f, 1f, 1f),
+            RoleEnum.Shifter => new Color(0.6f, 0.6f, 0.6f, 1f),
+            RoleEnum.Medic => new Color(0f, 0.4f, 0f, 1f),
+            RoleEnum.Seer => new Color(1f, 0.8f, 0.5f, 1f),
+            RoleEnum.Executioner => new Color(0.55f, 0.25f, 0.02f, 1f),
+            RoleEnum.Spy => new Color(0.8f, 0.64f, 0.8f, 1f),
+            RoleEnum.Snitch => new Color(0.83f, 0.69f, 0.22f, 1f),
+            RoleEnum.Arsonist => new Color(1f, 0.3f, 0f),
+            RoleEnum.Altruist => new Color(0.4f, 0f, 0f, 1f),
+            RoleEnum.Phantom => new Color(0.4f, 0.16f, 0.38f, 1f),
+            RoleEnum.Miner => Palette.ImpostorRed,
+            RoleEnum.Swooper => Palette.ImpostorRed,
+            RoleEnum.Morphling => Palette.ImpostorRed,
+            RoleEnum.Camouflager => Palette.ImpostorRed,
+            RoleEnum.Janitor => Palette.ImpostorRed,
+            RoleEnum.Undertaker => Palette.ImpostorRed,
+            RoleEnum.Assassin => Palette.ImpostorRed,
+            RoleEnum.Underdog => Palette.ImpostorRed,
+            RoleEnum.Glitch => Color.green,
+            RoleEnum.Impostor => Palette.ImpostorRed,
+            _ => Color.white
+        };
+
+        public static string GetName(RoleEnum roleId, bool includeColor = false)
+        {
+            var roleName = roleId switch
+            {
+                RoleEnum.Sheriff => "Sheriff",
+                RoleEnum.Jester => "Jester",
+                RoleEnum.Engineer => "Engineer",
+                RoleEnum.LoverImpostor => "Loving Impostor",
+                RoleEnum.Lover => "Lover",
+                RoleEnum.Mayor => "Mayor",
+                RoleEnum.Swapper => "Swapper",
+                RoleEnum.Investigator => "Investigator",
+                RoleEnum.TimeLord => "Time Lord",
+                RoleEnum.Shifter => "Shifter",
+                RoleEnum.Medic => "Medic",
+                RoleEnum.Seer => "Seer",
+                RoleEnum.Executioner => "Executioner",
+                RoleEnum.Spy => "Spy",
+                RoleEnum.Snitch => "Snitch",
+                RoleEnum.Arsonist => "Arsonist",
+                RoleEnum.Altruist => "Altruist",
+                RoleEnum.Phantom => "Phantom",
+                RoleEnum.Miner => "Miner",
+                RoleEnum.Swooper => "Swooper",
+                RoleEnum.Morphling => "Morphling",
+                RoleEnum.Camouflager => "Camouflager",
+                RoleEnum.Janitor => "Janitor",
+                RoleEnum.Undertaker => "Undertaker",
+                RoleEnum.Assassin => "Assassin",
+                RoleEnum.Underdog => "Underdog",
+                RoleEnum.Glitch => "The Glitch",
+                RoleEnum.Impostor => "Impostor",
+                _ => "Crewmate",
+            };
+
+            return includeColor
+                ? $"<color=#{GetColor(roleId).ToHtmlStringRGBA()}>{roleName}</color>"
+                : roleName;
         }
 
         public static class IntroCutScenePatch

@@ -1,9 +1,10 @@
-using TownOfUs.CrewmateRoles.EngineerMod;
+﻿using TownOfUs.CrewmateRoles.EngineerMod;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CrewmateRoles.SeerMod;
 using TownOfUs.CustomOption;
 using TownOfUs.NeutralRoles.ExecutionerMod;
 using TownOfUs.NeutralRoles.ShifterMod;
+using System.Collections.Generic;
 
 namespace TownOfUs
 {
@@ -112,5 +113,35 @@ namespace TownOfUs
         public static bool AssassinCrewmateGuess => Generate.AssassinCrewmateGuess.Get();
         public static int AssassinKills => (int) Generate.AssassinKills.Get();
         public static bool AssassinMultiKill => Generate.AssassinMultiKill.Get();
+
+        public static List<RoleEnum> GetEnabledRoles(bool includeNeutrals = true)
+        {
+            bool On(int role) => role > 0;
+            var enabledRoles = new List<RoleEnum>();
+            if (On(SheriffOn)) enabledRoles.Add(RoleEnum.Sheriff);
+            if (On(EngineerOn)) enabledRoles.Add(RoleEnum.Engineer);
+            if (On(LoversOn)) enabledRoles.Add(RoleEnum.Lover);
+            if (On(MayorOn)) enabledRoles.Add(RoleEnum.Mayor);
+            if (On(SwapperOn)) enabledRoles.Add(RoleEnum.Swapper);
+            if (On(InvestigatorOn)) enabledRoles.Add(RoleEnum.Investigator);
+            if (On(TimeLordOn)) enabledRoles.Add(RoleEnum.TimeLord);
+            if (On(MedicOn)) enabledRoles.Add(RoleEnum.Medic);
+            if (On(SeerOn)) enabledRoles.Add(RoleEnum.Seer);
+            if (On(SpyOn)) enabledRoles.Add(RoleEnum.Spy);
+            if (On(SnitchOn)) enabledRoles.Add(RoleEnum.Snitch);
+            if (On(AltruistOn)) enabledRoles.Add(RoleEnum.Altruist);
+
+            if (includeNeutrals)
+            {
+                if (On(JesterOn)) enabledRoles.Add(RoleEnum.Jester);
+                if (On(ShifterOn)) enabledRoles.Add(RoleEnum.Shifter);
+                if (On(ExecutionerOn)) enabledRoles.Add(RoleEnum.Executioner);
+                if (On(ArsonistOn)) enabledRoles.Add(RoleEnum.Arsonist);
+                if (On(GlitchOn)) enabledRoles.Add(RoleEnum.Glitch);
+            }
+
+
+            return enabledRoles;
+        }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace TownOfUs.Roles
 {
@@ -8,10 +8,8 @@ namespace TownOfUs.Roles
 
         public Undertaker(PlayerControl player) : base(player)
         {
-            Name = "Undertaker";
             ImpostorText = () => "Drag bodies and hide them";
             TaskText = () => "Drag bodies around to hide them from being reported";
-            Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Undertaker;
             Faction = Faction.Impostors;
         }
