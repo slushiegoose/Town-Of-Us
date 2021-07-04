@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.CustomOption
@@ -31,12 +31,18 @@ namespace TownOfUs.CustomOption
 
         protected internal void Increase()
         {
-            Set(Mathf.Clamp(Get() + Increment, Min, Max));
+            var increment = Increment > 5 && Input.GetKeyInt(KeyCode.LeftShift)
+                ? 5
+                : Increment;
+            Set(Mathf.Clamp(Get() + increment, Min, Max));
         }
 
         protected internal void Decrease()
         {
-            Set(Mathf.Clamp(Get() - Increment, Min, Max));
+            var increment = Increment > 5 && Input.GetKeyInt(KeyCode.LeftShift)
+                ? 5
+                : Increment;
+            Set(Mathf.Clamp(Get() - increment, Min, Max));
         }
 
         public override void OptionCreated()
