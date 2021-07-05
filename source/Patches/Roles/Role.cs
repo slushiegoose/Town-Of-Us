@@ -445,6 +445,7 @@ namespace TownOfUs.Roles
         {
             private static void Postfix(LobbyBehaviour __instance)
             {
+                AbilityManager.Buttons.Clear();
                 foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Snitch))
                 {
                     ((Snitch)role).ImpArrows.DestroyAll();

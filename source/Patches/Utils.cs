@@ -26,6 +26,19 @@ namespace TownOfUs
 
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
 
+
+        public static void RpcBreakShield(PlayerControl player)
+        {
+            var medic = player.getMedic().Player.PlayerId;
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+            writer.Write(medic);
+            writer.Write(player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+        }
+
         public static void SetSkin(PlayerControl Player, uint skin)
         {
             Player.MyPhysics.SetSkin(skin);

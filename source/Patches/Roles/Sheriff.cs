@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -12,6 +12,44 @@ namespace TownOfUs.Roles
             TaskText = () => "Kill off the impostor but don't kill crewmates.";
             Color = Color.yellow;
             RoleType = RoleEnum.Sheriff;
+
+            AbilityManager.Add(new AbilityData
+            {
+                Callback = KillCallback,
+                KillButton = HudManager.Instance.KillButton,
+                MaxTimer = CustomGameOptions.SheriffKillCd,
+                Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                TargetColor = Color,
+            });
+        }
+
+        public bool CanKill(PlayerControl player)
+        {
+            if (player.Data.IsImpostor) return true;
+
+            var role = GetRole(player)?.RoleType;
+
+            return
+                role != null && (role == RoleEnum.Glitch ||
+                (CustomGameOptions.SheriffKillsJester && role == RoleEnum.Jester) ||
+                (CustomGameOptions.SheriffKillsArsonist && role == RoleEnum.Arsonist));
+        }
+
+        public void KillCallback(PlayerControl player)
+        {
+            var canKill = CanKill(player);
+
+            if (player.isShielded())
+            {
+                Utils.RpcBreakShield(player);
+                return;
+            }
+
+            if (canKill || CustomGameOptions.SheriffKillOther)
+                Utils.RpcMurderPlayer(Player, player);
+
+            if (!canKill)
+                Utils.RpcMurderPlayer(Player, Player);
         }
 
         public PlayerControl ClosestPlayer;
