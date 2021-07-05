@@ -18,9 +18,11 @@ using UnityEngine.SceneManagement;
 
 namespace TownOfUs
 {
-    [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", "2.1.4")]
+    [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", Version)]
     public class TownOfUs : BasePlugin
     {
+        public const string Version = "2.1.4";
+
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
         public static Sprite SwapperSwitch;
