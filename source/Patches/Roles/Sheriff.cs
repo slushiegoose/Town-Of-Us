@@ -12,15 +12,17 @@ namespace TownOfUs.Roles
             TaskText = () => "Kill off the impostor but don't kill crewmates.";
             Color = Color.yellow;
             RoleType = RoleEnum.Sheriff;
-
-            AbilityManager.Add(new AbilityData
+            if (player.AmOwner)
             {
-                Callback = KillCallback,
-                KillButton = HudManager.Instance.KillButton,
-                MaxTimer = CustomGameOptions.SheriffKillCd,
-                Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
-                TargetColor = Color,
-            });
+                AbilityManager.Add(new AbilityData
+                {
+                    Callback = KillCallback,
+                    KillButton = HudManager.Instance.KillButton,
+                    MaxTimer = CustomGameOptions.SheriffKillCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color,
+                });
+            }
         }
 
         public bool CanKill(PlayerControl player)

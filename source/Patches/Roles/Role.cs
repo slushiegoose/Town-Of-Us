@@ -443,7 +443,7 @@ namespace TownOfUs.Roles
         [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
         public static class LobbyBehaviour_Start
         {
-            private static void Postfix(LobbyBehaviour __instance)
+            public static void Postfix()
             {
                 AbilityManager.Buttons.Clear();
                 foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Snitch))

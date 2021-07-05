@@ -12,6 +12,7 @@ namespace TownOfUs
 
         public static void Add(AbilityData data)
         {
+            data.Timer = data.MaxTimer;
             Buttons.Add(data);
         }
 
@@ -48,34 +49,31 @@ namespace TownOfUs
             public static void FixedUpdate(PlayerControl __instance)
             {
                 if (!__instance.AmOwner || __instance.Data.IsDead) return;
-
                 var isImpostor = __instance.Data.IsImpostor;
                 for (var i = 0;i < Buttons.Count;i++)
                 {
                     var buttonData = Buttons[i];
                     if (
-                        isImpostor && 
-                        buttonData.KillButton == HudManager.Instance.KillButton ||
+                        (isImpostor && 
+                        buttonData.KillButton == HudManager.Instance.KillButton) ||
                         buttonData.MaxTimer == 0f
                     ) continue;
+
 
                     if (!__instance.CanMove)
                     {
                         if (Minigame.Instance != null)
                         {
-                            if (Minigame.Instance.MyTask == null) continue;
+                            if (Minigame.Instance.MyTask == null)
+                                break;
                         }
                         else
-                            continue;
+                            break;
                     }
 
                     if (buttonData.Timer > 0f)
                     {
-                        buttonData.Timer = Mathf.Clamp(
-                            buttonData.Timer - Time.fixedDeltaTime,
-                            0f,
-                            buttonData.MaxTimer
-                        );
+                        buttonData.Timer -= Time.fixedDeltaTime;
                         var button = buttonData.KillButton;
                         button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
 
@@ -93,11 +91,10 @@ namespace TownOfUs
                         if (buttonData.Target != null)
                         {
                             var material = buttonData.Target.MyRend.material;
-                            material.SetFloat("_Outline", (button.isActive ? 1 : 0));
+                            material.SetFloat("_Outline", button.isActive ? 1 : 0);
                             material.SetColor("_OutlineColor", buttonData.TargetColor);
                         }
                     }
-
                 }
             }
         }
@@ -119,9 +116,9 @@ namespace TownOfUs
         }
     }
 
-    public struct AbilityData
+    public class AbilityData
     {
-        private float _Timer;
+        private float _Timer { get; set; }
 
         public PlayerControl Target;
 
@@ -130,8 +127,8 @@ namespace TownOfUs
         public float MaxTimer;
         public float Timer
         {
-            get => _Timer;
-            set => _Timer = Mathf.Min(value, MaxTimer);
+            get =>_Timer;
+            set => _Timer = Mathf.Clamp(value, 0f, MaxTimer);
         }
         public float Range;
 
