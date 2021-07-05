@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using HarmonyLib;
 
@@ -9,51 +9,29 @@ namespace TownOfUs.CrewmateRoles.MedicMod
     {
         private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
         {
-            //System.Console.WriteLine("Report Body!");
-            if (info == null) return;
-            var matches = Murder.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
-            DeadPlayer killer = null;
+            if (
+                !CustomGameOptions.ShowReports ||
+                info == null ||
+                !__instance.AmOwner ||
+                !__instance.Is(RoleEnum.Medic)
+            ) return;
+            var deadPlayer = Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == info.PlayerId);
+            if (deadPlayer == null) return;
 
-            if (matches.Length > 0)
-                //System.Console.WriteLine("RBOOF");
-                killer = matches[0];
-
-            if (killer == null)
-                //System.Console.WriteLine("RBTWOOF");
-                return;
-
-            var isMedicAlive = __instance.Is(RoleEnum.Medic);
-            var areReportsEnabled = CustomGameOptions.ShowReports;
-
-            if (!isMedicAlive || !areReportsEnabled)
-                return;
-
-            var isUserMedic = PlayerControl.LocalPlayer.Is(RoleEnum.Medic);
-            if (!isUserMedic)
-                return;
-            //System.Console.WriteLine("RBTHREEF");
-            var br = new BodyReport
+            var report = new BodyReport
             {
-                Killer = Utils.PlayerById(killer.KillerId),
+                Killer = Utils.PlayerById(deadPlayer.KillerId),
                 Reporter = __instance,
-                Body = Utils.PlayerById(killer.PlayerId),
-                KillAge = (float) (DateTime.UtcNow - killer.KillTime).TotalMilliseconds
+                Body = Utils.PlayerById(deadPlayer.PlayerId),
+                KillAge = (float) (DateTime.UtcNow - deadPlayer.KillTime).TotalMilliseconds
             };
 
-            //System.Console.WriteLine("FIVEF");
+            var reportMessage = BodyReport.ParseBodyReport(report);
 
-            var reportMsg = BodyReport.ParseBodyReport(br);
-
-            //System.Console.WriteLine("SIXTHF");
-
-            if (string.IsNullOrWhiteSpace(reportMsg))
+            if (string.IsNullOrWhiteSpace(reportMessage))
                 return;
-
-            //System.Console.WriteLine("SEFENFTH");
-
-            if (DestroyableSingleton<HudManager>.Instance)
-                // Send the message through chat only visible to the medic
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
+            
+            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMessage);
         }
     }
 }

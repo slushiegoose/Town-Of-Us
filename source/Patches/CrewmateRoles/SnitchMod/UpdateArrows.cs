@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using Reactor.Extensions;
 using TownOfUs.Extensions;
@@ -11,29 +11,32 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Snitch))
+            if (!__instance.AmOwner) return;
+            var snitch = Role.GetRole<Snitch>();
+            if (snitch == null) return;
+            var snitchArrows = snitch.SnitchArrows;
+            var impArrows = snitch.ImpArrows;
+            if ((__instance.Data.IsDead || snitch.Player.Data.IsDead) && snitchArrows.Count > 0)
             {
-                var snitch = (Snitch) role;
-                if (PlayerControl.LocalPlayer.Data.IsDead || snitch.Player.Data.IsDead)
+                snitchArrows.DestroyAll();
+                snitchArrows.Clear();
+                impArrows.DestroyAll();
+                impArrows.Clear();
+                return;
+            }
+
+            foreach (var arrow in impArrows)
+                arrow.target = snitch.Player.transform.position;
+
+            foreach (var (arrow, target) in Utils.Zip(snitchArrows, snitch.SnitchTargets))
+            {
+                if (target.Data.IsDead)
                 {
-                    snitch.SnitchArrows.DestroyAll();
-                    snitch.SnitchArrows.Clear();
-                    snitch.ImpArrows.DestroyAll();
-                    snitch.ImpArrows.Clear();
+                    arrow.Destroy();
+                    arrow.gameObject?.Destroy();
                 }
 
-                foreach (var arrow in snitch.ImpArrows) arrow.target = snitch.Player.transform.position;
-
-                foreach (var (arrow, target) in Utils.Zip(snitch.SnitchArrows, snitch.SnitchTargets))
-                {
-                    if (target.Data.IsDead)
-                    {
-                        arrow.Destroy();
-                        if (arrow.gameObject != null) arrow.gameObject.Destroy();
-                    }
-
-                    arrow.target = target.transform.position;
-                }
+                arrow.target = target.transform.position;
             }
         }
     }

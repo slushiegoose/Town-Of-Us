@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using Reactor;
 using TownOfUs.Roles;
@@ -6,69 +6,56 @@ using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
 {
-    [HarmonyPatch(typeof(KillButtonManager), nameof(KillButtonManager.PerformKill))]
-    public class StopKill
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
+    public static class RemoveShield
     {
-        public static void BreakShield(byte medicId, byte playerId, bool flag)
+        public static void Postfix(PlayerControl __instance)
         {
-            if (PlayerControl.LocalPlayer.PlayerId == playerId &&
-                CustomGameOptions.NotificationShield == NotificationOptions.Shielded)
-                Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
+            var medic = Role.GetRole<Medic>();
+            if (medic?.ShieldedPlayer == null) return;
+            if (medic.Player == __instance || medic.ShieldedPlayer == __instance)
+                StopKill.BreakShield(medic, medic.ShieldedPlayer, true);
+        }
+    }
 
-            if (PlayerControl.LocalPlayer.PlayerId == medicId &&
-                CustomGameOptions.NotificationShield == NotificationOptions.Medic)
-                Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
+    [HarmonyPatch(typeof(KillButtonManager), nameof(KillButtonManager.PerformKill))]
+    public static class StopKill
+    {
+        public static void BreakShield(Medic medic, PlayerControl player, bool breakShield)
+        {
+            var notification = CustomGameOptions.NotificationShield;
+            var medicPlayer = medic.Player;
 
-            if (CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
-                Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
+            if (
+                (notification == NotificationOptions.Everyone) ||
+                (player.AmOwner && notification == NotificationOptions.Shielded) ||
+                (medicPlayer.AmOwner && notification == NotificationOptions.Medic)
+            ) Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
 
-            if (!flag)
-                return;
+            if (!breakShield) return;
 
-            var player = Utils.PlayerById(playerId);
-            foreach (var role in Role.GetRoles(RoleEnum.Medic))
-                if (((Medic) role).ShieldedPlayer.PlayerId == playerId)
-                {
-                    ((Medic) role).ShieldedPlayer = null;
-                    ((Medic) role).exShielded = player;
-                    System.Console.WriteLine(player.name + " Is Ex-Shielded");
-                }
+            if (medic.ShieldedPlayer == player)
+                medic.ShieldedPlayer = null;
 
-            player.myRend.material.SetColor("_VisorColor", Palette.VisorColor);
-            player.myRend.material.SetFloat("_Outline", 0f);
-            //System.Console.WriteLine("Broke " + player.name + "'s shield");
+            Role.NamePatch.UpdateDisplay(player);
         }
 
         [HarmonyPriority(Priority.First)]
         public static bool Prefix(KillButtonManager __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton) return true;
-            if (!PlayerControl.LocalPlayer.Data.IsImpostor) return true;
+            if (
+                __instance != DestroyableSingleton<HudManager>.Instance.KillButton ||
+                !PlayerControl.LocalPlayer.Data.IsImpostor
+            ) return true;
             var target = __instance.CurrentTarget;
-            if (target == null) return true;
-            if (target.isShielded())
+            if (target == null || !target.IsShielded()) return true;
+
+            if (__instance.isActiveAndEnabled && !__instance.isCoolingDown)
             {
-                if (__instance.isActiveAndEnabled && !__instance.isCoolingDown)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer.Write(target.getMedic().Player.PlayerId);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-                    if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
-
-                    BreakShield(target.getMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-
-
-                return false;
+                Utils.RpcBreakShield(target);
             }
 
-
-            return true;
+            return false;
         }
     }
 }

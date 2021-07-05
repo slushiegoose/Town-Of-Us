@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -10,7 +10,6 @@ using HarmonyLib;
 using Reactor;
 using Reactor.Extensions;
 using TownOfUs.CustomOption;
-using TownOfUs.Patches.CustomHats;
 using TownOfUs.RainbowMod;
 using UnhollowerBaseLib;
 using UnhollowerRuntimeLib;
@@ -19,11 +18,12 @@ using UnityEngine.SceneManagement;
 
 namespace TownOfUs
 {
-    [BepInPlugin(Id, "Town Of Us", "2.2.1")]
+    [BepInPlugin(Id, "Town Of Us", Version)]
     [BepInDependency(ReactorPlugin.Id)]
     public class TownOfUs : BasePlugin
     {
         public const string Id = "com.slushiegoose.townofus";
+        public const string Version = "2.2.1";
         
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
@@ -65,6 +65,15 @@ namespace TownOfUs
 
         public ConfigEntry<ushort> Port { get; set; }
 
+        public static void LogMessage(object[] messages, bool requireKey = false)
+        {
+            foreach (var message in messages)
+                LogMessage(message, requireKey);
+        }
+        public static void LogMessage(object message, bool requireKey = false) {
+            if (!requireKey || Input.GetKeyInt(KeyCode.T))
+                PluginSingleton<TownOfUs>.Instance.Log.LogMessage(message);
+        }
 
         public override void Load()
         {

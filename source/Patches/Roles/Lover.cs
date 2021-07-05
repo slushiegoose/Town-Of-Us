@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TownOfUs.ImpostorRoles.CamouflageMod;
@@ -11,15 +11,12 @@ namespace TownOfUs.Roles
         public Lover(PlayerControl player, int num, bool loverImpostor) : base(player)
         {
             var imp = num == 2 && loverImpostor;
-            Name = imp ? "Loving Impostor" : "Lover";
-            Color = new Color(1f, 0.4f, 0.8f, 1f);
             ImpostorText = () =>
-                "You are in " + ColorString + "Love</color> with " + ColorString + OtherLover.Player.name;
+                $"You are in {Utils.ColorText(Color, "Love")} with {Utils.ColorText(Color, OtherLover.Player.name)}";
             TaskText = () => $"Stay alive with your love {OtherLover.Player.name} \n and win together";
             RoleType = imp ? RoleEnum.LoverImpostor : RoleEnum.Lover;
             Num = num;
             LoverImpostor = loverImpostor;
-            Scale = imp ? 2.3f : 1f;
             Faction = imp ? Faction.Impostors : Faction.Crewmates;
         }
 
@@ -28,7 +25,7 @@ namespace TownOfUs.Roles
         public int Num { get; set; }
         public bool LoverImpostor { get; set; }
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
+        public override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
             var loverTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             loverTeam.Add(PlayerControl.LocalPlayer);
@@ -36,33 +33,9 @@ namespace TownOfUs.Roles
             __instance.yourTeam = loverTeam;
         }
 
-        internal override bool Criteria()
+        public override bool Criteria()
         {
-            return base.Criteria() || GetRole(PlayerControl.LocalPlayer) == OtherLover;
-        }
-
-        protected override string NameText(PlayerVoteArea player = null)
-        {
-            if (CamouflageUnCamouflage.IsCamoed && player == null) return "";
-            if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer == Player)
-                return base.NameText(player);
-            if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding ||
-                                   MeetingHud.Instance.state == MeetingHud.VoteStates.Results)) return Player.name;
-            if (!CustomGameOptions.RoleUnderName && player == null) return Player.name;
-            Player.nameText.transform.localPosition = new Vector3(
-                0f,
-                Player.Data.HatId == 0U ? 1.5f : 2f,
-                -0.5f
-            );
-            if (PlayerControl.LocalPlayer.Data.IsImpostor && RoleType == RoleEnum.LoverImpostor)
-            {
-                Player.nameText.color = Palette.ImpostorRed;
-                if (player != null) player.NameText.color = Palette.ImpostorRed;
-                return Player.name + "\n" + "Impostor";
-            }
-
-
-            return Player.name + "\n" + "Lover";
+            return OtherLover.Player.AmOwner || base.Criteria();
         }
 
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)
@@ -111,7 +84,7 @@ namespace TownOfUs.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        public override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (FourPeopleLeft()) return false;
 
@@ -158,22 +131,6 @@ namespace TownOfUs.Roles
         public void Win()
         {
             if (AllRoles.Where(x => x.RoleType == RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
-            /*var lover1 = Player;
-            var lover2 = OtherLover.Player;
-            //System.Console.WriteLine("reached révoila");
-            lover1.Data.IsImpostor = true;
-            lover1.Data.IsDead = false;
-            lover2.Data.IsImpostor = true;
-            lover2.Data.IsDead = false;
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == lover1.PlayerId) continue;
-                if (player.PlayerId == lover2.PlayerId) continue;
-                player.RemoveInfected();
-                player.Die(0);
-                player.Data.IsDead = true;
-                player.Data.IsImpostor = false;
-            }*/
 
             LoveCoupleWins = true;
             OtherLover.LoveCoupleWins = true;

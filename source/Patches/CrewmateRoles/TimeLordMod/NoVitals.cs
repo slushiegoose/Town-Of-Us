@@ -1,21 +1,30 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.TimeLordMod
 {
-    [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
+    [HarmonyPatch(typeof(SystemConsole), nameof(SystemConsole.CanUse))]
     public class NoVitals
     {
-        public static bool Prefix(VitalsMinigame __instance)
+        public static bool Prefix(
+            SystemConsole __instance,
+            [HarmonyArgument(0)] GameData.PlayerInfo player/*,
+            [HarmonyArgument(1)] ref bool canUse,
+            [HarmonyArgument(2)] ref bool couldUse*/)
         {
-            if (CustomGameOptions.TimeLordVitals) return true;
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord))
+            return
+                CustomGameOptions.TimeLordVitals ||
+                __instance.UseIcon != ImageNames.VitalsButton ||
+                !player.Object.Is(RoleEnum.TimeLord);
+            /*
+            if (
+                !CustomGameOptions.TimeLordVitals &&
+                __instance.UseIcon == ImageNames.VitalsButton
+            )
             {
-                Object.Destroy(__instance.gameObject);
-                return false;
+                return !player.Object.Is(RoleEnum.TimeLord);
             }
-
-            return true;
+            return true;*/
         }
     }
 }

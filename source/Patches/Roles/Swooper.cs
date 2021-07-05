@@ -1,79 +1,76 @@
-using System;
+﻿using Hazel;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using Reactor.Extensions;
 
 namespace TownOfUs.Roles
 {
-    public class Swooper : Role
+    public class Swooper : Impostor
     {
-        public KillButtonManager _swoopButton;
         public bool Enabled;
-        public DateTime LastSwooped;
-        public float TimeRemaining;
 
         public Swooper(PlayerControl player) : base(player)
         {
-            Name = "Swooper";
             ImpostorText = () => "Turn invisible temporarily";
             TaskText = () => "Turn invisible and sneakily kill";
-            Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Swooper;
-            Faction = Faction.Impostors;
+            CreateButtons();
         }
 
-        public bool IsSwooped => TimeRemaining > 0f;
-
-        public KillButtonManager SwoopButton
+        public override void CreateButtons()
         {
-            get => _swoopButton;
-            set
+            if (Player.AmOwner)
             {
-                _swoopButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AbilityManager.Add(new PlainAbilityData
+                {
+                    Callback = SwoopCallback,
+                    MaxTimer = CustomGameOptions.SwoopCd,
+                    Icon = TownOfUs.SwoopSprite,
+                    Position = AbilityPositions.OverKillButton,
+                    MaxDuration = CustomGameOptions.SwoopDuration,
+                    OnDurationEnd = UnSwoop
+                });
             }
         }
 
-        public float SwoopTimer()
+        public void SwoopCallback()
         {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastSwooped;
-            ;
-            var num = CustomGameOptions.SwoopCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public void Swoop()
-        {
+            if (Player.AmOwner)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)CustomRPC.Swoop, SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
             Enabled = true;
-            TimeRemaining -= Time.deltaTime;
             var color = Color.clear;
-            if (PlayerControl.LocalPlayer.Data.IsImpostor || PlayerControl.LocalPlayer.Data.IsDead) color.a = 0.1f;
+            var localData = PlayerControl.LocalPlayer.Data;
+            if (localData.IsImpostor || localData.IsDead) color.a = 0.1f;
 
+            var hatManager = HatManager.Instance;
 
             Player.MyRend.color = color;
 
             Player.HatRenderer.SetHat(0, 0);
             Player.nameText.text = "";
-            if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
-                .AllSkins.ToArray()[0].ProdId)
+            if (Player.MyPhysics.Skin.skin.ProdId != hatManager.AllSkins.ToArray()[0].ProdId)
                 Player.MyPhysics.SetSkin(0);
-            if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
-            Player.CurrentPet =
-                Object.Instantiate(
-                    DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[0]);
-            Player.CurrentPet.transform.position = Player.transform.position;
-            Player.CurrentPet.Source = Player;
-            Player.CurrentPet.Visible = Player.Visible;
-        }
 
+            Player.CurrentPet?.gameObject.Destroy();
+
+            var pet = Player.CurrentPet = Object.Instantiate(HatManager.Instance.AllPets.ToArray()[0]);
+            pet.transform.position = Player.transform.position;
+            pet.Source = Player;
+            pet.Visible = Player.Visible;
+        }
 
         public void UnSwoop()
         {
+            if (Player.AmOwner)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)CustomRPC.UnSwoop, SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
             Enabled = false;
-            LastSwooped = DateTime.UtcNow;
             Utils.Unmorph(Player);
             Player.MyRend.color = Color.white;
         }

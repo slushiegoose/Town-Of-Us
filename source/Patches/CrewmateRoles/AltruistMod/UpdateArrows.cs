@@ -1,26 +1,26 @@
 using HarmonyLib;
 using Reactor.Extensions;
-using TownOfUs.Extensions;
 
 namespace TownOfUs.CrewmateRoles.AltruistMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class UpdateArrows
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix()
         {
-            if (Coroutine.Arrow != null)
-            {
-                if (LobbyBehaviour.Instance || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead ||
-                    Coroutine.Target.Data.IsDead)
-                {
-                    Coroutine.Arrow.gameObject.Destroy();
-                    Coroutine.Target = null;
-                    return;
-                }
+            if (AltruistCoroutine.Arrow == null) return;
 
-                Coroutine.Arrow.target = Coroutine.Target.transform.position;
+            if (
+                LobbyBehaviour.Instance ||
+                MeetingHud.Instance ||
+                PlayerControl.LocalPlayer.Data.IsDead ||
+                AltruistCoroutine.Target.Data.IsDead)
+            {
+                AltruistCoroutine.Arrow.gameObject.Destroy();
+                AltruistCoroutine.Target = null;
             }
+            else
+                AltruistCoroutine.Arrow.target = AltruistCoroutine.Target.transform.position;
         }
     }
 }

@@ -12,10 +12,14 @@ namespace TownOfUs.CrewmateRoles.MayorMod
         public static void UpdateButton(Mayor role, MeetingHud __instance)
         {
             var skip = __instance.SkipVoteButton;
-            role.Abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
-            role.Abstain.voteComplete = skip.voteComplete;
-            role.Abstain.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
-            role.Abstain.skipVoteText.text = "Abstain";
+            var abstain = role.Abstain;
+            abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
+            if (role.VotedOnce) skip.gameObject.SetActive(false);
+            abstain.voteComplete = skip.voteComplete;
+            var renderer = abstain.GetComponent<SpriteRenderer>();
+            renderer.enabled = skip.GetComponent<SpriteRenderer>().enabled;
+            renderer.sprite = Abstain;
+            abstain.skipVoteText.text = "Abstain";
         }
 
 
@@ -25,11 +29,12 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             public static void GenButton(Mayor role, MeetingHud __instance)
             {
                 var skip = __instance.SkipVoteButton;
-                role.Abstain = Object.Instantiate(skip, skip.transform.parent);
-                role.Abstain.Parent = __instance;
-                role.Abstain.SetTargetPlayerId(251);
-                role.Abstain.transform.localPosition = skip.transform.localPosition +
-                                                       new Vector3(0f, -0.17f, 0f);
+                var abstain = role.Abstain = Object.Instantiate(skip, skip.transform.parent);
+                abstain.Parent = __instance;
+                abstain.SetTargetPlayerId(251);
+                abstain.transform.localPosition =
+                    skip.transform.localPosition + new Vector3(0f, -0.17f, 0f);
+                abstain.skipVoteText.gameObject.SetActive(false);
                 skip.transform.localPosition += new Vector3(0f, 0.20f, 0f);
                 UpdateButton(role, __instance);
             }

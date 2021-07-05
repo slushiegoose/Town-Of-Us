@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using Reactor.Extensions;
-using TownOfUs.Extensions;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace TownOfUs.Roles.Modifiers
 {
@@ -17,15 +15,26 @@ namespace TownOfUs.Roles.Modifiers
         protected Modifier(PlayerControl player)
         {
             Player = player;
-            ModifierDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
         protected internal string Name { get; set; }
-        public PlayerControl Player { get; set; }
+        private PlayerControl _Player;
+        public PlayerControl Player
+        {
+            get => _Player;
+            set
+            {
+                _Player = value;
+                ModifierDictionary[value.PlayerId] = this;
+            }
+        }
         protected internal Color Color { get; set; }
         protected internal ModifierEnum ModifierType { get; set; }
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+
+        public virtual void CreateButtons()
+        {
+        }
 
         private bool Equals(Modifier other)
         {

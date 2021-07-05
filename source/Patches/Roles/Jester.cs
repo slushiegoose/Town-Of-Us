@@ -1,4 +1,4 @@
-using Il2CppSystem.Collections.Generic;
+﻿using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -10,22 +10,20 @@ namespace TownOfUs.Roles
 
         public Jester(PlayerControl player) : base(player)
         {
-            Name = "Jester";
             ImpostorText = () => "Get voted out";
             TaskText = () => "Get voted out!\nFake Tasks:";
-            Color = new Color(1f, 0.75f, 0.8f, 1f);
             RoleType = RoleEnum.Jester;
             Faction = Faction.Neutral;
         }
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
+        public override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
             var jesterTeam = new List<PlayerControl>();
             jesterTeam.Add(PlayerControl.LocalPlayer);
             __instance.yourTeam = jesterTeam;
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        public override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (!VotedOut || !Player.Data.IsDead && !Player.Data.Disconnected) return true;
             Utils.EndGame();
@@ -34,7 +32,6 @@ namespace TownOfUs.Roles
 
         public void Wins()
         {
-            //System.Console.WriteLine("Reached Here - Jester edition");
             VotedOut = true;
         }
 

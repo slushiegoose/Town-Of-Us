@@ -1,16 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TownOfUs.Roles
 {
     public class Impostor : Role
     {
+        public override bool Hidden => RoleType == RoleEnum.Impostor;
+
         public Impostor(PlayerControl player) : base(player)
         {
-            Name = "Impostor";
-            Hidden = true;
             Faction = Faction.Impostors;
             RoleType = RoleEnum.Impostor;
-            Color = Palette.ImpostorRed;
         }
     }
 
@@ -18,11 +17,9 @@ namespace TownOfUs.Roles
     {
         public Crewmate(PlayerControl player) : base(player)
         {
-            Name = "Crewmate";
             Hidden = true;
             Faction = Faction.Crewmates;
             RoleType = RoleEnum.Crewmate;
-            Color = Color.white;
         }
     }
 }
