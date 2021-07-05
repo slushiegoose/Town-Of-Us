@@ -45,6 +45,14 @@ namespace TownOfUs
         public static class PlayerControlPatch
         {
             [HarmonyPostfix]
+            [HarmonyPatch(nameof(PlayerControl.Die))]
+            public static void OnDeath(PlayerControl __instance)
+            {
+                if (__instance.AmOwner)
+                    HudManagerPatch.SetHudActive(true);
+            }
+
+            [HarmonyPostfix]
             [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
             public static void FixedUpdate(PlayerControl __instance)
             {
@@ -105,9 +113,7 @@ namespace TownOfUs
         {
             [HarmonyPostfix]
             [HarmonyPatch(nameof(HudManager.SetHudActive))]
-            public static void SetHudActive(
-                HudManager __instance,
-                [HarmonyArgument(0)] bool isActive)
+            public static void SetHudActive([HarmonyArgument(0)] bool isActive)
             {
                 for (var i = 0;i < Buttons.Count;i++)
                     Buttons[i].KillButton.gameObject.SetActive(

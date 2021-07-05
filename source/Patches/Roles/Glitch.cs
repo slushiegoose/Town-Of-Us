@@ -63,7 +63,7 @@ namespace TownOfUs.Roles
             return AssetBundle.LoadFromMemory(assets);
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected) return true;
 

@@ -155,7 +155,7 @@ namespace TownOfUs.Roles
             return true;
         }
 
-        internal virtual bool EABBNOODFGL(ShipStatus __instance)
+        internal virtual bool CheckEndCriteria(ShipStatus __instance)
         {
             return true;
         }
@@ -370,6 +370,12 @@ namespace TownOfUs.Roles
                 }
 
                 if (role == null || role.Hidden) return;
+                for (var i = 0;i < AbilityManager.Buttons.Count;i++)
+                {
+                    var button = AbilityManager.Buttons[i];
+                    button.KillButton.gameObject.SetActive(true);
+                    button.Timer = 10f;
+                }
                 if (role.RoleType == RoleEnum.Shifter && role.Player != PlayerControl.LocalPlayer) return;
                 var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
@@ -428,7 +434,7 @@ namespace TownOfUs.Roles
                 foreach (var role in AllRoles)
                 {
                     //System.Console.WriteLine(role.Name);
-                    var isend = role.EABBNOODFGL(__instance);
+                    var isend = role.CheckEndCriteria(__instance);
                     //System.Console.WriteLine(isend);
                     if (!isend) result = false;
                 }

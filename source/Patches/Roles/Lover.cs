@@ -113,7 +113,7 @@ namespace TownOfUs.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (FourPeopleLeft()) return false;
 

@@ -25,7 +25,7 @@ namespace TownOfUs.Roles
             __instance.yourTeam = jesterTeam;
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (!VotedOut || !Player.Data.IsDead && !Player.Data.Disconnected) return true;
             Utils.EndGame();

@@ -37,7 +37,7 @@ namespace TownOfUs.Roles
             }
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 0)
             {

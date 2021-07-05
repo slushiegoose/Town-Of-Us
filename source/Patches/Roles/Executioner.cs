@@ -30,7 +30,7 @@ namespace TownOfUs.Roles
             __instance.yourTeam = executionerteam;
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (Player.Data.IsDead) return true;
             if (!TargetVotedOut || !target.Data.IsDead) return true;
