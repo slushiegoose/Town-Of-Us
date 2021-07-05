@@ -71,29 +71,30 @@ namespace TownOfUs
                             break;
                     }
 
+                    var button = buttonData.KillButton;
+
                     if (buttonData.Timer > 0f)
                     {
                         buttonData.Timer -= Time.fixedDeltaTime;
-                        var button = buttonData.KillButton;
                         button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
+                    }
 
-                        var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
-                        if (buttonData.TargetFilter != null)
-                            targets = targets.Where(buttonData.TargetFilter).ToList();
+                    var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
+                    if (buttonData.TargetFilter != null)
+                        targets = targets.Where(buttonData.TargetFilter).ToList();
 
-                        Utils.SetTarget(
-                            ref buttonData.Target,
-                            button,
-                            buttonData.Range,
-                            targets
-                        );
+                    Utils.SetTarget(
+                        ref buttonData.Target,
+                        button,
+                        buttonData.Range,
+                        targets
+                    );
 
-                        if (buttonData.Target != null)
-                        {
-                            var material = buttonData.Target.MyRend.material;
-                            material.SetFloat("_Outline", button.isActive ? 1 : 0);
-                            material.SetColor("_OutlineColor", buttonData.TargetColor);
-                        }
+                    if (buttonData.Target != null)
+                    {
+                        var material = buttonData.Target.MyRend.material;
+                        material.SetFloat("_Outline", button.isActive ? 1 : 0);
+                        material.SetColor("_OutlineColor", buttonData.TargetColor);
                     }
                 }
             }
