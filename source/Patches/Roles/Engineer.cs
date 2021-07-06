@@ -1,9 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TownOfUs.Roles
 {
     public class Engineer : Role
     {
+        public bool UsedThisRound = false;
+
         public Engineer(PlayerControl player) : base(player)
         {
             Name = "Engineer";
@@ -13,6 +15,5 @@ namespace TownOfUs.Roles
             RoleType = RoleEnum.Engineer;
         }
 
-        public bool UsedThisRound { get; set; } = false;
     }
 }

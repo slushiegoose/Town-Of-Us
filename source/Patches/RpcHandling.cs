@@ -353,7 +353,6 @@ namespace TownOfUs
                         Murder.KilledPlayers.Clear();
                         Role.NobodyWins = false;
                         RecordRewind.points.Clear();
-                        KillButtonTarget.DontRevive = byte.MaxValue;
                         break;
 
                     case CustomRPC.JanitorClean:
@@ -602,7 +601,7 @@ namespace TownOfUs
                                         CustomGameOptions.ReviveDuration, 0.5f));
 
                                 Coroutines.Start(
-                                    global::TownOfUs.CrewmateRoles.AltruistMod.Coroutine.AltruistRevive(body,
+                                    global::TownOfUs.CrewmateRoles.AltruistMod.AltruistCoroutine.AltruistRevive(body,
                                         altruistRole));
                             }
 
@@ -698,7 +697,6 @@ namespace TownOfUs
 
                 RecordRewind.points.Clear();
                 Murder.KilledPlayers.Clear();
-                KillButtonTarget.DontRevive = byte.MaxValue;
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte) CustomRPC.Start, SendOption.Reliable, -1);

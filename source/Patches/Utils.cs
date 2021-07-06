@@ -422,37 +422,38 @@ namespace TownOfUs
                 {
                     PlayerId = target.PlayerId,
                     KillerId = killer.PlayerId,
-                    KillTime = DateTime.UtcNow
+                    KillTime = DateTime.UtcNow,
+                    DeathPosition = target.GetTruePosition()
                 };
 
                 Murder.KilledPlayers.Add(deadBody);
 
                 if (!killer.AmOwner) return;
 
-                if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
-                {
-                    var glitch = Role.GetRole<Glitch>(killer);
-                    glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
-                    glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * 3);
-                    return;
-                }
+                var isImpostor = killer.Data.IsImpostor;
+                var timer = PlayerControl.GameOptions.KillCooldown;
+                var role = Role.GetRole(killer);
 
-                if (target.Is(ModifierEnum.Diseased) && killer.Data.IsImpostor)
+                if (target.Is(ModifierEnum.Diseased))
                 {
-                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown * 3);
-                    return;
+                    if (role?.RoleType == RoleEnum.Glitch)
+                    {
+                        var glitch = (Glitch)role;
+                        glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
+                        killer.SetKillTimer(CustomGameOptions.GlitchKillCooldown * 3);
+                        return;
+                    }
+                    else if (isImpostor)
+                    {
+                        var cooldown = PlayerControl.GameOptions.KillCooldown;
+                        if (role?.RoleType == RoleEnum.Underdog)
+                            cooldown *= PerformKill.LastImp() ? 0.5f : 1.5f;
+                        timer = cooldown * 3;
+                    }
                 }
-
-                if (killer.Is(RoleEnum.Underdog))
-                {
-                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown * (PerformKill.LastImp() ? 0.5f : 1.5f));
-                    return;
-                }
-
-                if (killer.Data.IsImpostor)
-                {
-                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
-                }
+                
+                if (isImpostor)
+                    killer.SetKillTimer(timer);
             }
         }
 

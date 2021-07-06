@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.CrewmateRoles.AltruistMod;
 using TownOfUs.Roles;
 
@@ -16,8 +16,6 @@ namespace TownOfUs.CrewmateRoles.LoversMod
             if (!flag3) return true;
             var otherLover = Role.GetRole<Lover>(__instance).OtherLover.Player;
             if (otherLover.Data.IsDead) return true;
-
-            if (reason == DeathReason.Exile) KillButtonTarget.DontRevive = __instance.PlayerId;
 
             if (AmongUsClient.Instance.AmHost) Utils.RpcMurderPlayer(otherLover, otherLover);
 

@@ -88,6 +88,14 @@ namespace TownOfUs
             }
 
             [HarmonyPostfix]
+            [HarmonyPatch(nameof(PlayerControl.Revive))]
+            public static void OnRevive(PlayerControl __instance)
+            {
+                if (__instance.AmOwner)
+                    HudManagerPatch.SetHudActive(true);
+            }
+
+            [HarmonyPostfix]
             [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
             public static void FixedUpdate(PlayerControl __instance)
             {

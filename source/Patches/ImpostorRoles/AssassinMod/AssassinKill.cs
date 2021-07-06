@@ -100,6 +100,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 PlayerId = player.PlayerId,
                 KillerId = player.PlayerId,
                 KillTime = System.DateTime.UtcNow,
+                DeathPosition = player.GetTruePosition()
             };
 
             Murder.KilledPlayers.Add(deadPlayer);

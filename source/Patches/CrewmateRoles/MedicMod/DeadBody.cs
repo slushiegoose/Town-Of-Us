@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
 {
@@ -7,6 +8,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
     {
         public byte KillerId { get; set; }
         public byte PlayerId { get; set; }
+        public Vector2 DeathPosition { get; set; }
         public DateTime KillTime { get; set; }
     }
 

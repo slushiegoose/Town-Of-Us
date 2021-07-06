@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HarmonyLib;
 
@@ -16,7 +16,8 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             {
                 PlayerId = target.PlayerId,
                 KillerId = __instance.PlayerId,
-                KillTime = DateTime.UtcNow
+                KillTime = DateTime.UtcNow,
+                DeathPosition = target.GetTruePosition()
             };
 
             KilledPlayers.Add(deadBody);
