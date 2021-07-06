@@ -62,8 +62,9 @@ namespace TownOfUs
         public ConfigEntry<ushort> Port { get; set; }
         //public static Sprite BirthdayVoteSprite;
 
-        public static void LogMessage(object message) =>
-            PluginSingleton<TownOfUs>.Instance.Log.LogMessage(message);
+        public static void LogMessage(object message) {
+                PluginSingleton<TownOfUs>.Instance.Log.LogMessage(message);
+        }
 
         public override void Load()
         {

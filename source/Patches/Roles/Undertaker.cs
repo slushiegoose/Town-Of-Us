@@ -20,11 +20,9 @@ namespace TownOfUs.Roles
 
             if (player.AmOwner)
             {
-                var killButton = HudManager.Instance.KillButton;
                 AbilityManager.Add(DragDropButton = new BodyAbilityData
                 {
                     Callback = DragDropCallback,
-                    KillButton = Object.Instantiate(killButton, killButton.transform.parent),
                     MaxTimer = CustomGameOptions.DragCd,
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color.yellow,

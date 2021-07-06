@@ -57,7 +57,6 @@
         PhantomLose,
 
         JanitorClean,
-        FixLights,
         EngineerFix,
         SetExtraVotes,
         SetSwaps,

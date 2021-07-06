@@ -13,7 +13,24 @@ namespace TownOfUs
         public static void Add(AbilityData data)
         {
             data.Timer = data.MaxTimer;
+            var hudKill = HudManager.Instance.KillButton;
+            data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
             Buttons.Add(data);
+        }
+
+        [HarmonyPatch(typeof(ExileController))]
+        public static class ExileControllerPatch
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(ExileController.WrapUp))]
+            public static void PostMeeting()
+            {
+                for (var i = 0;i < Buttons.Count;i++)
+                {
+                    var button = Buttons[0];
+                    button.Timer = button.MaxTimer;
+                }
+            }
         }
 
         [HarmonyPatch(typeof(KillButtonManager))]
@@ -23,13 +40,10 @@ namespace TownOfUs
             [HarmonyPatch(nameof(KillButtonManager.PerformKill))]
             public static bool PerformKill(KillButtonManager __instance)
             {
-                TownOfUs.LogMessage("Called PerformKill");
                 if (
                     !__instance.isActiveAndEnabled ||
                     __instance.isCoolingDown
                 ) return false;
-
-                TownOfUs.LogMessage("Is active and not cooling down");
 
                 var dataIdx = Buttons.FindIndex(x => x.KillButton == __instance);
 
@@ -95,6 +109,12 @@ namespace TownOfUs
                     HudManagerPatch.SetHudActive(true);
             }
 
+            public static void LogInUpdate(object message)
+            {
+                if (Input.GetKeyInt(KeyCode.T))
+                    TownOfUs.LogMessage(message);
+            }
+
             [HarmonyPostfix]
             [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
             public static void FixedUpdate(PlayerControl __instance)
@@ -103,10 +123,12 @@ namespace TownOfUs
                 var isImpostor = __instance.Data.IsImpostor;
                 for (var i = 0;i < Buttons.Count;i++)
                 {
+                    LogInUpdate($"Updating Button {i}");
                     var buttonData = Buttons[i];
+                    var isHudKill = buttonData.KillButton == HudManager.Instance.KillButton;
                     if (
                         isImpostor && 
-                        buttonData.KillButton == HudManager.Instance.KillButton
+                        isHudKill
                     ) continue;
 
                     var button = buttonData.KillButton;
@@ -145,13 +167,16 @@ namespace TownOfUs
                             break;
                     }
 
-
-                    if (buttonData.Icon != null) button.renderer.sprite = buttonData.Icon;
+                    if (buttonData.Icon != null)
+                        button.renderer.sprite = buttonData.Icon;
                     button.transform.localPosition = buttonData.Position;
 
-                    if (buttonData.Timer > 0f)
+                    if (buttonData.Timer > 0f || __instance.killTimer > 0f)
                     {
+                        LogInUpdate($"Setting cooldown");
                         buttonData.Timer -= Time.fixedDeltaTime;
+                        if (isHudKill)
+                            __instance.killTimer = buttonData.Timer;
                         button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
                     }
 
@@ -238,10 +263,16 @@ namespace TownOfUs
             [HarmonyPatch(nameof(HudManager.SetHudActive))]
             public static void SetHudActive([HarmonyArgument(0)] bool isActive)
             {
-                for (var i = 0;i < Buttons.Count;i++)
+                TownOfUs.LogMessage($"SetHudActive: {isActive}");
+                for (var i = 0;i < Buttons.Count;i++) {
+                    TownOfUs.LogMessage($"Setting active status for {i}");
                     Buttons[i].KillButton.gameObject.SetActive(
                         isActive && !PlayerControl.LocalPlayer.Data.IsDead
                     );
+                    TownOfUs.LogMessage(
+                        $"Active?: {Buttons[i].KillButton.gameObject.active}"
+                    );
+                }
             }
         }
     }

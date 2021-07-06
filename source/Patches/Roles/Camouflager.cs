@@ -23,7 +23,6 @@ namespace TownOfUs.Roles
                 AbilityManager.Add(new PlayerAbilityData
                 {
                     Callback = CamouCallback,
-                    KillButton = Object.Instantiate(killButton, killButton.transform.parent),
                     MaxTimer = CustomGameOptions.CamouflagerCd,
                     Icon = TownOfUs.Camouflage,
                     Position = TOUConstants.OverKillbutton,

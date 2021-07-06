@@ -364,19 +364,11 @@ namespace TownOfUs
                         foreach (var body in deadBodies)
                             if (body.ParentId == readByte)
                                 Coroutines.Start(Coroutine.CleanCoroutine(body, janitorRole));
-
                         break;
                     case CustomRPC.EngineerFix:
                         var engineer = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Engineer>(engineer).UsedThisRound = true;
+                        Role.GetRole<Engineer>(engineer).FixCallback(null);
                         break;
-
-
-                    case CustomRPC.FixLights:
-                        var lights = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-                        lights.ActualSwitches = lights.ExpectedSwitches;
-                        break;
-
                     case CustomRPC.SetExtraVotes:
 
                         var mayor = Utils.PlayerById(reader.ReadByte());
@@ -385,7 +377,6 @@ namespace TownOfUs
                         if (!mayor.Is(RoleEnum.Mayor)) mayorRole.VoteBank -= mayorRole.ExtraVotes.Count;
 
                         break;
-
                     case CustomRPC.SetSwaps:
                         readSByte = reader.ReadSByte();
                         SwapVotes.Swap1 =

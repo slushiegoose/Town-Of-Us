@@ -23,12 +23,9 @@ namespace TownOfUs.Roles
 
             if (player.AmOwner)
             {
-                var hudManager = HudManager.Instance;
-                var douseButton = hudManager.KillButton;
                 AbilityManager.Add(new PlayerAbilityData
                 {
                     Callback = DouseCallback,
-                    KillButton = douseButton,
                     MaxTimer = CustomGameOptions.DouseCd,
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color,
@@ -41,7 +38,6 @@ namespace TownOfUs.Roles
                 {
                     Callback = IgniteCallback,
                     IsHighlighted = CanIgnite,
-                    KillButton = Object.Instantiate(douseButton, douseButton.transform.parent),
                     MaxTimer = 0f,
                     Icon = TownOfUs.IgniteSprite,
                     Position = TOUConstants.OverKillbutton

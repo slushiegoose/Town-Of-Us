@@ -11,4 +11,12 @@ namespace TownOfUs
             KillButtonPosition.z
         );
     }
+
+    public enum MapTypes
+    {
+        Skeld,
+        MiraHQ,
+        Polus,
+        Airship
+    }
 }
