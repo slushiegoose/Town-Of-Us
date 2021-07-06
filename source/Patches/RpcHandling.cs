@@ -501,10 +501,16 @@ namespace TownOfUs
                         new Camouflager(Utils.PlayerById(reader.ReadByte()));
                         break;
                     case CustomRPC.Camouflage:
-                        var camouflager = Utils.PlayerById(reader.ReadByte());
-                        var camouflagerRole = Role.GetRole<Camouflager>(camouflager);
-                        camouflagerRole.TimeRemaining = CustomGameOptions.CamouflagerDuration;
+                        var camouflager1 = Utils.PlayerById(reader.ReadByte());
+                        var camouflagerRole1 = Role.GetRole<Camouflager>(camouflager1);
+                        camouflagerRole1.Enabled = true;
                         Utils.Camouflage();
+                        break;
+                    case CustomRPC.UnCamouflage:
+                        var camouflager2 = Utils.PlayerById(reader.ReadByte());
+                        var camouflagerRole2 = Role.GetRole<Camouflager>(camouflager2);
+                        camouflagerRole2.Enabled = false;
+                        Utils.UnCamouflage();
                         break;
                     case CustomRPC.SetSpy:
                         new Spy(Utils.PlayerById(reader.ReadByte()));

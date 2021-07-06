@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
@@ -12,7 +12,6 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
                 foreach (var state in __instance.playerStates)
                 {
                     if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer)) state.NameText.text = "";
-                    ;
                     PlayerControl.SetPlayerMaterialColors(Color.grey, state.PlayerIcon.Body);
                     state.PlayerIcon.HatSlot.SetHat(0, 0);
                     var skinById = DestroyableSingleton<HatManager>.Instance.AllSkins.ToArray()[0];

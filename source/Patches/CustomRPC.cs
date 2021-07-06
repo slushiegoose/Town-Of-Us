@@ -1,4 +1,4 @@
-namespace TownOfUs
+﻿namespace TownOfUs
 {
     public enum CustomRPC
     {
@@ -69,6 +69,7 @@ namespace TownOfUs
         RewindRevive,
         Morph,
         Camouflage,
+        UnCamouflage,
         Mine,
         Swoop,
         Douse,

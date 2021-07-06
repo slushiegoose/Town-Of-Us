@@ -34,6 +34,12 @@ namespace TownOfUs
 
                 var data = Buttons[dataIdx];
 
+                if (!float.IsNaN(data.MaxDuration))
+                {
+                    data.DurationLeft = data.MaxDuration;
+                    data.Callback(null);
+                }
+
                 if (data.IsHighlighted != null)
                 {
                     if (data.IsHighlighted())
@@ -77,6 +83,31 @@ namespace TownOfUs
                         buttonData.KillButton == HudManager.Instance.KillButton
                     ) continue;
 
+                    var button = buttonData.KillButton;
+
+                    if (!float.IsNaN(buttonData.MaxDuration) && buttonData.DurationLeft != -1f)
+                    {
+                        var durationLeft = buttonData.DurationLeft = Mathf.Clamp(
+                            buttonData.DurationLeft - Time.fixedDeltaTime,
+                            0f,
+                            buttonData.MaxDuration
+                        );
+
+                        if (durationLeft > 0f)
+                        {
+                            button.SetCoolDown(durationLeft, buttonData.MaxDuration);
+                            continue;
+                        }
+                        else if (durationLeft == 0f)
+                        {
+                            buttonData.OnDurationEnd();
+                            buttonData.Timer = buttonData.MaxTimer;
+                            buttonData.DurationLeft = -1f;
+                            button.SetCoolDown(buttonData.MaxTimer, buttonData.MaxTimer);
+                            continue;
+                        }
+                    }
+
                     if (!__instance.CanMove)
                     {
                         if (Minigame.Instance != null)
@@ -88,7 +119,6 @@ namespace TownOfUs
                             break;
                     }
 
-                    var button = buttonData.KillButton;
 
                     if (buttonData.Icon != null) button.renderer.sprite = buttonData.Icon;
                     button.transform.localPosition = buttonData.Position;
@@ -99,13 +129,20 @@ namespace TownOfUs
                         button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
                     }
 
+                    if (!float.IsNaN(buttonData.MaxDuration))
+                    {
+                        button.renderer.color = Palette.EnabledColor;
+                        button.renderer.material.SetFloat("_Desat", 0f);
+                        continue;
+                    }
+
                     if (buttonData.IsHighlighted != null)
                     {
                         var highlighted = buttonData.IsHighlighted();
                         button.renderer.color =
                             highlighted ? Palette.EnabledColor : Palette.DisabledClear;
                         button.renderer.material.SetFloat("_Desat", highlighted ? 0f : 1f);
-                        return;
+                        continue;
                     }
                     var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
                     if (buttonData.TargetFilter != null)
@@ -166,6 +203,9 @@ namespace TownOfUs
         public Func<PlayerControl, bool> TargetFilter;
 
         public Func<bool> IsHighlighted;
+        public float DurationLeft = -1f;
+        public float MaxDuration = float.NaN;
+        public Action OnDurationEnd;
 
         public Sprite Icon;
         public Vector3 Position;

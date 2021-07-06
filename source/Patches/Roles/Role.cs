@@ -518,7 +518,7 @@ namespace TownOfUs.Roles
                     switch (localRole.RoleType)
                     {
                         case RoleEnum.Arsonist:
-                            if (((Arsonist)role).DousedPlayers.Contains(player.TargetPlayerId))
+                            if (((Arsonist)localRole).DousedPlayers.Contains(player.TargetPlayerId))
                             {
                                 player.NameText.color = Color.black;
                             }
@@ -540,6 +540,11 @@ namespace TownOfUs.Roles
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
+                    if (CamouflageUnCamouflage.IsCamoed)
+                    {
+                        player.nameText.text = "";
+                        continue;
+                    }
                     if (!(player.Data != null && player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor))
                     {
                         player.nameText.text = player.name;
@@ -559,7 +564,7 @@ namespace TownOfUs.Roles
                     switch(localRole.RoleType)
                     {
                         case RoleEnum.Arsonist:
-                            if (((Arsonist) role).DousedPlayers.Contains(player.PlayerId))
+                            if (((Arsonist)localRole).DousedPlayers.Contains(player.PlayerId))
                             {
                                 player.nameText.color = Color.black;
                                 player.myRend.material.SetColor("_VisorColor", localRole.Color);

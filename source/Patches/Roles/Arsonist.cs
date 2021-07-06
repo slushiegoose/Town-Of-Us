@@ -43,7 +43,6 @@ namespace TownOfUs.Roles
                     IsHighlighted = CanIgnite,
                     KillButton = Object.Instantiate(douseButton, douseButton.transform.parent),
                     MaxTimer = 0f,
-                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     Icon = TownOfUs.IgniteSprite,
                     Position = TOUConstants.OverKillbutton
                 });
