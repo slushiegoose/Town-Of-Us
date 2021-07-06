@@ -240,7 +240,7 @@ namespace TownOfUs
             var num = double.MaxValue;
             var refPosition = refPlayer.GetTruePosition();
             PlayerControl result = null;
-            foreach (var player in AllPlayers)
+            foreach (var player in allPlayers)
             {
                 if (player.Data.IsDead || player.PlayerId == refPlayer.PlayerId || !player.Collider.enabled) continue;
                 var playerPosition = player.GetTruePosition();
@@ -258,10 +258,32 @@ namespace TownOfUs
             return result;
         }
 
-        public static PlayerControl getClosestPlayer(PlayerControl refplayer)
+        public static DeadBody getClosestBody(PlayerControl refplayer)
         {
-            return getClosestPlayer(refplayer, PlayerControl.AllPlayerControls.ToArray().ToList());
+            return getClosestBody(refplayer, Object.FindObjectsOfType<DeadBody>().ToList());
         }
+        public static DeadBody getClosestBody(PlayerControl refPlayer, List<DeadBody> allBodies)
+        {
+            var num = double.MaxValue;
+            var refPosition = refPlayer.GetTruePosition();
+            DeadBody result = null;
+            foreach (var body in allBodies)
+            {
+                var bodyPosition = body.TruePosition;
+                var distBetweenPlayers = Vector2.Distance(refPosition, bodyPosition);
+                var isClosest = distBetweenPlayers < num;
+                if (!isClosest) continue;
+                var vector = bodyPosition - refPosition;
+                if (PhysicsHelpers.AnyNonTriggersBetween(
+                    refPosition, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask
+                )) continue;
+                num = distBetweenPlayers;
+                result = body;
+            }
+
+            return result;
+        }
+
         public static void SetTarget(
             ref PlayerControl closestPlayer,
             KillButtonManager button,
@@ -276,6 +298,18 @@ namespace TownOfUs
             );
         }
 
+        public static void SetTarget(
+            ref DeadBody closestBody,
+            KillButtonManager button,
+            float maxDistance = float.NaN,
+            List<DeadBody> targets = null
+        )
+        {
+            if (!button.isActiveAndEnabled) return;
+
+            SetClosestBody(ref closestBody, maxDistance, targets);
+        }
+
         public static PlayerControl SetClosestPlayer(
             ref PlayerControl closestPlayer,
             float maxDistance = float.NaN,
@@ -284,21 +318,34 @@ namespace TownOfUs
         {
             if (float.IsNaN(maxDistance))
                 maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var localPlayer = PlayerControl.LocalPlayer;
             var player = getClosestPlayer(
-                PlayerControl.LocalPlayer,
+                localPlayer,
                 targets ?? PlayerControl.AllPlayerControls.ToArray().ToList()
             );
             var closeEnough = player == null || (
-                getDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance
+                Vector2.Distance(player.GetTruePosition(), localPlayer.GetTruePosition()) < maxDistance
             );
             return closestPlayer = closeEnough ? player : null;
         }
 
-        public static double getDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
+        public static DeadBody SetClosestBody(
+            ref DeadBody closestBody,
+            float maxDistance = float.NaN,
+            List<DeadBody> targets = null
+        )
         {
-            var truePosition = refplayer.GetTruePosition();
-            var truePosition2 = player.GetTruePosition();
-            return Vector2.Distance(truePosition, truePosition2);
+            if (float.IsNaN(maxDistance))
+                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var localPlayer = PlayerControl.LocalPlayer;
+            var body = getClosestBody(
+                localPlayer,
+                targets ?? Object.FindObjectsOfType<DeadBody>().ToList()
+            );
+            var closeEnough = body == null || (
+                Vector2.Distance(body.TruePosition, localPlayer.GetTruePosition()) < maxDistance
+            );
+            return closestBody = closeEnough ? body : null;
         }
 
         public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target)

@@ -25,7 +25,7 @@ namespace TownOfUs.Roles
             {
                 var hudManager = HudManager.Instance;
                 var douseButton = HudManager.Instance.KillButton;
-                AbilityManager.Add(new AbilityData
+                AbilityManager.Add(new PlayerAbilityData
                 {
                     Callback = DouseCallback,
                     KillButton = douseButton,
@@ -37,7 +37,7 @@ namespace TownOfUs.Roles
                     Position = TOUConstants.KillButtonPosition
                 });
 
-                AbilityManager.Add(new AbilityData
+                AbilityManager.Add(new PlayerAbilityData
                 {
                     Callback = IgniteCallback,
                     IsHighlighted = CanIgnite,

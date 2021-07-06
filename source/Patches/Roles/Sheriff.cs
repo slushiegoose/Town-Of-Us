@@ -15,7 +15,7 @@ namespace TownOfUs.Roles
             if (player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
-                AbilityManager.Add(new AbilityData
+                AbilityManager.Add(new PlayerAbilityData
                 {
                     Callback = KillCallback,
                     KillButton = killButton,

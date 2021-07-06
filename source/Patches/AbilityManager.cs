@@ -34,24 +34,36 @@ namespace TownOfUs
 
                 var data = Buttons[dataIdx];
 
+                var isPlayerAbility = data is PlayerAbilityData;
+
+                void Callback(object target)
+                {
+                    if (isPlayerAbility)
+                        ((PlayerAbilityData)data).Callback((PlayerControl)target);
+                    else
+                        ((BodyAbilityData)data).Callback((DeadBody)target);
+                }
+
                 if (!float.IsNaN(data.MaxDuration))
                 {
                     data.DurationLeft = data.MaxDuration;
-                    data.Callback(null);
+                    Callback(null);
                 }
 
                 if (data.IsHighlighted != null)
                 {
                     if (data.IsHighlighted())
-                        data.Callback(null);
+                        Callback(null);
                     return false;
                 }
 
                 if (__instance.CurrentTarget != null)
                 {
-                    data.Callback(__instance.CurrentTarget);
+                    Callback(isPlayerAbility
+                        ? (object)__instance.CurrentTarget
+                        : ((BodyAbilityData)data).Target
+                    );
                     data.Timer = data.MaxTimer;
-
                 }
 
                 return false;
@@ -144,20 +156,46 @@ namespace TownOfUs
                         button.renderer.material.SetFloat("_Desat", highlighted ? 0f : 1f);
                         continue;
                     }
-                    var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
-                    if (buttonData.TargetFilter != null)
-                        targets = targets.Where(buttonData.TargetFilter).ToList();
 
-                    Utils.SetTarget(
-                        ref buttonData.Target,
-                        button,
-                        buttonData.Range,
-                        targets
-                    );
-
-                    if (buttonData.Target != null)
+                    var isPlayerAbility = buttonData is PlayerAbilityData;
+                    PlayerAbilityData playerAbility = null;
+                    BodyAbilityData bodyAbility = null;
+                    Material material = null;
+                    if (isPlayerAbility)
                     {
-                        var material = buttonData.Target.MyRend.material;
+                        playerAbility = (PlayerAbilityData)buttonData;
+                        var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
+                        if (playerAbility.TargetFilter != null)
+                            targets = targets.Where(playerAbility.TargetFilter).ToList();
+
+                        Utils.SetTarget(
+                            ref playerAbility.Target,
+                            button,
+                            buttonData.Range,
+                            targets
+                        );
+
+                        material = playerAbility.Target?.myRend.material;
+                    }
+                    else
+                    {
+                        bodyAbility = (BodyAbilityData)buttonData;
+                        var targets = UnityEngine.Object.FindObjectsOfType<DeadBody>().ToList();
+                        if (bodyAbility.TargetFilter != null)
+                            targets = targets.Where(bodyAbility.TargetFilter).ToList();
+
+                        Utils.SetTarget(
+                            ref bodyAbility.Target,
+                            button,
+                            buttonData.Range,
+                            targets
+                        );
+
+                        material = bodyAbility.Target?.bodyRenderer.material;
+                    }
+
+                    if (material != null)
+                    {
                         material.SetFloat("_Outline", button.isActive ? 1 : 0);
                         material.SetColor("_OutlineColor", buttonData.TargetColor);
                     }
@@ -180,11 +218,23 @@ namespace TownOfUs
         }
     }
 
-    public class AbilityData
+    public class BodyAbilityData : AbilityData
+    {
+        public DeadBody Target;
+        public Action<DeadBody> Callback;
+        public Func<DeadBody, bool> TargetFilter;
+    }
+
+    public class PlayerAbilityData : AbilityData
+    {
+        public PlayerControl Target;
+        public Action<PlayerControl> Callback;
+        public Func<PlayerControl, bool> TargetFilter;
+    }
+
+    public abstract class AbilityData
     {
         private float _Timer { get; set; }
-
-        public PlayerControl Target;
 
         public KillButtonManager KillButton;
 
@@ -196,11 +246,7 @@ namespace TownOfUs
         }
         public float Range;
 
-
         public Color TargetColor;
-
-        public Action<PlayerControl> Callback;
-        public Func<PlayerControl, bool> TargetFilter;
 
         public Func<bool> IsHighlighted;
         public float DurationLeft = -1f;

@@ -20,7 +20,7 @@ namespace TownOfUs.Roles
             if (player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
-                AbilityManager.Add(new AbilityData
+                AbilityManager.Add(new PlayerAbilityData
                 {
                     Callback = CamouCallback,
                     KillButton = Object.Instantiate(killButton, killButton.transform.parent),
