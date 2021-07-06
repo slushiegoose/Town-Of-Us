@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
 using System;
@@ -251,8 +251,9 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             //System.Console.WriteLine(Roles.Role.GetRole(shifter));
             if (shifter.AmOwner || other.AmOwner)
             {
-                if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)
-                    Role.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
+                // TODO: fix this
+                //if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)
+                    //Role.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                 DestroyableSingleton<HudManager>.Instance.KillButton.isActive = false;
 

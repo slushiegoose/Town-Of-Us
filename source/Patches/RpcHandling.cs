@@ -549,13 +549,12 @@ namespace TownOfUs
                         var douseTarget = Utils.PlayerById(reader.ReadByte());
                         var arsonistRole = Role.GetRole<Arsonist>(arsonist);
                         arsonistRole.DousedPlayers.Add(douseTarget.PlayerId);
-                        arsonistRole.LastDoused = DateTime.UtcNow;
 
                         break;
                     case CustomRPC.Ignite:
                         var theArsonist = Utils.PlayerById(reader.ReadByte());
                         var theArsonistRole = Role.GetRole<Arsonist>(theArsonist);
-                        global::TownOfUs.NeutralRoles.ArsonistMod.PerformKill.Ignite(theArsonistRole);
+                        theArsonistRole.IgniteCallback(null);
                         break;
 
                     case CustomRPC.ArsonistWin:

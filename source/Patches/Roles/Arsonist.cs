@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using UnityEngine;
@@ -8,13 +7,10 @@ namespace TownOfUs.Roles
 {
     public class Arsonist : Role
     {
-        private KillButtonManager _igniteButton;
         public bool ArsonistWins;
         public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new List<byte>();
         public bool IgniteUsed;
-        public DateTime LastDoused;
-
 
         public Arsonist(PlayerControl player) : base(player)
         {
@@ -24,17 +20,85 @@ namespace TownOfUs.Roles
             Color = new Color(1f, 0.3f, 0f);
             RoleType = RoleEnum.Arsonist;
             Faction = Faction.Neutral;
+
+            if (player.AmOwner)
+            {
+                var hudManager = HudManager.Instance;
+                var douseButton = HudManager.Instance.KillButton;
+                AbilityManager.Add(new AbilityData
+                {
+                    Callback = DouseCallback,
+                    KillButton = douseButton,
+                    MaxTimer = CustomGameOptions.DouseCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color,
+                    TargetFilter = player => !IsDoused(player),
+                    Icon = TownOfUs.DouseSprite,
+                    Position = TOUConstants.KillButtonPosition
+                });
+
+                AbilityManager.Add(new AbilityData
+                {
+                    Callback = IgniteCallback,
+                    IsHighlighted = CanIgnite,
+                    KillButton = Object.Instantiate(douseButton, douseButton.transform.parent),
+                    MaxTimer = 0f,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    Icon = TownOfUs.IgniteSprite,
+                    Position = TOUConstants.OverKillbutton
+                });
+            }
         }
 
-        public KillButtonManager IgniteButton
+        public bool CanIgnite()
         {
-            get => _igniteButton;
-            set
+            if (IgniteUsed) return false;
+
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
-                _igniteButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                if (player.PlayerId == Player.PlayerId) continue;
+
+                var data = player.Data;
+
+                if (data.IsDead || data.Disconnected) continue;
+
+                if (!DousedPlayers.Contains(player.PlayerId))
+                    return false;
             }
+            return true;
+        }
+
+        public void IgniteCallback(PlayerControl _)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.Ignite, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            foreach (var playerId in DousedPlayers)
+            {
+                var player = Utils.PlayerById(playerId);
+                if (player == null) continue;
+                var data = player.Data;
+                if (data.IsDead || data.Disconnected) continue;
+                Utils.MurderPlayer(player, player);
+            }
+
+            Utils.MurderPlayer(Player, Player);
+
+            IgniteUsed = true;
+        }
+
+        public bool IsDoused(PlayerControl player) => DousedPlayers.Contains(player.PlayerId);
+
+        public void DouseCallback(PlayerControl player)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.Douse, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            DousedPlayers.Add(player.PlayerId);
         }
 
         internal override bool CheckEndCriteria(ShipStatus __instance)
@@ -62,7 +126,6 @@ namespace TownOfUs.Roles
 
         public void Wins()
         {
-            //System.Console.WriteLine("Reached Here - Glitch Edition");
             ArsonistWins = true;
         }
 
@@ -71,37 +134,11 @@ namespace TownOfUs.Roles
             Player.Data.IsImpostor = true;
         }
 
-        public bool CheckEveryoneDoused()
-        {
-            var arsoId = Player.PlayerId;
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (
-                    player.PlayerId == arsoId ||
-                    player.Data.IsDead ||
-                    player.Data.Disconnected
-                ) continue;
-                if (!DousedPlayers.Contains(player.PlayerId)) return false;
-            }
-
-            return true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
             var arsonistTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             arsonistTeam.Add(PlayerControl.LocalPlayer);
             __instance.yourTeam = arsonistTeam;
-        }
-
-        public float DouseTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDoused;
-            var num = CustomGameOptions.DouseCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

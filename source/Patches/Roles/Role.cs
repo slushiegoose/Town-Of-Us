@@ -374,7 +374,8 @@ namespace TownOfUs.Roles
                 {
                     var button = AbilityManager.Buttons[i];
                     button.KillButton.gameObject.SetActive(true);
-                    button.Timer = 10f;
+                    button.Timer = Mathf.Min(button.MaxTimer, 10f);
+                    button.KillButton.SetCoolDown(button.Timer, Mathf.Max(button.MaxTimer, 1f));
                 }
                 if (role.RoleType == RoleEnum.Shifter && role.Player != PlayerControl.LocalPlayer) return;
                 var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
@@ -490,14 +491,15 @@ namespace TownOfUs.Roles
             }
         }
 
+        // TODO: improve this pile of s***
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class HudManager_Update
         {
-            private static Vector3 oldScale = Vector3.zero;
-            private static Vector3 oldPosition = Vector3.zero;
-
             private static void UpdateMeeting(MeetingHud __instance)
             {
+                var localRole = GetRole(PlayerControl.LocalPlayer);
+                var localIsDead = PlayerControl.LocalPlayer.Data.IsDead;
+
                 foreach (var player in __instance.playerStates)
                 {
                     var role = GetRole(player);
@@ -505,39 +507,22 @@ namespace TownOfUs.Roles
                     {
                         player.NameText.color = role.Color;
                         player.NameText.text = role.NameText(player);
-                        // if (player.NameText.text.Contains("\n"))
-                        // {
-                        //     var newScale = Vector3.one * 1.8f;
-                        //
-                        //     // TODO: scale
-                        //     var trueScale = player.NameText.transform.localScale / 2;
-                        //
-                        //
-                        //     if (trueScale != newScale) oldScale = trueScale;
-                        //     var newPosition = new Vector3(1.43f, 0.055f, 0f);
-                        //
-                        //     var truePosition = player.NameText.transform.localPosition;
-                        //
-                        //     if (newPosition != truePosition) oldPosition = truePosition;
-                        //
-                        //     player.NameText.transform.localPosition = newPosition;
-                        //     player.NameText.transform.localScale = newScale;
-                        // }
-                        // else
-                        // {
-                        // if (oldPosition != Vector3.zero) player.NameText.transform.localPosition = oldPosition;
-                        // if (oldScale != Vector3.zero) player.NameText.transform.localScale = oldScale;
-                        // }
                     }
-                    else
+                    else if (role.Player)
                     {
-                        try
-                        {
-                            player.NameText.text = role.Player.name;
-                        }
-                        catch
-                        {
-                        }
+                        player.NameText.text = role.Player.name;
+                    }
+
+                    if (localRole == null || localIsDead) continue;
+
+                    switch (localRole.RoleType)
+                    {
+                        case RoleEnum.Arsonist:
+                            if (((Arsonist)role).DousedPlayers.Contains(player.TargetPlayerId))
+                            {
+                                player.NameText.color = Color.black;
+                            }
+                            break;
                     }
                 }
             }
@@ -548,8 +533,10 @@ namespace TownOfUs.Roles
                 if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance);
 
                 if (PlayerControl.AllPlayerControls.Count <= 1) return;
-                if (PlayerControl.LocalPlayer == null) return;
-                if (PlayerControl.LocalPlayer.Data == null) return;
+                if (PlayerControl.LocalPlayer?.Data == null) return;
+
+                var localRole = GetRole(PlayerControl.LocalPlayer);
+                var localIsDead = PlayerControl.LocalPlayer.Data.IsDead;
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
@@ -560,15 +547,25 @@ namespace TownOfUs.Roles
                     }
 
                     var role = GetRole(player);
-                    if (role != null)
-                        if (role.Criteria())
-                        {
-                            player.nameText.color = role.Color;
-                            player.nameText.text = role.NameText();
-                            continue;
-                        }
+                    if (role != null && role.Criteria())
+                    {
+                        player.nameText.color = role.Color;
+                        player.nameText.text = role.NameText();
+                    }
 
-                    if (PlayerControl.LocalPlayer.Data.IsImpostor && player.Data.IsImpostor) continue;
+                    if (localRole == null || localIsDead) continue;
+
+                    // TODO: add other role types to this
+                    switch(localRole.RoleType)
+                    {
+                        case RoleEnum.Arsonist:
+                            if (((Arsonist) role).DousedPlayers.Contains(player.PlayerId))
+                            {
+                                player.nameText.color = Color.black;
+                                player.myRend.material.SetColor("_VisorColor", localRole.Color);
+                            }
+                            break;
+                    }
                 }
             }
         }
