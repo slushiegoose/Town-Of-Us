@@ -25,7 +25,7 @@ namespace TownOfUs.Roles
                 AbilityManager.Add(new BodyAbilityData
                 {
                     Callback = ReviveCallback,
-                    MaxTimer = 0f,
+                    MaxTimer = 10f,
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color.yellow,
                     Icon = TownOfUs.ReviveSprite,

@@ -24,7 +24,7 @@ namespace TownOfUs.Roles
                 {
                     Callback = FixCallback,
                     IsHighlighted = CanUseFix,
-                    MaxTimer = 0f,
+                    MaxTimer = 10f,
                     Icon = TownOfUs.EngineerFix,
                     Position = TOUConstants.KillButtonPosition,
                 });

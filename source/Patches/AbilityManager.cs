@@ -253,6 +253,10 @@ namespace TownOfUs
                         material.SetColor("_OutlineColor", buttonData.TargetColor);
                     }
                 }
+
+                if (Buttons.Count > 0 && Input.GetKeyInt(KeyCode.Q))
+                    Buttons[0].KillButton.PerformKill();
+
             }
         }
 

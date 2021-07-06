@@ -38,7 +38,7 @@ namespace TownOfUs.Roles
                 {
                     Callback = IgniteCallback,
                     IsHighlighted = CanIgnite,
-                    MaxTimer = 0f,
+                    MaxTimer = 10f,
                     Icon = TownOfUs.IgniteSprite,
                     Position = TOUConstants.OverKillbutton
                 });
