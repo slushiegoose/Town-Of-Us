@@ -637,8 +637,7 @@ namespace TownOfUs
                         new Undertaker(Utils.PlayerById(reader.ReadByte()));
                         break;
                     case CustomRPC.Drag:
-                        readByte1 = reader.ReadByte();
-                        var dienerPlayer = Utils.PlayerById(readByte1);
+                        var dienerPlayer = Utils.PlayerById(reader.ReadByte());
                         var dienerRole = Role.GetRole<Undertaker>(dienerPlayer);
                         readByte = reader.ReadByte();
                         var dienerBodies = Object.FindObjectsOfType<DeadBody>();
@@ -648,17 +647,9 @@ namespace TownOfUs
 
                         break;
                     case CustomRPC.Drop:
-                        readByte1 = reader.ReadByte();
-                        var v2 = reader.ReadVector2();
-                        var v2z = reader.ReadSingle();
-                        var dienerPlayer2 = Utils.PlayerById(readByte1);
+                        var dienerPlayer2 = Utils.PlayerById(reader.ReadByte());
                         var dienerRole2 = Role.GetRole<Undertaker>(dienerPlayer2);
-                        var body2 = dienerRole2.CurrentlyDragging;
                         dienerRole2.CurrentlyDragging = null;
-
-                        body2.transform.position = new Vector3(v2.x, v2.y, v2z);
-
-
                         break;
                     case CustomRPC.SetAssassin:
                         new Assassin(Utils.PlayerById(reader.ReadByte()));

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TownOfUs.Extensions;
 using TownOfUs.Roles.Modifiers;
 using UnityEngine;
@@ -6,7 +6,6 @@ using UnityEngine;
 namespace TownOfUs.Roles
 {
     public class Morphling : Role, IVisualAlteration
-
     {
         public KillButtonManager _morphButton;
         public PlayerControl ClosestPlayer;

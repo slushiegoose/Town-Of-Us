@@ -15,8 +15,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             if (body == null) return;
             if (__instance.Data.IsDead)
             {
-                role.CurrentlyDragging = null;
-                body.bodyRenderer.material.SetFloat("_Outline", 0f);
+                role.DragDropCallback(body);
                 return;
             }
             var currentPosition = __instance.GetTruePosition();
@@ -28,10 +27,6 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                 Constants.ShipAndObjectsMask,
                 false
             )) body.transform.position = newPos;
-            if (!__instance.AmOwner) return;
-            var material = body.bodyRenderer.material;
-            material.SetColor("_OutlineColor", Color.green);
-            material.SetFloat("_Outline", 1f);
         }
     }
 }

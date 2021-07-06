@@ -23,10 +23,13 @@ namespace TownOfUs
             [HarmonyPatch(nameof(KillButtonManager.PerformKill))]
             public static bool PerformKill(KillButtonManager __instance)
             {
+                TownOfUs.LogMessage("Called PerformKill");
                 if (
                     !__instance.isActiveAndEnabled ||
                     __instance.isCoolingDown
                 ) return false;
+
+                TownOfUs.LogMessage("Is active and not cooling down");
 
                 var dataIdx = Buttons.FindIndex(x => x.KillButton == __instance);
 
@@ -57,13 +60,16 @@ namespace TownOfUs
                     return false;
                 }
 
-                if (__instance.CurrentTarget != null)
+                object target = null;
+                if (isPlayerAbility)
+                    target = __instance.CurrentTarget;
+                else
+                    target = ((BodyAbilityData)data).Target;
+
+                if (target != null)
                 {
-                    Callback(isPlayerAbility
-                        ? (object)__instance.CurrentTarget
-                        : ((BodyAbilityData)data).Target
-                    );
                     data.Timer = data.MaxTimer;
+                    Callback(target);
                 }
 
                 return false;
@@ -184,14 +190,28 @@ namespace TownOfUs
                         if (bodyAbility.TargetFilter != null)
                             targets = targets.Where(bodyAbility.TargetFilter).ToList();
 
+                        var oldTarget = bodyAbility.Target;
+
+                        DeadBody target = null;
+
                         Utils.SetTarget(
-                            ref bodyAbility.Target,
+                            ref target,
                             button,
                             buttonData.Range,
                             targets
                         );
 
-                        material = bodyAbility.Target?.bodyRenderer.material;
+                        if (oldTarget != null && oldTarget.ParentId != target?.ParentId)
+                            oldTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
+
+                        material = target?.bodyRenderer.material;
+
+                        var hasTarget = target != null;
+                        var renderer = button.renderer;
+                        renderer.color = hasTarget ? Palette.EnabledColor : Palette.DisabledClear;
+                        renderer.material.SetFloat("_Desat", hasTarget ? 0f : 1f);
+
+                        bodyAbility.Target = target;
                     }
 
                     if (material != null)
