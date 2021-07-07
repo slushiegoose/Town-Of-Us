@@ -97,6 +97,14 @@ namespace TownOfUs
             [HarmonyPatch(nameof(PlayerControl.Die))]
             public static void OnDeath(PlayerControl __instance)
             {
+                for (var i = 0;i < Buttons.Count;i++)
+                {
+                    var buttonData = Buttons[i];
+                    var material = buttonData is PlayerAbilityData playerAbility
+                        ? playerAbility.Target?.myRend.material
+                        : ((BodyAbilityData) buttonData).Target?.bodyRenderer.material;
+                    material?.SetFloat("_Outline", 0f);
+                }
                 if (__instance.AmOwner)
                     HudManagerPatch.SetHudActive(true);
             }
@@ -132,6 +140,8 @@ namespace TownOfUs
                     ) continue;
 
                     var button = buttonData.KillButton;
+
+                    if (!button.isActiveAndEnabled) continue;
 
                     if (!float.IsNaN(buttonData.MaxDuration) && buttonData.DurationLeft != -1f)
                     {

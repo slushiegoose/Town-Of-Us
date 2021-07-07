@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUs.CrewmateRoles.AltruistMod;
+using TownOfUs.NeutralRoles.GlitchMod;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CrewmateRoles.SwapperMod;
 using TownOfUs.CrewmateRoles.TimeLordMod;
@@ -305,9 +305,7 @@ namespace TownOfUs
 
 
                     case CustomRPC.GlitchLose:
-                        foreach (var role in Role.AllRoles)
-                            if (role.RoleType == RoleEnum.Glitch)
-                                ((Glitch) role).Loses();
+                        Role.GetRole<Glitch>()?.Loses();
 
                         break;
 
@@ -438,29 +436,24 @@ namespace TownOfUs
                         var glitchPlayer = Utils.PlayerById(reader.ReadByte());
                         var mimicPlayer = Utils.PlayerById(reader.ReadByte());
                         var glitchRole = Role.GetRole<Glitch>(glitchPlayer);
-                        glitchRole.MimicTarget = mimicPlayer;
-                        glitchRole.IsUsingMimic = true;
+                        //glitchRole.MimicTarget = mimicPlayer;
+                        //glitchRole.IsUsingMimic = true;
                         Utils.Morph(glitchPlayer, mimicPlayer);
                         break;
                     case CustomRPC.RpcResetAnim:
                         var animPlayer = Utils.PlayerById(reader.ReadByte());
                         var theGlitchRole = Role.GetRole<Glitch>(animPlayer);
-                        theGlitchRole.MimicTarget = null;
-                        theGlitchRole.IsUsingMimic = false;
+                        //theGlitchRole.MimicTarget = null;
+                        //theGlitchRole.IsUsingMimic = false;
                         Utils.Unmorph(theGlitchRole.Player);
                         break;
                     case CustomRPC.GlitchWin:
-                        var theGlitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
-                        ((Glitch) theGlitch)?.Wins();
+                        Role.GetRole<Glitch>()?.Wins();
                         break;
                     case CustomRPC.SetHacked:
                         var hackPlayer = Utils.PlayerById(reader.ReadByte());
-                        if (hackPlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                        {
-                            var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
-                            ((Glitch) glitch)?.SetHacked(hackPlayer);
-                        }
-
+                        if (hackPlayer.AmOwner)
+                            Coroutines.Start(GlitchCoroutines.Hack(Role.GetRole<Glitch>(), hackPlayer));
                         break;
                     case CustomRPC.Investigate:
                         var seer = Utils.PlayerById(reader.ReadByte());

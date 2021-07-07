@@ -8,6 +8,7 @@ using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
+using TownOfUs.NeutralRoles.GlitchMod;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;
@@ -26,7 +27,8 @@ namespace TownOfUs
 
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
 
-
+        public static string ColorText(Color color, string text) =>
+            $"<color=#{color.ToHtmlStringRGBA()}>{text}</color>";
         public static void RpcBreakShield(PlayerControl player)
         {
             var medic = player.getMedic().Player.PlayerId;
@@ -439,8 +441,8 @@ namespace TownOfUs
                     if (role?.RoleType == RoleEnum.Glitch)
                     {
                         var glitch = (Glitch)role;
-                        glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
-                        killer.SetKillTimer(CustomGameOptions.GlitchKillCooldown * 3);
+                        //glitch.LastKill = DateTime.UtcNow.AddSeconds(2 * CustomGameOptions.GlitchKillCooldown);
+                        AbilityManager.Buttons[0].Timer = CustomGameOptions.GlitchKillCooldown * 3;
                         return;
                     }
                     else if (isImpostor)
@@ -455,6 +457,15 @@ namespace TownOfUs
                 if (isImpostor)
                     killer.SetKillTimer(timer);
             }
+        }
+
+        public static void RpcSetHacked(PlayerControl target)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetHacked, SendOption.Reliable, -1);
+            writer.Write(target.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Coroutines.Start(GlitchCoroutines.Hack(Role.GetRole<Glitch>(), target));
         }
 
         public static IEnumerator FlashCoroutine(Color color, float waitfor = 1f, float alpha = 0.3f)

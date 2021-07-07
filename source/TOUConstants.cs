@@ -10,6 +10,13 @@ namespace TownOfUs
             -1f,
             KillButtonPosition.z
         );
+
+        public static Vector3 BottomLeftA = new Vector3(-4.5859f, -2.3f, -9f);
+        public static Vector3 BottomLeftB = new Vector3(
+            BottomLeftA.x,
+            -1f,
+            BottomLeftB.z
+        );
     }
 
     public enum MapTypes
