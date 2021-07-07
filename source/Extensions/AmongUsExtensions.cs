@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
 
@@ -49,7 +49,7 @@ namespace TownOfUs.Extensions
                 ColorId = player.Data.ColorId,
                 HatId = player.Data.HatId,
                 SkinId = player.Data.SkinId,
-                PetId = player.Data.PetId
+                PetId = player.Data.PetId,
             };
         }
 

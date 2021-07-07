@@ -10,6 +10,11 @@ namespace TownOfUs
     {
         public static List<AbilityData> Buttons = new List<AbilityData>();
 
+        private static void ChangeButtonsState(bool active) => HudManager.Instance.SetHudActive(active);
+
+        public static void EnableButtons() => ChangeButtonsState(true);
+        public static void DisableButtons() => ChangeButtonsState(false);
+
         public static void Add(AbilityData data)
         {
             data.Timer = data.MaxTimer;
@@ -143,27 +148,31 @@ namespace TownOfUs
 
                     if (!button.isActiveAndEnabled) continue;
 
-                    if (!float.IsNaN(buttonData.MaxDuration) && buttonData.DurationLeft != -1f)
+                    if (buttonData.Icon != null)
+                        button.renderer.sprite = buttonData.Icon;
+                    button.transform.localPosition = buttonData.Position;
+
+                    var durationLeft = buttonData.DurationLeft;
+                    if (durationLeft != -1f)
                     {
-                        var durationLeft = buttonData.DurationLeft = Mathf.Clamp(
+                        var maxDuration = buttonData.MaxDuration;
+
+                        durationLeft = buttonData.DurationLeft = Mathf.Clamp(
                             buttonData.DurationLeft - Time.fixedDeltaTime,
                             0f,
-                            buttonData.MaxDuration
+                            maxDuration
                         );
 
                         if (durationLeft > 0f)
-                        {
-                            button.SetCoolDown(durationLeft, buttonData.MaxDuration);
-                            continue;
-                        }
+                            button.SetCoolDown(durationLeft, maxDuration);
                         else if (durationLeft == 0f)
                         {
                             buttonData.OnDurationEnd();
                             buttonData.Timer = buttonData.MaxTimer;
                             buttonData.DurationLeft = -1f;
                             button.SetCoolDown(buttonData.MaxTimer, buttonData.MaxTimer);
-                            continue;
                         }
+                        continue;
                     }
 
                     if (!__instance.CanMove)
@@ -176,10 +185,6 @@ namespace TownOfUs
                         else
                             break;
                     }
-
-                    if (buttonData.Icon != null)
-                        button.renderer.sprite = buttonData.Icon;
-                    button.transform.localPosition = buttonData.Position;
 
                     if (buttonData.Timer > 0f || __instance.killTimer > 0f)
                     {
@@ -277,14 +282,9 @@ namespace TownOfUs
             [HarmonyPatch(nameof(HudManager.SetHudActive))]
             public static void SetHudActive([HarmonyArgument(0)] bool isActive)
             {
-                TownOfUs.LogMessage($"SetHudActive: {isActive}");
                 for (var i = 0;i < Buttons.Count;i++) {
-                    TownOfUs.LogMessage($"Setting active status for {i}");
                     Buttons[i].KillButton.gameObject.SetActive(
                         isActive && !PlayerControl.LocalPlayer.Data.IsDead
-                    );
-                    TownOfUs.LogMessage(
-                        $"Active?: {Buttons[i].KillButton.gameObject.active}"
                     );
                 }
             }

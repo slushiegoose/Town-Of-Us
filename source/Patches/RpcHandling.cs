@@ -436,16 +436,14 @@ namespace TownOfUs
                         var glitchPlayer = Utils.PlayerById(reader.ReadByte());
                         var mimicPlayer = Utils.PlayerById(reader.ReadByte());
                         var glitchRole = Role.GetRole<Glitch>(glitchPlayer);
-                        //glitchRole.MimicTarget = mimicPlayer;
-                        //glitchRole.IsUsingMimic = true;
+                        glitchRole.MimicedAs = mimicPlayer;
                         Utils.Morph(glitchPlayer, mimicPlayer);
                         break;
                     case CustomRPC.RpcResetAnim:
                         var animPlayer = Utils.PlayerById(reader.ReadByte());
                         var theGlitchRole = Role.GetRole<Glitch>(animPlayer);
-                        //theGlitchRole.MimicTarget = null;
-                        //theGlitchRole.IsUsingMimic = false;
-                        Utils.Unmorph(theGlitchRole.Player);
+                        theGlitchRole.MimicedAs = null;
+                        Utils.Unmorph(animPlayer);
                         break;
                     case CustomRPC.GlitchWin:
                         Role.GetRole<Glitch>()?.Wins();

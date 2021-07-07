@@ -42,8 +42,6 @@ namespace TownOfUs.Roles
             get => _player;
             set
             {
-                if (_player != null) _player.nameText.color = Color.white;
-
                 _player = value;
                 PlayerName = value.Data.PlayerName;
             }
@@ -553,11 +551,6 @@ namespace TownOfUs.Roles
                     {
                         player.nameText.text = "";
                         continue;
-                    }
-                    if (!(player.Data != null && player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor))
-                    {
-                        player.nameText.text = player.name;
-                        player.nameText.color = Color.white;
                     }
 
                     var role = GetRole(player);

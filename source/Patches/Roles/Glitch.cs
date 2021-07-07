@@ -4,16 +4,20 @@ using System.Reflection;
 using TownOfUs.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace TownOfUs.Roles
 {
-    public class Glitch : Role//, IVisualAlteration
+    public class Glitch : Role, IVisualAlteration
     {
         public static AssetBundle bundle = loadBundle();
         public static Sprite MimicSprite = bundle.LoadAsset<Sprite>("MimicSprite").DontUnload();
         public static Sprite HackSprite = bundle.LoadAsset<Sprite>("HackSprite").DontUnload();
         public static Sprite LockSprite = bundle.LoadAsset<Sprite>("Lock").DontUnload();
         public bool GlitchWins { get; set; }
+        public PlayerControl MimicedAs = null;
+        public PlayerAbilityData MimicButton;
+        public ChatController MimicList;
 
         public Glitch(PlayerControl player) : base(player)
         {
@@ -35,13 +39,14 @@ namespace TownOfUs.Roles
                     Position = TOUConstants.KillButtonPosition
                 });
 
-                AbilityManager.Add(new PlayerAbilityData
+                AbilityManager.Add(MimicButton = new PlayerAbilityData
                 {
                     Callback = MimicCallback,
                     IsHighlighted = () => true,
                     MaxTimer = CustomGameOptions.MimicCooldown,
                     Icon = MimicSprite,
-                    Position = TOUConstants.BottomLeftA
+                    Position = TOUConstants.BottomLeftA,
+                    OnDurationEnd = UnMimic,
                 });
 
                 AbilityManager.Add(new PlayerAbilityData
@@ -68,84 +73,99 @@ namespace TownOfUs.Roles
 
         public void HackCallback(PlayerControl target)
         {
-            TownOfUs.LogMessage("Hack Callback");
             Utils.RpcSetHacked(target);
         }
 
-        private void AddChat(ChatController chat, PlayerControl player)
+        private void UnMimic()
         {
-            var pool = chat.chatBubPool;
-            if (pool.NotInUse == 0)
-                pool.ReclaimOldest();
-
-            var bubble = Object.Instantiate(pool.Prefab, chat.transform) as ChatBubble;
-            var transform = bubble.transform;
-
-            transform.SetParent(chat.scroller.Inner);
-            transform.localScale = Vector3.one;
-
-            bubble.SetLeft();
-            player.SetPlayerMaterialColors(bubble.ChatFace);
-            bubble.SetName(player.name, false, false, Color.white);
-            bubble.SetText("Click to morph");
-
-            var localPosition = bubble.Background.transform.localPosition;
-            localPosition.y = bubble.NameText.transform.localPosition.y - bubble.Background.size.y / 2f + 0.05f;
-            bubble.Background.transform.localPosition = localPosition;
-            chat.AlignAllBubbles();
-
-            var clickEvent = new Button.ButtonClickedEvent();
-
-            clickEvent.AddListener((System.Action) (() => ChooseMimic(chat, player)));
-
-            bubble.gameObject.AddComponent<PassiveButton>().OnClick = clickEvent;
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.RpcResetAnim, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            writer.Write(MimicedAs.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            MimicedAs = null;
+            MimicButton.MaxDuration = float.NaN;
+            Utils.Unmorph(Player);
         }
 
-        private void ChooseMimic(ChatController chat, PlayerControl player)
+        private void ChooseMimic(PlayerControl player)
         {
-            chat.SetVisible(false);
-            chat.Toggle();
-            chat.gameObject.Destroy();
+            MimicList.Toggle();
 
             TownOfUs.LogMessage($"Chosen Morph: {player.name}");
+            AbilityManager.EnableButtons();
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SetMimic, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            writer.Write(player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            MimicedAs = player;
+            Utils.Morph(Player, player);
+
+            MimicButton.DurationLeft = MimicButton.MaxDuration = CustomGameOptions.MimicDuration;
         }
 
         public void MimicCallback(PlayerControl _)
         {
-            var mimicList = Object.Instantiate(HudManager.Instance.Chat, Camera.main.transform);
-            mimicList.SetVisible(true);
-            mimicList.Toggle();
+            AbilityManager.DisableButtons();
+            if (MimicList == null)
+            {
+                var original = HudManager.Instance.Chat;
+                MimicList = Object.Instantiate(original, original.transform.parent);
+            }
+            MimicList.SetVisible(true);
+            MimicList.Toggle();
 
-            mimicList.TextBubble.gameObject.SetActive(mimicList.TextBubble.enabled = false);
-            mimicList.TextArea.gameObject.SetActive(mimicList.TextArea.enabled = false);
-            mimicList.BanButton.gameObject.SetActive(mimicList.BanButton.enabled = false);
-            mimicList.CharCount.gameObject.SetActive(mimicList.CharCount.enabled = false);
-            mimicList.BackgroundImage.gameObject.SetActive(mimicList.BackgroundImage.enabled = false);
-            
-            var child = mimicList.gameObject.transform.GetChild(0).gameObject;
-            child.SetActive(child.GetComponent<SpriteRenderer>().enabled = false);
+            MimicList.TextBubble.gameObject.SetActive(false);
+            MimicList.TextArea.gameObject.SetActive(false);
+            MimicList.BanButton.gameObject.SetActive(false);
+            MimicList.CharCount.gameObject.SetActive(false);
+            MimicList.BackgroundImage.gameObject.GetComponent<SpriteRenderer>().enabled = false;
 
-            foreach (var renderer in mimicList.Content.GetComponentsInChildren<SpriteRenderer>())
+            var child = MimicList.gameObject.transform.GetChild(0).gameObject;
+            child.SetActive(false);
+
+            foreach (var renderer in MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
                 if (renderer.name.Equals("SendButton") || renderer.name.Equals("QuickChatButton"))
-                    renderer.gameObject.SetActive(renderer.enabled = false);
+                    renderer.gameObject.SetActive(false);
 
-            var children = mimicList.chatBubPool.activeChildren;
+            var children = MimicList.chatBubPool.activeChildren;
             foreach (var renderer in children)
-                renderer.gameObject.SetActive(renderer.enabled = false);
+                renderer.gameObject.SetActive(false);
 
             children.Clear();
 
+            var idx = 0;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
                 if (player.AmOwner) continue;
-                AddChat(mimicList, player);
+                MimicList.AddChat(player, $"Click to Mimic ({CustomGameOptions.MimicDuration}s)");
+
+                var chatBubble = MimicList.chatBubPool.activeChildren[idx++].Cast<ChatBubble>();
+                var gameObject = chatBubble.gameObject;
+                var background = chatBubble.Background;
+                var collider = gameObject.AddComponent<BoxCollider2D>();
+                var button = gameObject.AddComponent<PassiveButton>();
+
+                collider.size = new Vector2(10f, 0.5f);
+
+                var clickEvent = button.OnClick = new Button.ButtonClickedEvent();
+                clickEvent.AddListener((System.Action)(() => ChooseMimic(player)));
+
+                var hoverEvent = button.OnMouseOver = new UnityEvent();
+                hoverEvent.AddListener((System.Action)(() => background.color = Color.green));
+
+                var unHoverEvent = button.OnMouseOut = new UnityEvent();
+                unHoverEvent.AddListener((System.Action)(() => background.color = Color.white));
             }
         }
 
-        public bool TryGetVisualAppearance(out VisualAppearance appearance)
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
-            appearance = Player.GetDefaultAppearance();
-            return false;
+            appearance = (MimicedAs ?? Player).GetDefaultAppearance();
+            return MimicedAs != null;
         }
 
         public static AssetBundle loadBundle()
