@@ -382,6 +382,8 @@ namespace TownOfUs
 
                 Murder.KilledPlayers.Add(deadBody);
 
+                if (!killer.AmOwner) return;
+
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
                     var glitch = Role.GetRole<Glitch>(killer);
