@@ -1,15 +1,9 @@
 ﻿using Hazel;
-using InnerNet;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.Extensions;
-using TownOfUs.Roles.Modifiers;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UnityEngine.UI;
 
 namespace TownOfUs.Roles
 {
@@ -78,9 +72,74 @@ namespace TownOfUs.Roles
             Utils.RpcSetHacked(target);
         }
 
+        private void AddChat(ChatController chat, PlayerControl player)
+        {
+            var pool = chat.chatBubPool;
+            if (pool.NotInUse == 0)
+                pool.ReclaimOldest();
+
+            var bubble = Object.Instantiate(pool.Prefab, chat.transform) as ChatBubble;
+            var transform = bubble.transform;
+
+            transform.SetParent(chat.scroller.Inner);
+            transform.localScale = Vector3.one;
+
+            bubble.SetLeft();
+            player.SetPlayerMaterialColors(bubble.ChatFace);
+            bubble.SetName(player.name, false, false, Color.white);
+            bubble.SetText("Click to morph");
+
+            var localPosition = bubble.Background.transform.localPosition;
+            localPosition.y = bubble.NameText.transform.localPosition.y - bubble.Background.size.y / 2f + 0.05f;
+            bubble.Background.transform.localPosition = localPosition;
+            chat.AlignAllBubbles();
+
+            var clickEvent = new Button.ButtonClickedEvent();
+
+            clickEvent.AddListener((System.Action) (() => ChooseMimic(chat, player)));
+
+            bubble.gameObject.AddComponent<PassiveButton>().OnClick = clickEvent;
+        }
+
+        private void ChooseMimic(ChatController chat, PlayerControl player)
+        {
+            chat.SetVisible(false);
+            chat.Toggle();
+            chat.gameObject.Destroy();
+
+            TownOfUs.LogMessage($"Chosen Morph: {player.name}");
+        }
+
         public void MimicCallback(PlayerControl _)
         {
-            // TODO: make
+            var mimicList = Object.Instantiate(HudManager.Instance.Chat, Camera.main.transform);
+            mimicList.SetVisible(true);
+            mimicList.Toggle();
+
+            mimicList.TextBubble.gameObject.SetActive(mimicList.TextBubble.enabled = false);
+            mimicList.TextArea.gameObject.SetActive(mimicList.TextArea.enabled = false);
+            mimicList.BanButton.gameObject.SetActive(mimicList.BanButton.enabled = false);
+            mimicList.CharCount.gameObject.SetActive(mimicList.CharCount.enabled = false);
+            mimicList.BackgroundImage.gameObject.SetActive(mimicList.BackgroundImage.enabled = false);
+            
+            var child = mimicList.gameObject.transform.GetChild(0).gameObject;
+            child.SetActive(child.GetComponent<SpriteRenderer>().enabled = false);
+
+            foreach (var renderer in mimicList.Content.GetComponentsInChildren<SpriteRenderer>())
+                if (renderer.name.Equals("SendButton") || renderer.name.Equals("QuickChatButton"))
+                    renderer.gameObject.SetActive(renderer.enabled = false);
+
+            var children = mimicList.chatBubPool.activeChildren;
+            foreach (var renderer in children)
+                renderer.gameObject.SetActive(renderer.enabled = false);
+
+            children.Clear();
+
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.AmOwner) continue;
+                AddChat(mimicList, player);
+            }
         }
 
         public bool TryGetVisualAppearance(out VisualAppearance appearance)

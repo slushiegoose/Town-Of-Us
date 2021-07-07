@@ -43,6 +43,10 @@ namespace TownOfUs.NeutralRoles.GlitchMod
             if (amOwner)
             {
                 IsHacked = true;
+                Minigame.Instance?.Close();
+                Minigame.Instance?.Close();
+                MapBehaviour.Instance?.Close();
+                MapBehaviour.Instance?.Close();
                 void AddLockIcon(Transform parent)
                 {
                     var lockImage = new GameObject($"Lock{lockImages.Count}");
@@ -62,6 +66,7 @@ namespace TownOfUs.NeutralRoles.GlitchMod
                 if (hudKill.isActiveAndEnabled)
                 {
                     LockAbility(hudKill);
+                    hudKill.SetTarget(null);
                     killWasEnabled = true;
                 }
 
@@ -74,15 +79,15 @@ namespace TownOfUs.NeutralRoles.GlitchMod
                 AddLockIcon(reportButton.transform);
                 reportButton.enabled = false;
 
-                Minigame.Instance?.Close();
-                Minigame.Instance?.Close();
+                
             }
 
-            while (--duration > 0)
+            while (duration > 0)
             {
                 if (target.Data.IsDead || MeetingHud.Instance != null) break;
                 SetText();
                 yield return new WaitForSeconds(1f);
+                duration--;
             }
 
             if (amOwner)
@@ -105,6 +110,7 @@ namespace TownOfUs.NeutralRoles.GlitchMod
 
         public static IEnumerator Mimic(Glitch __instance, PlayerControl mimicPlayer)
         {
+
             // TODO: add this
             yield return null;
             /*var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
