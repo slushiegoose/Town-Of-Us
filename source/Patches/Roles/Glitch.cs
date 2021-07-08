@@ -92,8 +92,11 @@ namespace TownOfUs.Roles
         {
             MimicList.Toggle();
 
-            TownOfUs.LogMessage($"Chosen Morph: {player.name}");
             AbilityManager.EnableButtons();
+
+            if (player == null) return;
+
+            TownOfUs.LogMessage($"Chosen Morph: {player.name}");
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                 (byte)CustomRPC.SetMimic, SendOption.Reliable, -1);
@@ -107,16 +110,101 @@ namespace TownOfUs.Roles
             MimicButton.DurationLeft = MimicButton.MaxDuration = CustomGameOptions.MimicDuration;
         }
 
+        private void InitalizeList()
+        {
+            var original = HudManager.Instance.Chat;
+            MimicList = Object.Instantiate(original, original.transform.parent);
+
+            MimicList.SetVisible(true);
+            MimicList.Toggle();
+
+            var children = MimicList.chatBubPool.activeChildren;
+            foreach (var renderer in children)
+                renderer.gameObject.SetActive(false);
+
+            children.Clear();
+
+            void AddHover(PassiveButton button, SpriteRenderer background)
+            {
+                var hoverEvent = button.OnMouseOver = new UnityEvent();
+                hoverEvent.AddListener((System.Action)(() => background.color = Color.green));
+
+                var unHoverEvent = button.OnMouseOut = new UnityEvent();
+                unHoverEvent.AddListener((System.Action)(() => background.color = Color.white));
+            }
+
+            Button.ButtonClickedEvent AddButton(ChatBubble bubble)
+            {
+                var gameObject = bubble.gameObject;
+
+                gameObject.AddComponent<BoxCollider2D>().size = new Vector2(10f, 0.5f);
+                var button = gameObject.AddComponent<PassiveButton>();
+
+                AddHover(button, bubble.Background);
+
+                return button.OnClick = new Button.ButtonClickedEvent();
+            }
+
+            var items = MimicList.scroller.transform.GetChild(0);
+            ChatBubble NextBubble(PlayerControl player)
+            {
+                for (var i = 0;i < items.childCount;i++)
+                {
+                    var gameObject = items.GetChild(i).gameObject;
+                    if (!gameObject.active) continue;
+                    var button = gameObject.GetComponent<PassiveButton>();
+                    if (button != null) continue;
+                    var bubble = gameObject.GetComponent<ChatBubble>();
+                    if (bubble.NameText.text == player.name)
+                        return bubble;
+                }
+                // this should never return null
+                return null;
+            }
+
+            // hacky wacky
+            PlayerControl lastPlayer = null;
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.AmOwner) continue;
+                lastPlayer = player;
+                MimicList.AddChat(player, $"Click to Mimic ({CustomGameOptions.MimicDuration}s)");
+
+                AddButton(NextBubble(player))
+                    .AddListener((System.Action)(() => ChooseMimic(player)));
+            }
+
+            // hacky wacky
+            MimicList.AddChat(lastPlayer, "");
+            var emptyBubble = NextBubble(lastPlayer);
+            emptyBubble.Background.gameObject.SetActive(false);
+            emptyBubble.ChatFace.gameObject.SetActive(false);
+            emptyBubble.NameText.gameObject.SetActive(false);
+            AddButton(emptyBubble);
+
+            MimicList.AddChat(lastPlayer, "Click to exit");
+            var exitBubble = NextBubble(lastPlayer);
+            exitBubble.ChatFace.gameObject.SetActive(false);
+            exitBubble.NameText.gameObject.SetActive(false);
+
+            AddButton(exitBubble)
+                .AddListener((System.Action)(() => ChooseMimic(null)));
+        }
+
         public void MimicCallback(PlayerControl _)
         {
             AbilityManager.DisableButtons();
             if (MimicList == null)
             {
-                var original = HudManager.Instance.Chat;
-                MimicList = Object.Instantiate(original, original.transform.parent);
+                InitalizeList();
             }
-            MimicList.SetVisible(true);
-            MimicList.Toggle();
+            else
+            {
+                MimicList.SetVisible(true);
+                MimicList.Toggle();
+            }
+
+            Player.NetTransform.Halt();
 
             MimicList.TextBubble.gameObject.SetActive(false);
             MimicList.TextArea.gameObject.SetActive(false);
@@ -130,36 +218,6 @@ namespace TownOfUs.Roles
             foreach (var renderer in MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
                 if (renderer.name.Equals("SendButton") || renderer.name.Equals("QuickChatButton"))
                     renderer.gameObject.SetActive(false);
-
-            var children = MimicList.chatBubPool.activeChildren;
-            foreach (var renderer in children)
-                renderer.gameObject.SetActive(false);
-
-            children.Clear();
-
-            var idx = 0;
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player.AmOwner) continue;
-                MimicList.AddChat(player, $"Click to Mimic ({CustomGameOptions.MimicDuration}s)");
-
-                var chatBubble = MimicList.chatBubPool.activeChildren[idx++].Cast<ChatBubble>();
-                var gameObject = chatBubble.gameObject;
-                var background = chatBubble.Background;
-                var collider = gameObject.AddComponent<BoxCollider2D>();
-                var button = gameObject.AddComponent<PassiveButton>();
-
-                collider.size = new Vector2(10f, 0.5f);
-
-                var clickEvent = button.OnClick = new Button.ButtonClickedEvent();
-                clickEvent.AddListener((System.Action)(() => ChooseMimic(player)));
-
-                var hoverEvent = button.OnMouseOver = new UnityEvent();
-                hoverEvent.AddListener((System.Action)(() => background.color = Color.green));
-
-                var unHoverEvent = button.OnMouseOut = new UnityEvent();
-                unHoverEvent.AddListener((System.Action)(() => background.color = Color.white));
-            }
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
