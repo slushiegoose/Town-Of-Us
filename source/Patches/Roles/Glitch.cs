@@ -168,7 +168,12 @@ namespace TownOfUs.Roles
             {
                 if (player.AmOwner) continue;
                 lastPlayer = player;
+
+                // hacky wacky
+                var wasDead = player.Data.IsDead;
+                player.Data.IsDead = false;
                 MimicList.AddChat(player, $"Click to Mimic ({CustomGameOptions.MimicDuration}s)");
+                player.Data.IsDead = wasDead;
 
                 AddButton(NextBubble(player))
                     .AddListener((System.Action)(() => ChooseMimic(player)));
