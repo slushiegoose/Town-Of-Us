@@ -17,7 +17,7 @@ namespace TownOfUs.Roles
         public bool GlitchWins { get; set; }
         public PlayerControl MimicedAs = null;
         public PlayerAbilityData KillButton;
-        public PlayerAbilityData MimicButton;
+        public PlainAbilityData MimicButton;
         public ChatController MimicList;
 
         public Glitch(PlayerControl player) : base(player)
@@ -40,7 +40,7 @@ namespace TownOfUs.Roles
                     Position = TOUConstants.KillButtonPosition
                 });
 
-                AbilityManager.Add(MimicButton = new PlayerAbilityData
+                AbilityManager.Add(MimicButton = new PlainAbilityData
                 {
                     Callback = MimicCallback,
                     IsHighlighted = () => true,
@@ -149,57 +149,56 @@ namespace TownOfUs.Roles
             }
 
             var items = MimicList.scroller.transform.GetChild(0);
-            ChatBubble NextBubble(PlayerControl player)
+            ChatBubble NextBubble(int index, PlayerControl player)
             {
-                for (var i = 0;i < items.childCount;i++)
-                {
-                    var gameObject = items.GetChild(i).gameObject;
-                    if (!gameObject.active) continue;
-                    var button = gameObject.GetComponent<PassiveButton>();
-                    if (button != null) continue;
-                    var bubble = gameObject.GetComponent<ChatBubble>();
-                    if (bubble.NameText.text == player.name)
-                        return bubble;
-                }
-                // this should never return null
-                return null;
+                var gameObject = items.GetChild(index).gameObject;
+                var bubble = gameObject.GetComponent<ChatBubble>();
+                player.SetPlayerMaterialColors(bubble.ChatFace);
+                bubble.SetLeft();
+                bubble.SetName(player.name, false, false, Color.white);
+                MimicList.AlignAllBubbles();
+                return bubble;
             }
 
-            // hacky wacky
-            PlayerControl lastPlayer = null;
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            var localPlayer = PlayerControl.LocalPlayer;
+
+            var allPlayers = PlayerControl.AllPlayerControls.ToArray().ToList();
+            allPlayers.RemoveAll(player => player.AmOwner);
+            var mimicText = $"Click to Mimic ({CustomGameOptions.MimicDuration}s)";
+            var idx = 0;
+            while (idx < allPlayers.Count)
             {
-                if (player.AmOwner) continue;
-                lastPlayer = player;
+                var player = allPlayers[idx];
 
-                // hacky wacky
-                var wasDead = player.Data.IsDead;
-                player.Data.IsDead = false;
-                MimicList.AddChat(player, $"Click to Mimic ({CustomGameOptions.MimicDuration}s)");
-                player.Data.IsDead = wasDead;
+                MimicList.AddChat(localPlayer, mimicText);
 
-                AddButton(NextBubble(player))
+                AddButton(NextBubble(idx++, player))
                     .AddListener((System.Action)(() => ChooseMimic(player)));
             }
 
+            MimicList.AddChat(localPlayer, "");
+            MimicList.AddChat(localPlayer, "Click to exit");
+
             // hacky wacky
-            MimicList.AddChat(lastPlayer, "");
-            var emptyBubble = NextBubble(lastPlayer);
+            var emptyBubble = NextBubble(idx++, localPlayer);
             emptyBubble.Background.gameObject.SetActive(false);
             emptyBubble.ChatFace.gameObject.SetActive(false);
             emptyBubble.NameText.gameObject.SetActive(false);
             AddButton(emptyBubble);
 
-            MimicList.AddChat(lastPlayer, "Click to exit");
-            var exitBubble = NextBubble(lastPlayer);
+            var exitBubble = NextBubble(idx, localPlayer);
             exitBubble.ChatFace.gameObject.SetActive(false);
             exitBubble.NameText.gameObject.SetActive(false);
 
             AddButton(exitBubble)
                 .AddListener((System.Action)(() => ChooseMimic(null)));
+            MimicButton.KillButton.SetCoolDown(
+                MimicButton.Timer = 0f,
+                MimicButton.MaxTimer
+            );
         }
 
-        public void MimicCallback(PlayerControl _)
+        public void MimicCallback()
         {
             AbilityManager.DisableButtons();
             if (MimicList == null)
@@ -226,6 +225,7 @@ namespace TownOfUs.Roles
             foreach (var renderer in MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
                 if (renderer.name.Equals("SendButton") || renderer.name.Equals("QuickChatButton"))
                     renderer.gameObject.SetActive(false);
+            MimicButton.Timer = 0f;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
