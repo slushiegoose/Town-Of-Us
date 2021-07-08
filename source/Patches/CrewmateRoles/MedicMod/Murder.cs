@@ -11,7 +11,6 @@ namespace TownOfUs.CrewmateRoles.MedicMod
 
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
-            //System.Console.WriteLine("FOURF");
             var deadBody = new DeadPlayer
             {
                 PlayerId = target.PlayerId,

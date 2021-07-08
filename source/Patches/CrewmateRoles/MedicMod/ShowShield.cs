@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -11,7 +11,6 @@ namespace TownOfUs.CrewmateRoles.MedicMod
         SelfAndMedic = 2,
         Everyone = 3
     }
-
     public enum NotificationOptions
     {
         Medic = 0,
@@ -20,59 +19,37 @@ namespace TownOfUs.CrewmateRoles.MedicMod
         Nobody = 3
     }
 
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class ShowShield
     {
         public static Color ProtectedColor = Color.cyan;
 
-        public static void Postfix(HudManager __instance)
+        public static void Postfix(PlayerControl __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Medic))
+            var medic = Role.GetRole<Medic>();
+            if (medic?.ShieldedPlayer != __instance) return;
+
+            void SetOutline()
             {
-                var medic = (Medic) role;
+                var material = __instance.myRend.material;
 
-                var exPlayer = medic.exShielded;
-                if (exPlayer != null)
-                {
-                    System.Console.WriteLine(exPlayer.name + " is ex-Shielded and unvisored");
-                    exPlayer.myRend.material.SetColor("_VisorColor", Palette.VisorColor);
-                    exPlayer.myRend.material.SetFloat("_Outline", 0f);
-                    medic.exShielded = null;
-                    continue;
-                }
+                material.SetColor("_VisorColor", ProtectedColor);
+                material.SetFloat("_Outline", 1f);
+                material.SetColor("_OutlineColor", ProtectedColor);
+            }
 
-                var player = medic.ShieldedPlayer;
-                if (player == null) continue;
+            var showShielded = CustomGameOptions.ShowShielded;
 
-                if (player.Data.IsDead || medic.Player.Data.IsDead)
-                {
-                    StopKill.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
-                    continue;
-                }
+            if (showShielded == ShieldOptions.Everyone)
+                SetOutline();
+            else
+            {
+                var selfAndMedic = showShielded == ShieldOptions.SelfAndMedic;
 
-
-                var showShielded = CustomGameOptions.ShowShielded;
-                if (showShielded == ShieldOptions.Everyone)
-                {
-                    player.myRend.material.SetColor("_VisorColor", ProtectedColor);
-                    player.myRend.material.SetFloat("_Outline", 1f);
-                    player.myRend.material.SetColor("_OutlineColor", ProtectedColor);
-                }
-                else if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showShielded == ShieldOptions.Self ||
-                    showShielded == ShieldOptions.SelfAndMedic))
-                {
-                    //System.Console.WriteLine("Setting " + PlayerControl.LocalPlayer.name + "'s shield");
-                    player.myRend.material.SetColor("_VisorColor", ProtectedColor);
-                    player.myRend.material.SetFloat("_Outline", 1f);
-                    player.myRend.material.SetColor("_OutlineColor", ProtectedColor);
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) &&
-                         (showShielded == ShieldOptions.Medic || showShielded == ShieldOptions.SelfAndMedic))
-                {
-                    player.myRend.material.SetColor("_VisorColor", ProtectedColor);
-                    player.myRend.material.SetFloat("_Outline", 1f);
-                    player.myRend.material.SetColor("_OutlineColor", ProtectedColor);
-                }
+                if ((selfAndMedic || showShielded == ShieldOptions.Self) && __instance.AmOwner)
+                    SetOutline();
+                else if ((selfAndMedic || showShielded == ShieldOptions.Medic) && medic.Player.AmOwner)
+                    SetOutline();
             }
         }
     }

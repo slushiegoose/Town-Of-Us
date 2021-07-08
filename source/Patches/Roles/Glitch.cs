@@ -16,6 +16,7 @@ namespace TownOfUs.Roles
         public static Sprite LockSprite = bundle.LoadAsset<Sprite>("Lock").DontUnload();
         public bool GlitchWins { get; set; }
         public PlayerControl MimicedAs = null;
+        public PlayerAbilityData KillButton;
         public PlayerAbilityData MimicButton;
         public ChatController MimicList;
 
@@ -30,7 +31,7 @@ namespace TownOfUs.Roles
 
             if (player.AmOwner)
             {
-                AbilityManager.Add(new PlayerAbilityData
+                AbilityManager.Add(KillButton = new PlayerAbilityData
                 {
                     Callback = KillCallback,
                     MaxTimer = CustomGameOptions.GlitchKillCooldown,
@@ -66,6 +67,8 @@ namespace TownOfUs.Roles
             if (target.isShielded())
             {
                 Utils.RpcBreakShield(target);
+                if (!CustomGameOptions.ShieldBreaks)
+                    KillButton.Timer = 0.1f;
                 return;
             }
             Utils.RpcMurderPlayer(Player, target);

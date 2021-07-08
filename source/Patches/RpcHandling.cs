@@ -400,22 +400,24 @@ namespace TownOfUs
                         StartStop.StartRewind(TimeLordRole);
                         break;
                     case CustomRPC.Protect:
-                        readByte1 = reader.ReadByte();
                         readByte2 = reader.ReadByte();
 
-                        var medic = Utils.PlayerById(readByte1);
-                        var shield = Utils.PlayerById(readByte2);
-                        Role.GetRole<Medic>(medic).ShieldedPlayer = shield;
-                        Role.GetRole<Medic>(medic).UsedAbility = true;
+                        var medic = Role.GetRole<Medic>();
+                        var shielded = Utils.PlayerById(readByte2);
+
+                        medic.ShieldedPlayer = shielded;
+                        medic.UsedAbility = true;
                         break;
                     case CustomRPC.RewindRevive:
                         readByte = reader.ReadByte();
                         RecordRewind.ReviveBody(Utils.PlayerById(readByte));
                         break;
                     case CustomRPC.AttemptSound:
-                        var medicId = reader.ReadByte();
-                        readByte = reader.ReadByte();
-                        StopKill.BreakShield(medicId, readByte, CustomGameOptions.ShieldBreaks);
+                        StopKill.BreakShield(
+                            Role.GetRole<Medic>(),
+                            Utils.PlayerById(reader.ReadByte()),
+                            CustomGameOptions.ShieldBreaks
+                        );
                         break;
                     case CustomRPC.SetGlitch:
                         var GlitchId = reader.ReadByte();
