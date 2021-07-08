@@ -82,7 +82,7 @@
         SetGlitch,
         BypassKill,
         SetMimic,
-        RpcResetAnim,
+        ResetAnim,
         SetHacked,
 
         ExecutionerToJester,

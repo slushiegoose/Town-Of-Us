@@ -61,17 +61,18 @@ namespace TownOfUs
 
                 var data = Buttons[dataIdx];
 
-                var isPlayerAbility = data is PlayerAbilityData;
+                var isPlainAbility = data is PlainAbilityData;
+                var isPlayerAbility = !isPlainAbility && data is PlayerAbilityData;
                 var isBodyAbility = !isPlayerAbility && data is BodyAbilityData;
 
                 void Callback(object target)
                 {
-                    if (isPlayerAbility)
+                    if (isPlainAbility)
+                        ((PlainAbilityData)data).Callback();
+                    else if (isPlayerAbility)
                         ((PlayerAbilityData)data).Callback((PlayerControl)target);
                     else if (isBodyAbility)
                         ((BodyAbilityData)data).Callback((DeadBody)target);
-                    else
-                        ((PlainAbilityData)data).Callback();
                 }
 
                 if (!float.IsNaN(data.MaxDuration))
@@ -91,20 +92,23 @@ namespace TownOfUs
                     return false;
                 }
 
-                object target = null;
-                if (isPlayerAbility)
-                    target = __instance.CurrentTarget;
-                else if (isBodyAbility)
-                    target = ((BodyAbilityData)data).Target;
-
-                if (target != null)
+                if (!isPlainAbility)
                 {
-                    if (data.SyncWithKill)
-                        PlayerControl.LocalPlayer.killTimer = PlayerControl.GameOptions.KillCooldown;
-                    else
-                        data.Timer = data.MaxTimer;
+                    object target = null;
+                    if (isPlayerAbility)
+                        target = __instance.CurrentTarget;
+                    else if (isBodyAbility)
+                        target = ((BodyAbilityData)data).Target;
 
-                    Callback(target);
+                    if (target != null)
+                    {
+                        if (data.SyncWithKill)
+                            PlayerControl.LocalPlayer.killTimer = PlayerControl.GameOptions.KillCooldown;
+                        else
+                            data.Timer = data.MaxTimer;
+
+                        Callback(target);
+                    }
                 }
 
                 return false;
@@ -228,6 +232,7 @@ namespace TownOfUs
 
                     if (buttonData is PlainAbilityData) continue;
 
+                    var targetAbility = (TargetAbilityData)buttonData;
                     var isPlayerAbility = buttonData is PlayerAbilityData;
                     PlayerAbilityData playerAbility = null;
                     BodyAbilityData bodyAbility = null;
@@ -242,7 +247,7 @@ namespace TownOfUs
                         Utils.SetTarget(
                             ref playerAbility.Target,
                             button,
-                            buttonData.Range,
+                            targetAbility.Range,
                             targets
                         );
 
@@ -262,7 +267,7 @@ namespace TownOfUs
                         Utils.SetTarget(
                             ref target,
                             button,
-                            buttonData.Range,
+                            targetAbility.Range,
                             targets
                         );
 
@@ -282,7 +287,7 @@ namespace TownOfUs
                     if (material != null)
                     {
                         material.SetFloat("_Outline", button.isActive ? 1 : 0);
-                        material.SetColor("_OutlineColor", buttonData.TargetColor);
+                        material.SetColor("_OutlineColor", targetAbility.TargetColor);
                     }
                 }
 
@@ -308,14 +313,14 @@ namespace TownOfUs
         }
     }
 
-    public class BodyAbilityData : AbilityData
+    public class BodyAbilityData : TargetAbilityData
     {
         public DeadBody Target;
         public Action<DeadBody> Callback;
         public Func<DeadBody, bool> TargetFilter;
     }
 
-    public class PlayerAbilityData : AbilityData
+    public class PlayerAbilityData : TargetAbilityData
     {
         public PlayerControl Target;
         public Action<PlayerControl> Callback;
@@ -325,6 +330,12 @@ namespace TownOfUs
     public class PlainAbilityData : AbilityData
     {
         public Action Callback;
+    }
+
+    public abstract class TargetAbilityData : AbilityData
+    {
+        public Color TargetColor;
+        public float Range;
     }
 
     public abstract class AbilityData
@@ -339,9 +350,6 @@ namespace TownOfUs
             get =>_Timer;
             set => _Timer = Mathf.Clamp(value, 0f, MaxTimer);
         }
-        public float Range;
-
-        public Color TargetColor;
 
         public Func<bool> IsHighlighted;
         public float DurationLeft = -1f;

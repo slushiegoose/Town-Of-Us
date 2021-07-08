@@ -34,7 +34,7 @@ namespace TownOfUs.Roles
                     Position = TOUConstants.KillButtonPosition
                 });
 
-                AbilityManager.Add(new PlayerAbilityData
+                AbilityManager.Add(new PlainAbilityData
                 {
                     Callback = IgniteCallback,
                     IsHighlighted = CanIgnite,
@@ -63,11 +63,10 @@ namespace TownOfUs.Roles
             return true;
         }
 
-        public void IgniteCallback(PlayerControl _)
+        public void IgniteCallback()
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                 (byte)CustomRPC.Ignite, SendOption.Reliable, -1);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             foreach (var playerId in DousedPlayers)

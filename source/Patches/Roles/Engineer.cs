@@ -20,7 +20,7 @@ namespace TownOfUs.Roles
             if (player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
-                AbilityManager.Add(new PlayerAbilityData
+                AbilityManager.Add(new PlainAbilityData
                 {
                     Callback = FixCallback,
                     IsHighlighted = CanUseFix,
@@ -43,7 +43,7 @@ namespace TownOfUs.Roles
             return !system.dummy.IsActive && system.AnyActive;
         }
 
-        public void FixCallback(PlayerControl _)
+        public void FixCallback()
         {
             var mapId = (MapTypes)PlayerControl.GameOptions.MapId;
 
@@ -75,7 +75,6 @@ namespace TownOfUs.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte)CustomRPC.EngineerFix, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 

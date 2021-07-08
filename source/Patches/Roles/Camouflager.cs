@@ -20,7 +20,7 @@ namespace TownOfUs.Roles
             if (player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
-                AbilityManager.Add(new PlayerAbilityData
+                AbilityManager.Add(new PlainAbilityData
                 {
                     Callback = CamouCallback,
                     MaxTimer = CustomGameOptions.CamouflagerCd,
@@ -32,7 +32,7 @@ namespace TownOfUs.Roles
             }
         }
 
-        public void CamouCallback(PlayerControl _)
+        public void CamouCallback()
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                    (byte)CustomRPC.Camouflage,

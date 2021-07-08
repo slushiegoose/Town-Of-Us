@@ -363,11 +363,9 @@ namespace TownOfUs
                                 Coroutines.Start(JanitorCoroutines.CleanCoroutine(body, janitorRole));
                         break;
                     case CustomRPC.EngineerFix:
-                        var engineer = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Engineer>(engineer).FixCallback(null);
+                        Role.GetRole<Engineer>().FixCallback();
                         break;
                     case CustomRPC.SetExtraVotes:
-
                         var mayor = Utils.PlayerById(reader.ReadByte());
                         var mayorRole = Role.GetRole<Mayor>(mayor);
                         mayorRole.ExtraVotes = reader.ReadBytesAndSize().ToList();
@@ -440,10 +438,18 @@ namespace TownOfUs
                         glitchRole.MimicedAs = mimicPlayer;
                         Utils.Morph(glitchPlayer, mimicPlayer);
                         break;
-                    case CustomRPC.RpcResetAnim:
+                    case CustomRPC.ResetAnim:
                         var animPlayer = Utils.PlayerById(reader.ReadByte());
-                        var theGlitchRole = Role.GetRole<Glitch>(animPlayer);
-                        theGlitchRole.MimicedAs = null;
+                        var animRole = Role.GetRole(animPlayer);
+                        switch (animRole?.RoleType) {
+                            case RoleEnum.Morphling:
+                                ((Morphling)animRole).MorphedPlayer = null;
+                                break;
+                            case RoleEnum.Glitch:
+                                ((Glitch)animRole).MimicedAs = null;
+                                break;
+                        }
+
                         Utils.Unmorph(animPlayer);
                         break;
                     case CustomRPC.GlitchWin:
@@ -464,11 +470,10 @@ namespace TownOfUs
                         new Seer(Utils.PlayerById(reader.ReadByte()));
                         break;
                     case CustomRPC.Morph:
-                        var morphling = Utils.PlayerById(reader.ReadByte());
                         var morphTarget = Utils.PlayerById(reader.ReadByte());
-                        var morphRole = Role.GetRole<Morphling>(morphling);
-                        morphRole.TimeRemaining = CustomGameOptions.MorphlingDuration;
-                        morphRole.MorphedPlayer = morphTarget;
+                        var morphRole = Role.GetRole<Morphling>();
+                        morphRole.SampledPlayer = morphRole.MorphedPlayer = morphTarget;
+                        morphRole.Morph();
                         break;
                     case CustomRPC.SetExecutioner:
                         new Executioner(Utils.PlayerById(reader.ReadByte()));
@@ -537,9 +542,8 @@ namespace TownOfUs
 
                         break;
                     case CustomRPC.Ignite:
-                        var theArsonist = Utils.PlayerById(reader.ReadByte());
-                        var theArsonistRole = Role.GetRole<Arsonist>(theArsonist);
-                        theArsonistRole.IgniteCallback(null);
+                        var theArsonistRole = Role.GetRole<Arsonist>();
+                        theArsonistRole.IgniteCallback();
                         break;
 
                     case CustomRPC.ArsonistWin:

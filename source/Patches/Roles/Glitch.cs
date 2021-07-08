@@ -82,7 +82,7 @@ namespace TownOfUs.Roles
         private void UnMimic()
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte)CustomRPC.RpcResetAnim, SendOption.Reliable, -1);
+                (byte)CustomRPC.ResetAnim, SendOption.Reliable, -1);
             writer.Write(Player.PlayerId);
             writer.Write(MimicedAs.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
