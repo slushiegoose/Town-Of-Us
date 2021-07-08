@@ -1,9 +1,11 @@
+﻿using UnityEngine;
+using Hazel;
+using TownOfUs.ImpostorRoles.JanitorMod;
+
 namespace TownOfUs.Roles
 {
     public class Janitor : Role
     {
-        public KillButtonManager _cleanButton;
-
         public Janitor(PlayerControl player) : base(player)
         {
             Name = "Janitor";
@@ -12,19 +14,31 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Janitor;
             Faction = Faction.Impostors;
+
+            if (player.AmOwner)
+            {
+                AbilityManager.Add(new BodyAbilityData
+                {
+                    Callback = CleanCallback,
+                    MaxTimer = CustomGameOptions.DragCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color.yellow,
+                    Icon = TownOfUs.JanitorClean,
+                    Position = TOUConstants.OverKillbutton,
+                    SyncWithKill = true
+                });
+            }
         }
 
-        public DeadBody CurrentTarget { get; set; }
-
-        public KillButtonManager CleanButton
+        public void CleanCallback(DeadBody target)
         {
-            get => _cleanButton;
-            set
-            {
-                _cleanButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.JanitorClean, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(target.ParentId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            Coroutines.Start(JanitorCoroutines.CleanCoroutine(target, this));
         }
     }
 }

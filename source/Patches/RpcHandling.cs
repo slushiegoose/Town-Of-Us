@@ -17,7 +17,7 @@ using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;
 using UnityEngine;
-using Coroutine = TownOfUs.ImpostorRoles.JanitorMod.Coroutine;
+using JanitorCoroutines = TownOfUs.ImpostorRoles.JanitorMod.JanitorCoroutines;
 using Object = UnityEngine.Object;
 using PerformKillButton = TownOfUs.NeutralRoles.ShifterMod.PerformKillButton;
 using Random = UnityEngine.Random; //using Il2CppSystem;
@@ -361,7 +361,7 @@ namespace TownOfUs
                         var deadBodies = Object.FindObjectsOfType<DeadBody>();
                         foreach (var body in deadBodies)
                             if (body.ParentId == readByte)
-                                Coroutines.Start(Coroutine.CleanCoroutine(body, janitorRole));
+                                Coroutines.Start(JanitorCoroutines.CleanCoroutine(body, janitorRole));
                         break;
                     case CustomRPC.EngineerFix:
                         var engineer = Utils.PlayerById(reader.ReadByte());

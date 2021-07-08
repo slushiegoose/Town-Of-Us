@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -15,14 +15,14 @@ namespace TownOfUs.CrewmateRoles.InvestigatorMod
         private static float Interval => CustomGameOptions.FootprintInterval;
         private static bool Vent => CustomGameOptions.VentFootprintVisible;
 
-        private static Vector2 Position(PlayerControl player)
-        {
-            return player.GetTruePosition() + new Vector2(0, 0.366667f);
-        }
+        private static Vector2 Position(PlayerControl player) =>
+            player.GetTruePosition() + new Vector2(0, 0.366667f);
 
 
         public static void Postfix(PlayerControl __instance)
         {
+            // only update on local player
+            if (!__instance.AmOwner) return;
             if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator)) return;
             // New Footprint
             var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);

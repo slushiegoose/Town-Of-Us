@@ -19,7 +19,10 @@ namespace TownOfUs
         {
             data.Timer = data.MaxTimer;
             var hudKill = HudManager.Instance.KillButton;
-            data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
+            if (Buttons.Count == 0 && data.Position == TOUConstants.KillButtonPosition)
+                data.KillButton = hudKill;
+            else
+                data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
             Buttons.Add(data);
         }
 
@@ -87,7 +90,11 @@ namespace TownOfUs
 
                 if (target != null)
                 {
-                    data.Timer = data.MaxTimer;
+                    if (data.SyncWithKill)
+                        PlayerControl.LocalPlayer.killTimer = PlayerControl.GameOptions.KillCooldown;
+                    else
+                        data.Timer = data.MaxTimer;
+
                     Callback(target);
                 }
 
@@ -189,9 +196,14 @@ namespace TownOfUs
                     if (buttonData.Timer > 0f || __instance.killTimer > 0f)
                     {
                         LogInUpdate($"Setting cooldown");
-                        buttonData.Timer -= Time.fixedDeltaTime;
-                        if (isHudKill)
-                            __instance.killTimer = buttonData.Timer;
+                        if (buttonData.SyncWithKill)
+                            buttonData.Timer = __instance.killTimer;
+                        else
+                        {
+                            buttonData.Timer -= Time.fixedDeltaTime;
+                            if (isHudKill)
+                                __instance.killTimer = buttonData.Timer;
+                        }
                         button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
                     }
 
@@ -269,7 +281,7 @@ namespace TownOfUs
                     }
                 }
 
-                if (Buttons.Count > 0 && Input.GetKeyInt(KeyCode.Q))
+                if (!isImpostor && Buttons.Count > 0 && Input.GetKeyInt(KeyCode.Q))
                     Buttons[0].KillButton.PerformKill();
 
             }
@@ -325,6 +337,7 @@ namespace TownOfUs
         public float DurationLeft = -1f;
         public float MaxDuration = float.NaN;
         public Action OnDurationEnd;
+        public bool SyncWithKill = false;
 
         public Sprite Icon;
         public Vector3 Position;

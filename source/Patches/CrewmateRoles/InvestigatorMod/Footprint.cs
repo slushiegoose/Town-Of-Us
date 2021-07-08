@@ -1,4 +1,4 @@
-using TownOfUs.ImpostorRoles.CamouflageMod;
+﻿using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.RainbowMod;
 using TownOfUs.Roles;
 using UnityEngine;

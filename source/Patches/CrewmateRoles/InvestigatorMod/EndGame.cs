@@ -1,33 +1,23 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 
 namespace TownOfUs.CrewmateRoles.InvestigatorMod
 {
+    [HarmonyPatch]
     public class EndGame
     {
         public static void Reset()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Investigator)) ((Investigator) role).AllPrints.Clear();
+            var investigator = Role.GetRole<Investigator>();
+            investigator?.AllPrints.Clear();
         }
 
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
-        public static class EndGamePatch
-        {
-            public static void Prefix(AmongUsClient __instance)
-            {
-                Reset();
-            }
-        }
+        public static void ExitGame(AmongUsClient __instance) => Reset();
 
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-        public static class EndGameManagerPatch
-        {
-            public static bool Prefix(EndGameManager __instance)
-            {
-                Reset();
-
-                return true;
-            }
-        }
+        public static void EndStart(EndGameManager __instance) => Reset();
     }
 }

@@ -23,11 +23,11 @@ namespace TownOfUs.Roles
                 AbilityManager.Add(DragDropButton = new BodyAbilityData
                 {
                     Callback = DragDropCallback,
-                    MaxTimer = CustomGameOptions.DragCd,
+                    MaxTimer = PlayerControl.GameOptions.KillCooldown,
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color.yellow,
                     Icon = TownOfUs.DragSprite,
-                    Position = TOUConstants.OverKillbutton
+                    Position = TOUConstants.OverKillbutton,
                 });
             }
         }
