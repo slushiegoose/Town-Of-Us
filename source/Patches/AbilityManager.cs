@@ -17,6 +17,7 @@ namespace TownOfUs
 
         public static void Add(AbilityData data)
         {
+            TownOfUs.LogMessage("Adding Ability");
             data.Timer = data.MaxTimer;
             var hudKill = HudManager.Instance.KillButton;
             if (Buttons.Count == 0 && data.Position == TOUConstants.KillButtonPosition)
@@ -24,6 +25,7 @@ namespace TownOfUs
             else
                 data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
             Buttons.Add(data);
+            TownOfUs.LogMessage(Buttons);
         }
 
         [HarmonyPatch(typeof(ExileController))]
@@ -60,13 +62,16 @@ namespace TownOfUs
                 var data = Buttons[dataIdx];
 
                 var isPlayerAbility = data is PlayerAbilityData;
+                var isBodyAbility = !isPlayerAbility && data is BodyAbilityData;
 
                 void Callback(object target)
                 {
                     if (isPlayerAbility)
                         ((PlayerAbilityData)data).Callback((PlayerControl)target);
-                    else
+                    else if (isBodyAbility)
                         ((BodyAbilityData)data).Callback((DeadBody)target);
+                    else
+                        ((PlainAbilityData)data).Callback();
                 }
 
                 if (!float.IsNaN(data.MaxDuration))
@@ -78,14 +83,18 @@ namespace TownOfUs
                 if (data.IsHighlighted != null)
                 {
                     if (data.IsHighlighted())
+                    {
+                        if (!float.IsNaN(data.MaxTimer))
+                            data.Timer = data.MaxTimer;
                         Callback(null);
+                    }
                     return false;
                 }
 
                 object target = null;
                 if (isPlayerAbility)
                     target = __instance.CurrentTarget;
-                else
+                else if (isBodyAbility)
                     target = ((BodyAbilityData)data).Target;
 
                 if (target != null)
@@ -112,11 +121,13 @@ namespace TownOfUs
                 for (var i = 0;i < Buttons.Count;i++)
                 {
                     var buttonData = Buttons[i];
+                    if (buttonData is PlainAbilityData) continue;
                     var material = buttonData is PlayerAbilityData playerAbility
                         ? playerAbility.Target?.myRend.material
                         : ((BodyAbilityData) buttonData).Target?.bodyRenderer.material;
                     material?.SetFloat("_Outline", 0f);
                 }
+
                 if (__instance.AmOwner)
                     HudManagerPatch.SetHudActive(true);
             }
@@ -129,12 +140,6 @@ namespace TownOfUs
                     HudManagerPatch.SetHudActive(true);
             }
 
-            public static void LogInUpdate(object message)
-            {
-                if (Input.GetKeyInt(KeyCode.T))
-                    TownOfUs.LogMessage(message);
-            }
-
             [HarmonyPostfix]
             [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
             public static void FixedUpdate(PlayerControl __instance)
@@ -143,7 +148,6 @@ namespace TownOfUs
                 var isImpostor = __instance.Data.IsImpostor;
                 for (var i = 0;i < Buttons.Count;i++)
                 {
-                    LogInUpdate($"Updating Button {i}");
                     var buttonData = Buttons[i];
                     var isHudKill = buttonData.KillButton == HudManager.Instance.KillButton;
                     if (
@@ -195,7 +199,6 @@ namespace TownOfUs
 
                     if (buttonData.Timer > 0f || __instance.killTimer > 0f)
                     {
-                        LogInUpdate($"Setting cooldown");
                         if (buttonData.SyncWithKill)
                             buttonData.Timer = __instance.killTimer;
                         else
@@ -222,6 +225,8 @@ namespace TownOfUs
                         button.renderer.material.SetFloat("_Desat", highlighted ? 0f : 1f);
                         continue;
                     }
+
+                    if (buttonData is PlainAbilityData) continue;
 
                     var isPlayerAbility = buttonData is PlayerAbilityData;
                     PlayerAbilityData playerAbility = null;
@@ -317,13 +322,18 @@ namespace TownOfUs
         public Func<PlayerControl, bool> TargetFilter;
     }
 
+    public class PlainAbilityData : AbilityData
+    {
+        public Action Callback;
+    }
+
     public abstract class AbilityData
     {
         private float _Timer { get; set; }
 
         public KillButtonManager KillButton;
 
-        public float MaxTimer;
+        public float MaxTimer = float.NaN;
         public float Timer
         {
             get =>_Timer;

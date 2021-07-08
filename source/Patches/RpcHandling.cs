@@ -10,7 +10,6 @@ using TownOfUs.CrewmateRoles.TimeLordMod;
 using TownOfUs.CustomOption;
 using TownOfUs.Extensions;
 using TownOfUs.ImpostorRoles.AssassinMod;
-using TownOfUs.ImpostorRoles.MinerMod;
 using TownOfUs.NeutralRoles.ExecutionerMod;
 using TownOfUs.NeutralRoles.PhantomMod;
 using TownOfUs.Roles;
@@ -509,11 +508,8 @@ namespace TownOfUs
                         break;
                     case CustomRPC.Mine:
                         var ventId = reader.ReadInt32();
-                        var miner = Utils.PlayerById(reader.ReadByte());
-                        var minerRole = Role.GetRole<Miner>(miner);
-                        var pos = reader.ReadVector2();
-                        var zAxis = reader.ReadSingle();
-                        PerformKill.SpawnVent(ventId, minerRole, pos, zAxis);
+                        var position = reader.ReadVector2();
+                        Role.GetRole<Miner>().SpawnVent(position, ventId);
                         break;
                     case CustomRPC.SetSwooper:
                         new Swooper(Utils.PlayerById(reader.ReadByte()));
