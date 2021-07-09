@@ -8,6 +8,8 @@ using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles.Modifiers;
+using TownOfUs.CrewmateRoles.SeerMod;
+using TownOfUs.CrewmateRoles.MedicMod;
 using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -93,20 +95,22 @@ namespace TownOfUs.Roles
             return HashCode.Combine(Player, (int)RoleType);
         }
 
-        //public static T Gen<T>()
-
         internal virtual bool Criteria()
         {
-            Player.nameText.transform.localPosition = new Vector3(
-                0f,
-                Player.Data.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
-                -0.5f
-            );
-            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeRoles) return Utils.ShowDeadBodies;
-            if (Faction == Faction.Impostors && PlayerControl.LocalPlayer.Data.IsImpostor &&
-                CustomGameOptions.ImpostorSeeRoles) return true;
-            return GetRole(PlayerControl.LocalPlayer) == this;
+            if (Player.AmOwner) return true;
+
+            var seer = GetRole<Seer>();
+            if (seer != null && seer.Player.AmOwner && seer.Investigated.Contains(Player.PlayerId))
+                return true;
+
+            var localData = PlayerControl.LocalPlayer.Data;
+            if (localData.IsDead && CustomGameOptions.DeadSeeRoles && Utils.ShowDeadBodies)
+                return true;
+
+            if (localData.IsImpostor && Player.Data.IsImpostor)
+                return CustomGameOptions.ImpostorSeeRoles || localData.IsDead;
+
+            return false;
         }
 
         protected virtual void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
@@ -156,26 +160,6 @@ namespace TownOfUs.Roles
         internal virtual bool CheckEndCriteria(ShipStatus __instance)
         {
             return true;
-        }
-
-        protected virtual string NameText(PlayerVoteArea player = null)
-        {
-            if (CamouflageUnCamouflage.IsCamoed && player == null) return "";
-
-            if (Player == null) return "";
-
-            if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding ||
-                                   MeetingHud.Instance.state == MeetingHud.VoteStates.Results)) return Player.name;
-
-            if (!CustomGameOptions.RoleUnderName && player == null) return Player.name;
-
-            Player.nameText.transform.localPosition = new Vector3(
-                0f,
-                Player.Data.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
-                -0.5f
-            );
-            return Player.name + "\n" + Name;
         }
 
         public static bool operator ==(Role a, Role b)
@@ -270,89 +254,37 @@ namespace TownOfUs.Roles
             return AllRoles.Where(x => x.RoleType == roletype);
         }
 
-        public static class IntroCutScenePatch
+        [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__14), nameof(IntroCutscene._CoBegin_d__14.MoveNext))]
+        public class IntroCutscene_Patch
         {
-            public static TextMeshPro ModifierText;
-
-            public static float Scale;
-
-            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
-            public static class IntroCutscene_BeginCrewmate
+            public static void Prefix(IntroCutscene._CoBegin_d__14 __instance)
             {
-                public static void Postfix(IntroCutscene __instance)
-                {
-                    //System.Console.WriteLine("REACHED HERE - CREW");
-                    var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
-                    if (modifier != null)
-                        ModifierText = Object.Instantiate(__instance.Title, __instance.Title.transform.parent, false);
-                    //System.Console.WriteLine("MODIFIER TEXT PLEASE WORK");
-                    //                        Scale = ModifierText.scale;
-                    else
-                        ModifierText = null;
-
-                    Lights.SetLights();
-                }
+                GetRole(PlayerControl.LocalPlayer)?.IntroPrefix(__instance);
             }
 
-            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginImpostor))]
-            public static class IntroCutscene_BeginImpostor
+            public static void Postfix(IntroCutscene._CoBegin_d__14 __instance)
             {
-                public static void Postfix(IntroCutscene __instance)
+                var role = GetRole(PlayerControl.LocalPlayer);
+                var cutscene = __instance.__4__this;
+                var alpha = cutscene.Title.color.a;
+
+                if (role != null && !role.Hidden)
                 {
-                    //System.Console.WriteLine("REACHED HERE - IMP");
-                    var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
-                    if (modifier != null)
-                        ModifierText = Object.Instantiate(__instance.Title, __instance.Title.transform.parent, false);
-                    //System.Console.WriteLine("MODIFIER TEXT PLEASE WORK");
-                    //                        Scale = ModifierText.scale;
-                    else
-                        ModifierText = null;
-                    Lights.SetLights();
-                }
-            }
-
-            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__14), nameof(IntroCutscene._CoBegin_d__14.MoveNext))]
-            public static class IntroCutscene_CoBegin__d_MoveNext
-            {
-                public static float TestScale;
-
-                public static void Prefix(IntroCutscene._CoBegin_d__14 __instance)
-                {
-                    var role = GetRole(PlayerControl.LocalPlayer);
-
-                    if (role != null) role.IntroPrefix(__instance);
+                    cutscene.Title.text = role.Name;
+                    cutscene.Title.color = role.Color;
+                    cutscene.ImpostorText.text = role.ImpostorText();
+                    cutscene.ImpostorText.gameObject.SetActive(true);
+                    cutscene.BackgroundBar.material.color = role.Color;
                 }
 
-                public static void Postfix(IntroCutscene._CoBegin_d__14 __instance)
+                var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
+                if (modifier != null)
                 {
-                    var role = GetRole(PlayerControl.LocalPlayer);
-                    var alpha = __instance.__4__this.Title.color.a;
-                    if (role != null && !role.Hidden)
-                    {
-                        __instance.__4__this.Title.text = role.Name;
-                        __instance.__4__this.Title.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = role.ImpostorText();
-                        __instance.__4__this.ImpostorText.gameObject.SetActive(true);
-                        __instance.__4__this.BackgroundBar.material.color = role.Color;
-                        //                        TestScale = Mathf.Max(__instance.__this.Title.scale, TestScale);
-                        //                        __instance.__this.Title.scale = TestScale / role.Scale;
-                    }
-                    /*else if (!__instance.isImpostor)
-                    {
-                        __instance.__this.ImpostorText.text = "Haha imagine being a boring old crewmate";
-                    }*/
-
-                    if (ModifierText != null)
-                    {
-                        var modifier = Modifier.GetModifier(PlayerControl.LocalPlayer);
-                        ModifierText.text = "<size=4>Modifier: " + modifier.Name + "</size>";
-                        ModifierText.color = modifier.Color;
-
-                        //
-                        ModifierText.transform.position =
-                            __instance.__4__this.transform.position - new Vector3(0f, 2.0f, 0f);
-                        ModifierText.gameObject.SetActive(true);
-                    }
+                    var modifierText = Object.Instantiate(cutscene.Title, cutscene.Title.transform.parent, false);
+                    modifierText.text = $"<size=5>Modifier: {modifier.Name}</size>";
+                    modifierText.color = modifier.Color;
+                    modifierText.transform.position = cutscene.transform.position - new Vector3(0f, 1.75f, 0f);
+                    modifierText.gameObject.SetActive(true);
                 }
             }
         }
@@ -391,25 +323,6 @@ namespace TownOfUs.Roles
                 player.myTasks.Insert(0, task);
             }
         }
-
-        /*[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-        public static class ButtonsFix
-        {
-            public static void Postfix(PlayerControl __instance)
-            {
-                if (__instance != PlayerControl.LocalPlayer) return;
-
-                var role = GetRole(PlayerControl.LocalPlayer);
-                if (role == null) return;
-                var instance = DestroyableSingleton<HudManager>.Instance;
-                var position = instance.KillButton.transform.position;
-                foreach (var button in role.ExtraButtons)
-                {
-                    button.transform.position = new Vector3(position.x,
-                        instance.ReportButton.transform.position.y, position.z);
-                }
-            }
-        }*/
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
         public static class ShipStatus_KMPKPPGPNIH
@@ -498,83 +411,156 @@ namespace TownOfUs.Roles
             }
         }
 
-        // TODO: improve this pile of s***
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        public static class HudManager_Update
+        [HarmonyPatch]
+        public static class NamePatch
         {
-            private static void UpdateMeeting(MeetingHud __instance)
+            public static void SetNameText(TextMeshPro nameText, PlayerControl player)
             {
-                var localRole = GetRole(PlayerControl.LocalPlayer);
-                var localIsDead = PlayerControl.LocalPlayer.Data.IsDead;
-
-                foreach (var player in __instance.playerStates)
+                if (player == null) return;
+                if (CamouflageUnCamouflage.IsCamoed)
                 {
-                    var role = GetRole(player);
-                    if (role != null && role.Criteria())
-                    {
-                        player.NameText.color = role.Color;
-                        player.NameText.text = role.NameText(player);
-                    }
-                    else if (role.Player)
-                    {
-                        player.NameText.text = role.Player.name;
-                    }
-
-                    if (localRole == null || localIsDead) continue;
-
-                    switch (localRole.RoleType)
-                    {
-                        case RoleEnum.Arsonist:
-                            if (((Arsonist)localRole).DousedPlayers.Contains(player.TargetPlayerId))
-                            {
-                                player.NameText.color = Color.black;
-                            }
-                            break;
-                    }
+                    nameText.text = "";
+                    return;
                 }
-            }
-
-            [HarmonyPriority(Priority.First)]
-            private static void Postfix(HudManager __instance)
-            {
-                if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance);
-
-                if (PlayerControl.AllPlayerControls.Count <= 1) return;
-                if (PlayerControl.LocalPlayer?.Data == null) return;
+                var role = GetRole(player);
+                if (role == null) return;
 
                 var localRole = GetRole(PlayerControl.LocalPlayer);
-                var localIsDead = PlayerControl.LocalPlayer.Data.IsDead;
 
-                foreach (var player in PlayerControl.AllPlayerControls)
+                if (player.AmOwner && role.Hidden)
                 {
-                    if (CamouflageUnCamouflage.IsCamoed)
+                    var isImpostor = player.Data.IsImpostor;
+                    nameText.color = isImpostor ? Palette.ImpostorRed : Color.white;
+                    nameText.text = $"{player.name}\n{(isImpostor ? "Impostor" : "Crewmate")}";
+                    return;
+                }
+                else if (role.Criteria())
+                {
+                    var color = role.Color;
+                    var roleName = role.Name;
+                    if (!player.AmOwner && role.RoleType == RoleEnum.LoverImpostor)
                     {
-                        player.nameText.text = "";
-                        continue;
+                        if (localRole.RoleType == RoleEnum.Lover)
+                            roleName = "Lover";
+                        else if (localRole.Faction == Faction.Impostors)
+                        {
+                            roleName = "Impostor";
+                            color = Palette.ImpostorRed;
+                        }
                     }
 
-                    var role = GetRole(player);
-                    if (role != null && role.Criteria())
+                    string suffix = $"\n{roleName}";
+                    if (localRole.RoleType == RoleEnum.Seer)
                     {
-                        player.nameText.color = role.Color;
-                        player.nameText.text = role.NameText();
-                    }
-
-                    if (localRole == null || localIsDead) continue;
-
-                    // TODO: add other role types to this
-                    switch(localRole.RoleType)
-                    {
-                        case RoleEnum.Arsonist:
-                            if (((Arsonist)localRole).DousedPlayers.Contains(player.PlayerId))
+                        var seerInfo = CustomGameOptions.SeerInfo;
+                        if (seerInfo == SeerInfo.Faction)
+                        {
+                            var team = role.RoleType switch
                             {
-                                player.nameText.color = Color.black;
-                                player.myRend.material.SetColor("_VisorColor", localRole.Color);
-                            }
-                            break;
+                                RoleEnum.Crewmate => "Crew",
+                                RoleEnum.Impostor => "Imp",
+                                _ => ""
+                            };
+
+                            if (!string.IsNullOrEmpty(team)) suffix = $" ({team})";
+
+                            color = role.FactionColor;
+                        }
+                    }
+                    
+                    nameText.text = $"{player.name}{suffix}";
+                    nameText.color = color;
+                    return;
+                }
+                else if (player.Data.IsImpostor && PlayerControl.LocalPlayer.Data.IsImpostor)
+                    nameText.color = Palette.ImpostorRed;
+                else
+                    nameText.color = Color.white;
+
+                switch (localRole.RoleType)
+                {
+                    case RoleEnum.Executioner:
+                        var target = ((Executioner)role).target;
+                        if (target.PlayerId == player.PlayerId)
+                            nameText.color = Color.black;
+                        break;
+                    case RoleEnum.Arsonist:
+                        var doused = ((Arsonist)role).DousedPlayers;
+                        if (doused.Contains(player.PlayerId))
+                            nameText.color = Color.black;
+                        break;
+                    case RoleEnum.Seer:
+                        break;
+                }
+
+                return;
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.SpawnPlayer))]
+            public static void OnSpawn([HarmonyArgument(0)] PlayerControl player)
+            {
+                var hatId = player.Data.HatId;
+                player.nameText.transform.localPosition = new Vector3(
+                    0f,
+                    hatId == 0U ? 1.5f :
+                        HatCreation.TallIds.Contains(hatId) ? 2.2f : 2.0f,
+                    -0.5f
+                );
+
+                SetNameText(player.nameText, player);
+
+                var localRole = GetRole(PlayerControl.LocalPlayer);
+
+                if (player.isShielded())
+                {
+                    void SetOutline()
+                    {
+                        var material = player.myRend.material;
+
+                        material.SetColor("_VisorColor", Color.cyan);
+                        material.SetFloat("_Outline", 1f);
+                        material.SetColor("_OutlineColor", Color.cyan);
+                    }
+
+                    var showShielded = CustomGameOptions.ShowShielded;
+
+                    if (showShielded == ShieldOptions.Everyone)
+                        SetOutline();
+                    else
+                    {
+                        var selfAndMedic = showShielded == ShieldOptions.SelfAndMedic;
+
+                        if ((selfAndMedic || showShielded == ShieldOptions.Self) && player.AmOwner)
+                            SetOutline();
+                        else if ((selfAndMedic || showShielded == ShieldOptions.Medic) && localRole?.RoleType == RoleEnum.Medic)
+                            SetOutline();
                     }
                 }
+
+
             }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+            public static void OnMeetingStart(MeetingHud __instance)
+            {
+                foreach (var voteArea in __instance.playerStates)
+                    SetNameText(voteArea.NameText, Utils.PlayerById(voteArea.TargetPlayerId));
+            }
+
+            public static void UpdateAll()
+            {
+                if (MeetingHud.Instance != null)
+                    OnMeetingStart(MeetingHud.Instance);
+                else
+                    foreach (var player in PlayerControl.AllPlayerControls)
+                        OnSpawn(player);
+            }
+
+            public static void UpdateSingle(PlayerControl player) => OnSpawn(player);
+            public static void UpdateSingle(PlayerVoteArea voteArea) =>
+                SetNameText(voteArea.NameText, Utils.PlayerById(voteArea.TargetPlayerId));
         }
     }
 }

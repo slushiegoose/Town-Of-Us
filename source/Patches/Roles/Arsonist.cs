@@ -93,6 +93,7 @@ namespace TownOfUs.Roles
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             DousedPlayers.Add(player.PlayerId);
+            NamePatch.UpdateSingle(player);
         }
 
         internal override bool CheckEndCriteria(ShipStatus __instance)

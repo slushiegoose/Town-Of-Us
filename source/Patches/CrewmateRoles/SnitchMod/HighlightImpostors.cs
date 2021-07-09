@@ -1,8 +1,9 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 
 namespace TownOfUs.CrewmateRoles.SnitchMod
 {
+    /*
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HighlightImpostors
     {
@@ -34,4 +35,5 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
             }
         }
     }
+    */
 }

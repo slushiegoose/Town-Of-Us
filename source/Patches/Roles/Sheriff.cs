@@ -58,7 +58,7 @@ namespace TownOfUs.Roles
 
         internal override bool Criteria()
         {
-            return CustomGameOptions.ShowSheriff || base.Criteria();
+            return Player.AmOwner || CustomGameOptions.ShowSheriff || base.Criteria();
         }
     }
 }

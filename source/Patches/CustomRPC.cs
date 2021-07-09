@@ -85,9 +85,6 @@
         ResetAnim,
         SetHacked,
 
-        ExecutionerToJester,
-
-
         Start,
         SyncCustomSettings,
         FixAnimation

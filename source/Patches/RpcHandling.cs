@@ -461,10 +461,8 @@ namespace TownOfUs
                             Coroutines.Start(GlitchCoroutines.Hack(Role.GetRole<Glitch>(), hackPlayer));
                         break;
                     case CustomRPC.Investigate:
-                        var seer = Utils.PlayerById(reader.ReadByte());
                         var otherPlayer = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Seer>(seer).Investigated.Add(otherPlayer.PlayerId);
-                        Role.GetRole<Seer>(seer).LastInvestigated = DateTime.UtcNow;
+                        Role.GetRole<Seer>().Investigated.Add(otherPlayer.PlayerId);
                         break;
                     case CustomRPC.SetSeer:
                         new Seer(Utils.PlayerById(reader.ReadByte()));
@@ -501,9 +499,6 @@ namespace TownOfUs
                         break;
                     case CustomRPC.SetSpy:
                         new Spy(Utils.PlayerById(reader.ReadByte()));
-                        break;
-                    case CustomRPC.ExecutionerToJester:
-                        TargetColor.ExeToJes(Utils.PlayerById(reader.ReadByte()));
                         break;
                     case CustomRPC.SetSnitch:
                         new Snitch(Utils.PlayerById(reader.ReadByte()));

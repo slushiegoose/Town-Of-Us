@@ -48,83 +48,71 @@ namespace TownOfUs
             Player.MyPhysics.SetSkin(skin);
         }
 
-        public static void Morph(PlayerControl Player, PlayerControl MorphedPlayer, bool resetAnim = false)
+        public static void Morph(PlayerControl player, PlayerControl morphedAs)
         {
             if (CamouflageUnCamouflage.IsCamoed) return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-            {
-                Player.nameText.text = MorphedPlayer.Data.PlayerName;
-            }
+            Role.NamePatch.SetNameText(player.nameText, morphedAs);
 
-            var targetAppearance = MorphedPlayer.GetDefaultAppearance();
+            var targetAppearance = morphedAs.GetDefaultAppearance();
 
-            PlayerControl.SetPlayerMaterialColors(targetAppearance.ColorId, Player.myRend);
-            Player.HatRenderer.SetHat(targetAppearance.HatId, targetAppearance.ColorId);
-            Player.nameText.transform.localPosition = new Vector3(
+            PlayerControl.SetPlayerMaterialColors(targetAppearance.ColorId, player.myRend);
+            player.HatRenderer.SetHat(targetAppearance.HatId, targetAppearance.ColorId);
+            player.nameText.transform.localPosition = new Vector3(
                 0f,
-                Player.Data.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
+                player.Data.HatId == 0U ? 1.5f :
+                HatCreation.TallIds.Contains(player.Data.HatId) ? 2.2f : 2.0f,
                 -0.5f
             );
 
-            if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
+            if (player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
                 .AllSkins.ToArray()[(int)targetAppearance.SkinId].ProdId)
-                SetSkin(Player, targetAppearance.SkinId);
+                SetSkin(player, targetAppearance.SkinId);
 
-            if (Player.CurrentPet == null || Player.CurrentPet.ProdId !=
+            if (player.CurrentPet == null || player.CurrentPet.ProdId !=
                 DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)targetAppearance.PetId].ProdId)
             {
-                if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
+                if (player.CurrentPet != null) Object.Destroy(player.CurrentPet.gameObject);
 
-                Player.CurrentPet =
+                player.CurrentPet =
                     Object.Instantiate(
                         DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)targetAppearance.PetId]);
-                Player.CurrentPet.transform.position = Player.transform.position;
-                Player.CurrentPet.Source = Player;
-                Player.CurrentPet.Visible = Player.Visible;
+                player.CurrentPet.transform.position = player.transform.position;
+                player.CurrentPet.Source = player;
+                player.CurrentPet.Visible = player.Visible;
             }
 
-            PlayerControl.SetPlayerMaterialColors(targetAppearance.ColorId, Player.CurrentPet.rend);
-            /*if (resetAnim && !Player.inVent)
-            {
-                Player.MyPhysics.ResetAnim();
-            }*/
+            PlayerControl.SetPlayerMaterialColors(targetAppearance.ColorId, player.CurrentPet.rend);
         }
 
-        public static void Unmorph(PlayerControl Player)
+        public static void Unmorph(PlayerControl player)
         {
-            var appearance = Player.GetDefaultAppearance();
+            var appearance = player.GetDefaultAppearance();
 
-            Player.nameText.text = Player.Data.PlayerName;
-            PlayerControl.SetPlayerMaterialColors(appearance.ColorId, Player.myRend);
-            Player.HatRenderer.SetHat(appearance.HatId, appearance.ColorId);
-            Player.nameText.transform.localPosition = new Vector3(
+            Role.NamePatch.UpdateSingle(player);
+            PlayerControl.SetPlayerMaterialColors(appearance.ColorId, player.myRend);
+            player.HatRenderer.SetHat(appearance.HatId, appearance.ColorId);
+            player.nameText.transform.localPosition = new Vector3(
                 0f,
                 appearance.HatId == 0U ? 1.5f :
                 HatCreation.TallIds.Contains(appearance.HatId) ? 2.2f : 2.0f,
                 -0.5f
             );
 
-            if (Player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
+            if (player.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance
                 .AllSkins.ToArray()[(int)appearance.SkinId].ProdId)
-                SetSkin(Player, appearance.SkinId);
+                SetSkin(player, appearance.SkinId);
 
-            if (Player.CurrentPet != null) Object.Destroy(Player.CurrentPet.gameObject);
+            if (player.CurrentPet != null) Object.Destroy(player.CurrentPet.gameObject);
 
-            Player.CurrentPet =
+            player.CurrentPet =
                 Object.Instantiate(
                     DestroyableSingleton<HatManager>.Instance.AllPets.ToArray()[(int)appearance.PetId]);
-            Player.CurrentPet.transform.position = Player.transform.position;
-            Player.CurrentPet.Source = Player;
-            Player.CurrentPet.Visible = Player.Visible;
+            player.CurrentPet.transform.position = player.transform.position;
+            player.CurrentPet.Source = player;
+            player.CurrentPet.Visible = player.Visible;
 
-            PlayerControl.SetPlayerMaterialColors(appearance.ColorId, Player.CurrentPet.rend);
-
-            /*if (!Player.inVent)
-            {
-                Player.MyPhysics.ResetAnim();
-            }*/
+            PlayerControl.SetPlayerMaterialColors(appearance.ColorId, player.CurrentPet.rend);
         }
 
         public static void Camouflage()

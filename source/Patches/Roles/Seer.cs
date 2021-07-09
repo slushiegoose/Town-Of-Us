@@ -1,7 +1,8 @@
-using System;
+﻿using Hazel;
 using System.Collections.Generic;
 using TownOfUs.CrewmateRoles.SeerMod;
 using UnityEngine;
+using TMPro;
 
 namespace TownOfUs.Roles
 {
@@ -16,37 +17,56 @@ namespace TownOfUs.Roles
             TaskText = () => "Investigate roles and find the Impostor";
             Color = new Color(1f, 0.8f, 0.5f, 1f);
             RoleType = RoleEnum.Seer;
+
+            if (player.AmOwner)
+            {
+                AbilityManager.Add(new PlayerAbilityData
+                {
+                    Callback = RevealCallback,
+                    MaxTimer = CustomGameOptions.SeerCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color,
+                    TargetFilter = player => !Investigated.Contains(player.PlayerId),
+                    Icon = TownOfUs.SeerSprite,
+                    Position = TOUConstants.KillButtonPosition
+                });
+
+            }
         }
 
-        public PlayerControl ClosestPlayer;
-        public DateTime LastInvestigated { get; set; }
-
-        public float SeerTimer()
+        internal override bool Criteria()
         {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInvestigated;
-            var num = CustomGameOptions.SeerCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var localPlayer = PlayerControl.LocalPlayer;
+            return Player.AmOwner || (
+                Investigated.Contains(localPlayer.PlayerId) &&
+                CheckSeeReveal(localPlayer)
+            ) || base.Criteria();
+        }
+
+        public void RevealCallback(PlayerControl target)
+        {
+            var targetId = target.PlayerId;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.Investigate, SendOption.Reliable, -1);
+            writer.Write(targetId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            Investigated.Add(targetId);
+            NamePatch.UpdateSingle(target);
         }
 
         public bool CheckSeeReveal(PlayerControl player)
         {
             var role = GetRole(player);
-            switch (CustomGameOptions.SeeReveal)
+            return CustomGameOptions.SeeReveal switch
             {
-                case SeeReveal.All:
-                    return true;
-                case SeeReveal.Nobody:
-                    return false;
-                case SeeReveal.ImpsAndNeut:
-                    return role != null && role.Faction != Faction.Crewmates || player.Data.IsImpostor;
-                case SeeReveal.Crew:
-                    return role != null && role.Faction == Faction.Crewmates || !player.Data.IsImpostor;
-            }
-
-            return false;
+                SeeReveal.All => true,
+                SeeReveal.Nobody => false,
+                SeeReveal.ImpsAndNeut => role != null && role.Faction != Faction.Crewmates || player.Data.IsImpostor,
+                SeeReveal.Crew => role != null && role.Faction == Faction.Crewmates || !player.Data.IsImpostor,
+                _ => false,
+            };
         }
     }
 }

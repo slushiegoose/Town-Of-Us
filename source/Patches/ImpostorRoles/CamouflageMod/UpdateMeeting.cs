@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
 {
+    /*
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
     public class UpdateMeeting
     {
@@ -18,5 +19,5 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
                     state.PlayerIcon.SkinSlot.sprite = skinById.IdleFrame;
                 }
         }
-    }
+    }*/
 }
