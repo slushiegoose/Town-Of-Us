@@ -59,7 +59,7 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             Revive(targetPlayer);
 
-            if (CustomGameOptions.BothLoversDie && targetPlayer.isLover())
+            if (CustomGameOptions.BothLoversDie && targetPlayer.IsLover())
             {
                 var lover = Role.GetRole<Lover>(targetPlayer).OtherLover.Player;
                 var body = bodies.FirstOrDefault(x => x.ParentId == lover.PlayerId);

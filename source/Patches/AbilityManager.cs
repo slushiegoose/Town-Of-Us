@@ -17,7 +17,6 @@ namespace TownOfUs
 
         public static void Add(AbilityData data)
         {
-            TownOfUs.LogMessage("Adding Ability");
             data.Timer = data.MaxTimer;
             var hudKill = HudManager.Instance.KillButton;
             if (Buttons.Count == 0 && data.Position == TOUConstants.KillButtonPosition)
@@ -25,7 +24,6 @@ namespace TownOfUs
             else
                 data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
             Buttons.Add(data);
-            TownOfUs.LogMessage(Buttons);
         }
 
         [HarmonyPatch(typeof(ExileController))]

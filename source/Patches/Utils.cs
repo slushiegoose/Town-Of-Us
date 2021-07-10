@@ -37,7 +37,7 @@ namespace TownOfUs
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             StopKill.BreakShield(
-                player.getMedic(),
+                Role.GetRole<Medic>(),
                 player,
                 CustomGameOptions.ShieldBreaks
             );
@@ -152,7 +152,7 @@ namespace TownOfUs
             if (!self.Contains(item)) self.Add(item);
         }
 
-        public static bool isLover(this PlayerControl player)
+        public static bool IsLover(this PlayerControl player)
         {
             return player.Is(RoleEnum.Lover) || player.Is(RoleEnum.LoverImpostor);
         }
@@ -209,25 +209,51 @@ namespace TownOfUs
             return null;
         }
 
-        public static bool isShielded(this PlayerControl player)
+        public static List<PlayerControl> GetCrewmates(IEnumerable<GameData.PlayerInfo> infection)
         {
-            return Role.GetRoles(RoleEnum.Medic).Any(role =>
+            var list = new List<PlayerControl>();
+            foreach (var player in PlayerControl.AllPlayerControls)
             {
-                var shieldedPlayer = ((Medic)role).ShieldedPlayer;
-                return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
-            });
+                var isImpostor = false;
+                foreach (var impostor in infection)
+                    if (player.PlayerId == impostor.Object.PlayerId)
+                        isImpostor = true;
+
+                if (!isImpostor) list.Add(player);
+            }
+
+            return list;
         }
 
-        public static Medic getMedic(this PlayerControl player)
+        public static bool IsShielded(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Medic).FirstOrDefault(role =>
-            {
-                var shieldedPlayer = ((Medic)role).ShieldedPlayer;
-                return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
-            }) as Medic;
+            var medic = Role.GetRole<Medic>();
+            return
+                medic != null &&
+                medic.ShieldedPlayer?.PlayerId == player.PlayerId;
         }
 
-        public static PlayerControl getClosestPlayer(PlayerControl refPlayer, List<PlayerControl> AllPlayers)
+        public static List<PlayerControl> GetImpostors(IEnumerable<GameData.PlayerInfo> infection)
+        {
+            var list = new List<PlayerControl>();
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                var isImpostor = false;
+                foreach (var impostor in infection)
+                    if (player.PlayerId == impostor.Object.PlayerId)
+                        isImpostor = true;
+
+                if (isImpostor) list.Add(player);
+            }
+
+            return list;
+        }
+
+        public static PlayerControl GetClosestPlayer(PlayerControl refplayer)
+        {
+            return GetClosestPlayer(refplayer, PlayerControl.AllPlayerControls.ToArray().ToList());
+        }
+        public static PlayerControl GetClosestPlayer(PlayerControl refPlayer, List<PlayerControl> allPlayers)
         {
             var num = double.MaxValue;
             var refPosition = refPlayer.GetTruePosition();
@@ -250,11 +276,11 @@ namespace TownOfUs
             return result;
         }
 
-        public static DeadBody getClosestBody(PlayerControl refplayer)
+        public static DeadBody GetClosestBody(PlayerControl refplayer)
         {
-            return getClosestBody(refplayer, Object.FindObjectsOfType<DeadBody>().ToList());
+            return GetClosestBody(refplayer, Object.FindObjectsOfType<DeadBody>().ToList());
         }
-        public static DeadBody getClosestBody(PlayerControl refPlayer, List<DeadBody> allBodies)
+        public static DeadBody GetClosestBody(PlayerControl refPlayer, List<DeadBody> allBodies)
         {
             var num = double.MaxValue;
             var refPosition = refPlayer.GetTruePosition();
@@ -311,7 +337,7 @@ namespace TownOfUs
             if (float.IsNaN(maxDistance))
                 maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var localPlayer = PlayerControl.LocalPlayer;
-            var player = getClosestPlayer(
+            var player = GetClosestPlayer(
                 localPlayer,
                 targets ?? PlayerControl.AllPlayerControls.ToArray().ToList()
             );
@@ -330,7 +356,7 @@ namespace TownOfUs
             if (float.IsNaN(maxDistance))
                 maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var localPlayer = PlayerControl.LocalPlayer;
-            var body = getClosestBody(
+            var body = GetClosestBody(
                 localPlayer,
                 targets ?? Object.FindObjectsOfType<DeadBody>().ToList()
             );

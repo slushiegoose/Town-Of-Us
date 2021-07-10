@@ -35,8 +35,11 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Miner;
             Faction = Faction.Impostors;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 AbilityManager.Add(new PlainAbilityData
                 {

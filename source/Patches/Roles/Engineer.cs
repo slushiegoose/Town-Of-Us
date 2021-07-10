@@ -16,8 +16,11 @@ namespace TownOfUs.Roles
             TaskText = () => "Vent and fix a sabotage from anywhere!";
             Color = new Color(1f, 0.65f, 0.04f, 1f);
             RoleType = RoleEnum.Engineer;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
                 AbilityManager.Add(new PlainAbilityData

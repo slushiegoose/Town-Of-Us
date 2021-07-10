@@ -11,7 +11,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
         public static void Postfix(PlayerControl __instance)
         {
             var medic = Role.GetRole<Medic>();
-            if (medic.ShieldedPlayer == null) return;
+            if (medic?.ShieldedPlayer == null) return;
             if (medic.Player == __instance || medic.ShieldedPlayer == __instance)
                 StopKill.BreakShield(medic, medic.ShieldedPlayer, true);
         }
@@ -36,8 +36,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
             if (medic.ShieldedPlayer == player)
                 medic.ShieldedPlayer = null;
 
-            player.myRend.material.SetColor("_VisorColor", Palette.VisorColor);
-            player.myRend.material.SetFloat("_Outline", 0f);
+            Role.NamePatch.UpdateDisplay(player);
         }
 
         [HarmonyPriority(Priority.First)]
@@ -48,21 +47,12 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 !PlayerControl.LocalPlayer.Data.IsImpostor
             ) return true;
             var target = __instance.CurrentTarget;
-            if (target == null || !target.isShielded()) return true;
+            if (target == null || !target.IsShielded()) return true;
 
             if (__instance.isActiveAndEnabled && !__instance.isCoolingDown)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                if (CustomGameOptions.ShieldBreaks)
-                    PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
-
-                BreakShield(target.getMedic(), target, CustomGameOptions.ShieldBreaks);
+                Utils.RpcBreakShield(target);
             }
-
 
             return false;
         }

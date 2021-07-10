@@ -12,7 +12,7 @@ namespace TownOfUs.CrewmateRoles.LoversMod
             __instance.Data.IsDead = true;
 
 
-            var flag3 = __instance.isLover() && CustomGameOptions.BothLoversDie;
+            var flag3 = __instance.IsLover() && CustomGameOptions.BothLoversDie;
             if (!flag3) return true;
             var otherLover = Role.GetRole<Lover>(__instance).OtherLover.Player;
             if (otherLover.Data.IsDead) return true;

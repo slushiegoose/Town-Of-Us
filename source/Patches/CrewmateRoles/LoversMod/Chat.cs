@@ -13,7 +13,7 @@ namespace TownOfUs.CrewmateRoles.LoversMod
                 var localPlayer = PlayerControl.LocalPlayer;
                 if (localPlayer == null) return true;
                 return MeetingHud.Instance != null || LobbyBehaviour.Instance != null || localPlayer.Data.IsDead ||
-                       localPlayer.isLover() || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
+                       localPlayer.IsLover() || sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
             }
         }
 
@@ -22,7 +22,7 @@ namespace TownOfUs.CrewmateRoles.LoversMod
         {
             public static void Postfix(HudManager __instance)
             {
-                if (PlayerControl.LocalPlayer.isLover() & !__instance.Chat.isActiveAndEnabled)
+                if (PlayerControl.LocalPlayer.IsLover() & !__instance.Chat.isActiveAndEnabled)
                     __instance.Chat.SetVisible(true);
             }
         }

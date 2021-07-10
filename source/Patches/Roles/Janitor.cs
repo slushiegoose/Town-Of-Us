@@ -14,8 +14,11 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Janitor;
             Faction = Faction.Impostors;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 AbilityManager.Add(new BodyAbilityData
                 {

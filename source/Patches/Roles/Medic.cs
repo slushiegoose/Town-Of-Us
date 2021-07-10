@@ -16,8 +16,11 @@ namespace TownOfUs.Roles
             TaskText = () => "Protect a crewmate with a shield";
             Color = new Color(0f, 0.4f, 0f, 1f);
             RoleType = RoleEnum.Medic;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 AbilityManager.Add(ShieldButton = new PlayerAbilityData
                 {

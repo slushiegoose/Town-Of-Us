@@ -28,8 +28,11 @@ namespace TownOfUs.Roles
             ImpostorText = () => "foreach PlayerControl Glitch.MurderPlayer";
             TaskText = () => "Murder everyone:";
             Faction = Faction.Neutral;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 AbilityManager.Add(KillButton = new PlayerAbilityData
                 {
@@ -64,7 +67,7 @@ namespace TownOfUs.Roles
 
         public void KillCallback(PlayerControl target)
         {
-            if (target.isShielded())
+            if (target.IsShielded())
             {
                 Utils.RpcBreakShield(target);
                 if (!CustomGameOptions.ShieldBreaks)

@@ -17,8 +17,11 @@ namespace TownOfUs.Roles
             TaskText = () => "Investigate roles and find the Impostor";
             Color = new Color(1f, 0.8f, 0.5f, 1f);
             RoleType = RoleEnum.Seer;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 AbilityManager.Add(new PlayerAbilityData
                 {
@@ -30,7 +33,6 @@ namespace TownOfUs.Roles
                     Icon = TownOfUs.SeerSprite,
                     Position = TOUConstants.KillButtonPosition
                 });
-
             }
         }
 
@@ -63,8 +65,8 @@ namespace TownOfUs.Roles
             {
                 SeeReveal.All => true,
                 SeeReveal.Nobody => false,
-                SeeReveal.ImpsAndNeut => role != null && role.Faction != Faction.Crewmates || player.Data.IsImpostor,
-                SeeReveal.Crew => role != null && role.Faction == Faction.Crewmates || !player.Data.IsImpostor,
+                SeeReveal.ImpsAndNeut => role?.Faction == Faction.Neutral || player.Data.IsImpostor,
+                SeeReveal.Crew => role?.Faction == Faction.Crewmates,
                 _ => false,
             };
         }

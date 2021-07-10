@@ -16,8 +16,11 @@ namespace TownOfUs.Roles
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Camouflager;
             Faction = Faction.Impostors;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
                 AbilityManager.Add(new PlainAbilityData

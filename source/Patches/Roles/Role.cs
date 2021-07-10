@@ -31,7 +31,7 @@ namespace TownOfUs.Roles
         protected Role(PlayerControl player)
         {
             Player = player;
-            RoleDictionary.Add(player.PlayerId, this);
+            CreateButtons();
         }
 
         public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
@@ -46,6 +46,7 @@ namespace TownOfUs.Roles
             {
                 _player = value;
                 PlayerName = value.Data.PlayerName;
+                RoleDictionary[value.PlayerId] = this;
             }
         }
 
@@ -93,6 +94,11 @@ namespace TownOfUs.Roles
         public override int GetHashCode()
         {
             return HashCode.Combine(Player, (int)RoleType);
+        }
+
+        public virtual void CreateButtons()
+        {
+
         }
 
         internal virtual bool Criteria()
@@ -425,9 +431,10 @@ namespace TownOfUs.Roles
                 var role = GetRole(player);
                 if (role == null) return;
 
+                var amOwner = player.AmOwner;
                 var localRole = GetRole(PlayerControl.LocalPlayer);
 
-                if (player.AmOwner && role.Hidden)
+                if (amOwner && role.Hidden)
                 {
                     var isImpostor = player.Data.IsImpostor;
                     nameText.color = isImpostor ? Palette.ImpostorRed : Color.white;
@@ -438,36 +445,43 @@ namespace TownOfUs.Roles
                 {
                     var color = role.Color;
                     var roleName = role.Name;
-                    if (!player.AmOwner && role.RoleType == RoleEnum.LoverImpostor)
-                    {
-                        if (localRole.RoleType == RoleEnum.Lover)
-                            roleName = "Lover";
-                        else if (localRole.Faction == Faction.Impostors)
-                        {
-                            roleName = "Impostor";
-                            color = Palette.ImpostorRed;
-                        }
-                    }
+                    var suffix = "";
 
-                    string suffix = $"\n{roleName}";
-                    if (localRole.RoleType == RoleEnum.Seer)
+                    if (!amOwner)
                     {
-                        var seerInfo = CustomGameOptions.SeerInfo;
-                        if (seerInfo == SeerInfo.Faction)
+                        if (role.RoleType == RoleEnum.LoverImpostor)
                         {
-                            var team = role.RoleType switch
+                            if (localRole.RoleType == RoleEnum.Lover)
+                                roleName = "Lover";
+                            else if (localRole.Faction == Faction.Impostors)
                             {
-                                RoleEnum.Crewmate => "Crew",
-                                RoleEnum.Impostor => "Imp",
-                                _ => ""
-                            };
+                                roleName = "Impostor";
+                                color = Palette.ImpostorRed;
+                            }
+                        }
 
-                            if (!string.IsNullOrEmpty(team)) suffix = $" ({team})";
+                        if (localRole.RoleType == RoleEnum.Seer)
+                        {
+                            var seerInfo = CustomGameOptions.SeerInfo;
+                            if (seerInfo == SeerInfo.Faction)
+                            {
+                                var team = role.Faction switch
+                                {
+                                    Faction.Crewmates => "Crew",
+                                    Faction.Impostors => "Imp",
+                                    // neutral
+                                    _ => CustomGameOptions.NeutralRed ? "Imp" : "Neutral"
+                                };
 
-                            color = role.FactionColor;
+                                suffix = $" ({team})";
+                                color = role.FactionColor;
+                            }
                         }
                     }
-                    
+
+                    if (string.IsNullOrEmpty(suffix))
+                        suffix = $"\n{roleName}";
+
                     nameText.text = $"{player.name}{suffix}";
                     nameText.color = color;
                     return;
@@ -480,16 +494,14 @@ namespace TownOfUs.Roles
                 switch (localRole.RoleType)
                 {
                     case RoleEnum.Executioner:
-                        var target = ((Executioner)role).target;
+                        var target = ((Executioner)localRole).target;
                         if (target.PlayerId == player.PlayerId)
                             nameText.color = Color.black;
                         break;
                     case RoleEnum.Arsonist:
-                        var doused = ((Arsonist)role).DousedPlayers;
+                        var doused = ((Arsonist)localRole).DousedPlayers;
                         if (doused.Contains(player.PlayerId))
                             nameText.color = Color.black;
-                        break;
-                    case RoleEnum.Seer:
                         break;
                 }
 
@@ -509,16 +521,35 @@ namespace TownOfUs.Roles
                 );
 
                 SetNameText(player.nameText, player);
+                UpdateDisplay(player);
+            }
 
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+            public static void OnMeetingStart(MeetingHud __instance)
+            {
+                foreach (var voteArea in __instance.playerStates)
+                    SetNameText(voteArea.NameText, Utils.PlayerById(voteArea.TargetPlayerId));
+            }
+
+            public static void UpdateAll()
+            {
+                if (MeetingHud.Instance != null)
+                    OnMeetingStart(MeetingHud.Instance);
+                else
+                    foreach (var player in PlayerControl.AllPlayerControls)
+                        OnSpawn(player);
+            }
+
+            public static void UpdateDisplay(PlayerControl player)
+            {
                 var localRole = GetRole(PlayerControl.LocalPlayer);
+                var material = player.myRend.material;
 
-                if (player.isShielded())
+                if (player.IsShielded())
                 {
                     void SetOutline()
                     {
-                        var material = player.myRend.material;
-
-                        material.SetColor("_VisorColor", Color.cyan);
                         material.SetFloat("_Outline", 1f);
                         material.SetColor("_OutlineColor", Color.cyan);
                     }
@@ -537,25 +568,17 @@ namespace TownOfUs.Roles
                             SetOutline();
                     }
                 }
+                else if (material.GetColor("_OutlineColor") == Color.cyan)
+                    material.SetFloat("_Outline", 0f);
 
-
-            }
-
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-            public static void OnMeetingStart(MeetingHud __instance)
-            {
-                foreach (var voteArea in __instance.playerStates)
-                    SetNameText(voteArea.NameText, Utils.PlayerById(voteArea.TargetPlayerId));
-            }
-
-            public static void UpdateAll()
-            {
-                if (MeetingHud.Instance != null)
-                    OnMeetingStart(MeetingHud.Instance);
-                else
-                    foreach (var player in PlayerControl.AllPlayerControls)
-                        OnSpawn(player);
+                switch (localRole.RoleType)
+                {
+                    case RoleEnum.Arsonist:
+                        var doused = ((Arsonist)localRole).DousedPlayers;
+                        if (doused.Contains(player.PlayerId))
+                            material.SetColor("_VisorColor", localRole.Color);
+                        break;
+                }
             }
 
             public static void UpdateSingle(PlayerControl player) => OnSpawn(player);

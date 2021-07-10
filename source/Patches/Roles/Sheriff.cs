@@ -11,8 +11,11 @@ namespace TownOfUs.Roles
             TaskText = () => "Kill off the impostor but don't kill crewmates.";
             Color = Color.yellow;
             RoleType = RoleEnum.Sheriff;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
                 AbilityManager.Add(new PlayerAbilityData
@@ -43,7 +46,7 @@ namespace TownOfUs.Roles
         {
             var canKill = CanKill(player);
 
-            if (player.isShielded())
+            if (player.IsShielded())
             {
                 Utils.RpcBreakShield(player);
                 return;

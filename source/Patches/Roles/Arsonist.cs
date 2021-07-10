@@ -20,8 +20,11 @@ namespace TownOfUs.Roles
             Color = new Color(1f, 0.3f, 0f);
             RoleType = RoleEnum.Arsonist;
             Faction = Faction.Neutral;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 AbilityManager.Add(new PlayerAbilityData
                 {
@@ -94,6 +97,7 @@ namespace TownOfUs.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             DousedPlayers.Add(player.PlayerId);
             NamePatch.UpdateSingle(player);
+            NamePatch.UpdateDisplay(player);
         }
 
         internal override bool CheckEndCriteria(ShipStatus __instance)

@@ -18,8 +18,11 @@ namespace TownOfUs.Roles
             TaskText = () => "Revive a dead body at the cost of your own life.";
             Color = new Color(0.4f, 0f, 0f, 1f);
             RoleType = RoleEnum.Altruist;
+        }
 
-            if (player.AmOwner)
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
             {
                 var killButton = HudManager.Instance.KillButton;
                 AbilityManager.Add(new BodyAbilityData

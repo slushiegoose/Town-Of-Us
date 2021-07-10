@@ -16,7 +16,11 @@ namespace TownOfUs.NeutralRoles.ExecutionerMod
     {
         public static void Postfix(PlayerControl __instance) {
             var exec = Role.GetRole<Executioner>();
-            if (exec.Player.Data.IsDead || exec.target.PlayerId != __instance.PlayerId) return;
+            if (
+                exec == null ||
+                exec.Player.Data.IsDead ||
+                exec.target.PlayerId != __instance.PlayerId
+            ) return;
 
             ExeToJes(exec.Player);
         }
