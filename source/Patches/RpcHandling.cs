@@ -103,16 +103,6 @@ namespace TownOfUs
             crewAndNeutralRoles.AddRange(CrewmateRoles);
             SortRoles(crewAndNeutralRoles, crewmates.Count);
 
-            foreach (var (_, rpc, _) in crewAndNeutralRoles)
-            {
-                TownOfUs.LogMessage($"Enabled Crew/Neut Role: {rpc}");
-            }
-
-            foreach (var (_, rpc, _) in ImpostorRoles)
-            {
-                TownOfUs.LogMessage($"Enabled Imp Role: {rpc}");
-            }
-
             if (Check(CustomGameOptions.VanillaGame))
             {
                 CrewmateRoles.Clear();
@@ -155,9 +145,6 @@ namespace TownOfUs
                 var targets = Utils.GetCrewmates(impostors).Where(
                     crewmate => Role.GetRole(crewmate)?.Faction == Faction.Crewmates
                 ).ToList();
-                TownOfUs.LogMessage($"Executioner Targets ({targets.Count})");
-                foreach (var target in targets)
-                    TownOfUs.LogMessage(target.name);
                 if (targets.Count > 0)
                 {
                     var exec = Role.Gen<Executioner>(

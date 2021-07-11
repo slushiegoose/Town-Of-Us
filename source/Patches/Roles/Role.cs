@@ -226,7 +226,6 @@ namespace TownOfUs.Roles
                 (byte)rpc, SendOption.Reliable, -1);
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            TownOfUs.LogMessage($"Genering {rpc} for {player.name}");
             return role;
         }
 
