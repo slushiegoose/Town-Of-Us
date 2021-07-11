@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using System;
 using System.Collections.Generic;
@@ -218,21 +218,24 @@ namespace TownOfUs.Roles
                 $"{ColorString}Role: {Name}\n{TaskText()}</color>";
         }
 
-        public static Role Gen(Type T, List<PlayerControl> crewmates, CustomRPC rpc)
+        public static T Gen<T>(Type type, PlayerControl player, CustomRPC rpc)
         {
-            if (crewmates.Count <= 0) return null;
-            var rand = Random.RandomRangeInt(0, crewmates.Count); //TODO - change
-            var pc = crewmates[rand];
+            var role = (T)Activator.CreateInstance(type, new object[] { player });
 
-            var role = Activator.CreateInstance(T, new object[] { pc });
-            var playerId = pc.PlayerId;
-            crewmates.Remove(pc);
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)rpc,
-                SendOption.Reliable, -1);
-            writer.Write(playerId);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)rpc, SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return role as Role;
+            TownOfUs.LogMessage($"Genering {rpc} for {player.name}");
+            return role;
+        }
+
+        public static T Gen<T>(Type type, List<PlayerControl> players, CustomRPC rpc)
+        {
+            var player = players[Random.RandomRangeInt(0, players.Count)];
+            var role = Gen<T>(type, player, rpc);
+            players.Remove(player);
+            return role;
         }
 
         public static Role GetRole(PlayerControl player)
@@ -243,7 +246,7 @@ namespace TownOfUs.Roles
 
             return null;
         }
-
+        
         public static T GetRole<T>(PlayerControl player) where T : Role
         {
             return GetRole(player) as T;

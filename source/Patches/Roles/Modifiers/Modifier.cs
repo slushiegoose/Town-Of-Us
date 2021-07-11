@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
@@ -56,25 +56,6 @@ namespace TownOfUs.Roles.Modifiers
         public static bool operator !=(Modifier a, Modifier b)
         {
             return !(a == b);
-        }
-
-        public static void Gen(Type T, List<PlayerControl> crewmates, CustomRPC rpc)
-        {
-            //System.Console.WriteLine(nameof(rpc));
-            //System.Console.WriteLine(crewmates.Count);
-            if (crewmates.Count <= 0) return;
-            var rand = Random.RandomRangeInt(0, crewmates.Count);
-            //var rand = 0;
-            var pc = crewmates[rand];
-
-            var role = Activator.CreateInstance(T, new object[] {pc});
-            var playerId = pc.PlayerId;
-            crewmates.Remove(pc);
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) rpc,
-                SendOption.Reliable, -1);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         public static Modifier GetModifier(PlayerControl player)
