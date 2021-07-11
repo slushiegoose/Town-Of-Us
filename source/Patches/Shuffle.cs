@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace TownOfUs
@@ -8,17 +8,24 @@ namespace TownOfUs
         /// <summary>
         ///     Shuffles the element order of the specified list.
         /// </summary>
-        public static void Shuffle<T>(this List<T> ts)
+        public static void Shuffle<T>(this List<T> list)
         {
-            var count = ts.Count;
+            var count = list.Count;
             var last = count - 1;
             for (var i = 0; i < last; ++i)
             {
                 var r = Random.Range(i, count);
-                var tmp = ts[i];
-                ts[i] = ts[r];
-                ts[r] = tmp;
+                var tmp = list[i];
+                list[i] = list[r];
+                list[r] = tmp;
             }
+        }
+
+        public static T TakeFirst<T>(this List<T> list)
+        {
+            var item = list[0];
+            list.RemoveAt(0);
+            return item;
         }
     }
 }
