@@ -57,6 +57,13 @@ namespace TownOfUs
 
         private static void GenEachRole(List<GameData.PlayerInfo> infected)
         {
+            if (TutorialManager.InstanceExists)
+            {
+                Role.LobbyBehaviour_Start.Postfix();
+                PlayerControl.LocalPlayer.Data.IsImpostor = true;
+                Role.Gen<Role>(typeof(Undertaker), PlayerControl.LocalPlayer, CustomRPC.SetUndertaker);
+                return;
+            }
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
             crewmates.Shuffle();

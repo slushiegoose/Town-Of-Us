@@ -40,8 +40,7 @@ namespace TownOfUs
                         button.OnDurationEnd();
                         var maxTimer = button.Timer = button.MaxTimer;
                         button.DurationLeft = -1f;
-                        button.KillButton.SetCoolDown(maxTimer, maxTimer);
-                        continue;
+                        SetCoolDown(button.KillButton, maxTimer, maxTimer);
                     }
                 }
             }
@@ -134,6 +133,16 @@ namespace TownOfUs
             }
         }
 
+        public static void SetCoolDown(KillButtonManager button, float timer, float maxTimer)
+        {
+            button.SetCoolDown(timer, maxTimer);
+            var _material = button.renderer.material;
+            _material.SetFloat(
+                "_Percent",
+                _material.GetFloat("_Percent") - 0.2f
+            );
+        }
+
         [HarmonyPatch(typeof(PlayerControl))]
         public static class PlayerControlPatch
         {
@@ -200,13 +209,13 @@ namespace TownOfUs
                         );
 
                         if (durationLeft > 0f)
-                            button.SetCoolDown(durationLeft, maxDuration);
+                            SetCoolDown(button, durationLeft, maxDuration);
                         else if (durationLeft == 0f)
                         {
                             buttonData.OnDurationEnd();
                             buttonData.Timer = buttonData.MaxTimer;
                             buttonData.DurationLeft = -1f;
-                            button.SetCoolDown(buttonData.MaxTimer, buttonData.MaxTimer);
+                            SetCoolDown(button, buttonData.MaxTimer, buttonData.MaxTimer);
                         }
                         continue;
                     }
@@ -232,7 +241,7 @@ namespace TownOfUs
                             if (isHudKill)
                                 __instance.killTimer = buttonData.Timer;
                         }
-                        button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
+                        SetCoolDown(button, buttonData.Timer, buttonData.MaxTimer);
                     }
 
                     if (!float.IsNaN(buttonData.MaxDuration))

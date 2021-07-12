@@ -137,11 +137,6 @@ namespace TownOfUs.MayorMod
             }
 
             var (exiledId, maxVotes) = votes.MaxPair(out var tie);
-            TownOfUs.LogMessage(new string[]
-            {
-                $"Tie: {tie}",
-                $"Exiled Id: {exiledId}"
-            });
 
             if (tie)
             {
@@ -165,15 +160,29 @@ namespace TownOfUs.MayorMod
         [HarmonyPrefix]
         [HarmonyPatch(nameof(MeetingHud.VotingComplete))]
         public static void VotingComplete(
-            [HarmonyArgument(0)] MeetingHud.VoterState[] states,
+            [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states,
             [HarmonyArgument(1)] GameData.PlayerInfo exiled,
             [HarmonyArgument(2)] bool tie)
         {
             foreach (var state in states)
-                TownOfUs.LogMessage($"{state.VoterId} Voted for {state.VotedForId}");
+                TownOfUs.LogMessage($"VotingComplete: {state.VoterId} Voted for {state.VotedForId}");
 
-            TownOfUs.LogMessage($"{exiled?.PlayerName ?? "Nobody"} Was exiled");
-            TownOfUs.LogMessage($"Tie?: {tie}");
+            TownOfUs.LogMessage($"VotingComplete: {exiled?.PlayerName ?? "Nobody"} Was exiled");
+            TownOfUs.LogMessage($"VotingComplete: Tie?: {tie}");
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(MeetingHud.RpcVotingComplete))]
+        public static void RpcVotingComplete(
+            [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states,
+            [HarmonyArgument(1)] GameData.PlayerInfo exiled,
+            [HarmonyArgument(2)] bool tie)
+        {
+            foreach (var state in states)
+                TownOfUs.LogMessage($"RpcVotingComplete: {state.VoterId} Voted for {state.VotedForId}");
+
+            TownOfUs.LogMessage($"RpcVotingComplete: {exiled?.PlayerName ?? "Nobody"} Was exiled");
+            TownOfUs.LogMessage($"RpcVotingComplete: Tie?: {tie}");
         }
 
         [HarmonyPrefix]
@@ -182,16 +191,12 @@ namespace TownOfUs.MayorMod
         {
             if (__instance.playerStates.All((PlayerVoteArea ps) => ps.AmDead || ps.DidVote))
             {
-                SendMayorVotes();
-
                 var states = CalculateVotes(__instance);
                 var (tie, exiled) = CalculateVoteResults(states);
 
-                var _states = new Il2CppStructArray<MeetingHud.VoterState>(states.Length);
-                for (var i = 0;i < states.Length;i++)
-                    _states[i] = states[i];
-
                 __instance.RpcVotingComplete(states, exiled, tie);
+
+                SendMayorVotes();
             }
             return false;
         }
