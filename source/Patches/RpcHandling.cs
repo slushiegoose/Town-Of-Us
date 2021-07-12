@@ -323,8 +323,7 @@ namespace TownOfUs
                         break;
 
                     case CustomRPC.SetExtraVotes:
-                        var mayor = Utils.PlayerById(reader.ReadByte());
-                        var mayorRole = Role.GetRole<Mayor>(mayor);
+                        var mayorRole = Role.GetRole<Mayor>();
                         mayorRole.ExtraVotes = reader.ReadBytesAndSize().ToList();
                         mayorRole.VoteBank -= mayorRole.ExtraVotes.Count;
                         break;

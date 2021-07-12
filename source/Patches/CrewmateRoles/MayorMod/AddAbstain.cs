@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -11,10 +11,12 @@ namespace TownOfUs.CrewmateRoles.MayorMod
         public static void UpdateButton(Mayor role, MeetingHud __instance)
         {
             var skip = __instance.SkipVoteButton;
-            role.Abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
-            role.Abstain.voteComplete = skip.voteComplete;
-            role.Abstain.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
-            role.Abstain.GetComponent<SpriteRenderer>().sprite = Abstain;
+            var abstain = role.Abstain;
+            abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
+            abstain.voteComplete = skip.voteComplete;
+            var renderer = abstain.GetComponent<SpriteRenderer>();
+            renderer.enabled = skip.GetComponent<SpriteRenderer>().enabled;
+            renderer.sprite = Abstain;
         }
 
 

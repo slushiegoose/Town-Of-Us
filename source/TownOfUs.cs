@@ -62,6 +62,11 @@ namespace TownOfUs
         public ConfigEntry<ushort> Port { get; set; }
         //public static Sprite BirthdayVoteSprite;
 
+        public static void LogMessage(object[] messages, bool requireKey = false)
+        {
+            foreach (var message in messages)
+                LogMessage(message);
+        }
         public static void LogMessage(object message, bool requireKey = false) {
             if (!requireKey || Input.GetKeyInt(KeyCode.T))
                 PluginSingleton<TownOfUs>.Instance.Log.LogMessage(message);
