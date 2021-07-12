@@ -20,41 +20,44 @@ namespace TownOfUs.CrewmateRoles.SheriffMod
             if (PlayerControl.LocalPlayer.Data.IsDead) return false;
             var flag2 = role.SheriffKillTimer() == 0f;
             if (!flag2) return false;
-            if (!__instance.enabled || role.ClosestPlayer == null) return false;
-            var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
+            var target = role.ClosestPlayer;
+            if (!__instance.enabled || target == null) return false;
+            var distBetweenPlayers = Utils.getDistBetweenPlayers(PlayerControl.LocalPlayer, target);
             var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             if (!flag3) return false;
-            if (role.ClosestPlayer.isShielded())
+            if (target.isShielded())
             {
-                var medic = role.ClosestPlayer.getMedic().Player.PlayerId;
+                var medic = target.getMedic().Player.PlayerId;
                 var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
-                writer1.Write(role.ClosestPlayer.PlayerId);
+                writer1.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);
 
                 if (CustomGameOptions.ShieldBreaks) role.LastKilled = DateTime.UtcNow;
 
-                StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+                StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
 
                 return false;
             }
 
-            var flag4 = role.ClosestPlayer.Data.IsImpostor ||
-                        role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.SheriffKillsJester ||
-                        role.ClosestPlayer.Is(RoleEnum.Glitch) && CustomGameOptions.SheriffKillsGlitch ||
-                        role.ClosestPlayer.Is(RoleEnum.Arsonist) && CustomGameOptions.SheriffKillsArsonist;
-            if (!flag4)
+            var targetRole = Role.GetRole(target)?.RoleType;
+
+            var canKill = target.Data.IsImpostor || role != null &&
+                targetRole == RoleEnum.Glitch ||
+                targetRole == RoleEnum.Jester && CustomGameOptions.SheriffKillsJester ||
+                targetRole == RoleEnum.Arsonist && CustomGameOptions.SheriffKillsArsonist;
+            if (canKill)
             {
-                if (CustomGameOptions.SheriffKillOther)
-                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
-                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
+                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, target);
             }
             else
             {
-                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
+                if (CustomGameOptions.SheriffKillOther)
+                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, target);
+                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
             }
-
+            
             role.LastKilled = DateTime.UtcNow;
 
             return false;
