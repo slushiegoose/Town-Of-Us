@@ -166,6 +166,23 @@ namespace TownOfUs
             return Role.GetRole(player)?.Faction == faction;
         }
 
+        public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors)
+        {
+            return PlayerControl.AllPlayerControls.ToArray().Where(
+                player => !impostors.Any(imp => imp.PlayerId == player.PlayerId)
+            ).ToList();
+        }
+
+        public static List<PlayerControl> GetImpostors(
+            List<GameData.PlayerInfo> infected)
+        {
+            var impostors = new List<PlayerControl>();
+            foreach (var impData in infected)
+                impostors.Add(impData.Object);
+
+            return impostors;
+        }
+
         public static PlayerControl PlayerById(byte id)
         {
             foreach (var player in PlayerControl.AllPlayerControls)
@@ -175,44 +192,12 @@ namespace TownOfUs
             return null;
         }
 
-        public static List<PlayerControl> GetCrewmates(IEnumerable<GameData.PlayerInfo> infection)
-        {
-            var list = new List<PlayerControl>();
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                var isImpostor = false;
-                foreach (var impostor in infection)
-                    if (player.PlayerId == impostor.Object.PlayerId)
-                        isImpostor = true;
-
-                if (!isImpostor) list.Add(player);
-            }
-
-            return list;
-        }
-
         public static bool IsShielded(this PlayerControl player)
         {
             var medic = Role.GetRole<Medic>();
             return
                 medic != null &&
                 medic.ShieldedPlayer?.PlayerId == player.PlayerId;
-        }
-
-        public static List<PlayerControl> GetImpostors(IEnumerable<GameData.PlayerInfo> infection)
-        {
-            var list = new List<PlayerControl>();
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                var isImpostor = false;
-                foreach (var impostor in infection)
-                    if (player.PlayerId == impostor.Object.PlayerId)
-                        isImpostor = true;
-
-                if (isImpostor) list.Add(player);
-            }
-
-            return list;
         }
 
         public static PlayerControl GetClosestPlayer(PlayerControl refplayer)
