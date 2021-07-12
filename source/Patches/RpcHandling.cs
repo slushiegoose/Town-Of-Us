@@ -61,7 +61,7 @@ namespace TownOfUs
             {
                 Role.LobbyBehaviour_Start.Postfix();
                 PlayerControl.LocalPlayer.Data.IsImpostor = true;
-                Role.Gen<Role>(typeof(Undertaker), PlayerControl.LocalPlayer, CustomRPC.SetUndertaker);
+                Role.Gen<Role>(typeof(Assassin), PlayerControl.LocalPlayer, CustomRPC.SetAssassin);
                 return;
             }
             var impostors = Utils.GetImpostors(infected);

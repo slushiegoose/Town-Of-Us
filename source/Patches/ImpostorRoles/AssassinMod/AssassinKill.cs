@@ -111,6 +111,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             voteArea.Overlay.color = Color.white;
             voteArea.XMark.gameObject.SetActive(true);
             voteArea.XMark.transform.localScale = Vector3.one;
+            voteArea.Buttons.SetActive(false);
             var amHost = AmongUsClient.Instance.AmHost;
             foreach (var playerVoteArea in meetingHud.playerStates)
             {
@@ -119,6 +120,13 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 var voteAreaPlayer = Utils.PlayerById(playerVoteArea.TargetPlayerId);
                 if (!voteAreaPlayer.AmOwner) continue;
                 meetingHud.ClearVote();
+            }
+            var mayor = Role.GetRole<Mayor>();
+            if (mayor != null)
+            {
+                var votes = mayor.ExtraVotes.Where(targetId => targetId == player.PlayerId).Count();
+                mayor.ExtraVotes.RemoveAll(targetId => targetId == player.PlayerId);
+                mayor.VoteBank += votes;
             }
             if (!amHost) return;
             meetingHud.CheckForEndVoting();
