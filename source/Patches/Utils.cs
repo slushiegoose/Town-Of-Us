@@ -88,7 +88,6 @@ namespace TownOfUs
         public static void Unmorph(PlayerControl player)
         {
             var appearance = player.GetDefaultAppearance();
-
             Role.NamePatch.UpdateSingle(player);
             PlayerControl.SetPlayerMaterialColors(appearance.ColorId, player.myRend);
             player.HatRenderer.SetHat(appearance.HatId, appearance.ColorId);
@@ -141,11 +140,6 @@ namespace TownOfUs
             foreach (var player in PlayerControl.AllPlayerControls) Unmorph(player);
         }
 
-        public static bool IsCrewmate(this PlayerControl player)
-        {
-            return GetRole(player) == RoleEnum.Crewmate;
-        }
-
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item)
             where T : IDisconnectHandler
         {
@@ -170,34 +164,6 @@ namespace TownOfUs
         public static bool Is(this PlayerControl player, Faction faction)
         {
             return Role.GetRole(player)?.Faction == faction;
-        }
-
-        public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors)
-        {
-            return PlayerControl.AllPlayerControls.ToArray().Where(
-                player => !impostors.Any(imp => imp.PlayerId == player.PlayerId)
-            ).ToList();
-        }
-
-        public static List<PlayerControl> GetImpostors(
-            List<GameData.PlayerInfo> infected)
-        {
-            var impostors = new List<PlayerControl>();
-            foreach (var impData in infected)
-                impostors.Add(impData.Object);
-
-            return impostors;
-        }
-
-        public static RoleEnum GetRole(PlayerControl player)
-        {
-            if (player == null) return RoleEnum.None;
-            if (player.Data == null) return RoleEnum.None;
-
-            var role = Role.GetRole(player);
-            if (role != null) return role.RoleType;
-
-            return player.Data.IsImpostor ? RoleEnum.Impostor : RoleEnum.Crewmate;
         }
 
         public static PlayerControl PlayerById(byte id)

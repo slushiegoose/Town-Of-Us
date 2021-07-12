@@ -117,7 +117,9 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                         }
                         break;
                     case RoleEnum.Spy:
-                        var countOverlay = MapBehaviour.Instance?.countOverlay;
+                        var countOverlay =
+                            MapBehaviour.Instance?.countOverlay ??
+                            GameObject.Find("CountOverlay")?.GetComponent<MapCountOverlay>();
                         if (countOverlay != null)
                             foreach (var area in countOverlay.CountAreas)
                                 foreach (var icon in area.myIcons)

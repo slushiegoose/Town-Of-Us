@@ -301,7 +301,7 @@ namespace TownOfUs
                         Utils.ShowDeadBodies = false;
                         Murder.KilledPlayers.Clear();
                         Role.NobodyWins = false;
-                        RecordRewind.points.Clear();
+                        RecordRewind.RewindPoints.Clear();
                         break;
 
                     case CustomRPC.JanitorClean:
@@ -348,10 +348,7 @@ namespace TownOfUs
                         break;
 
                     case CustomRPC.Rewind:
-                        readByte = reader.ReadByte();
-                        var TimeLordPlayer = Utils.PlayerById(readByte);
-                        var TimeLordRole = Role.GetRole<TimeLord>(TimeLordPlayer);
-                        StartStop.StartRewind(TimeLordRole);
+                        StartStop.StartRewind();
                         break;
 
                     case CustomRPC.Protect:
@@ -499,10 +496,11 @@ namespace TownOfUs
                         break;
 
                     case CustomRPC.Swoop:
-                        var swooper = Utils.PlayerById(reader.ReadByte());
-                        var swooperRole = Role.GetRole<Swooper>(swooper);
-                        swooperRole.TimeRemaining = CustomGameOptions.SwoopDuration;
-                        swooperRole.Swoop();
+                        Role.GetRole<Swooper>().SwoopCallback();
+                        break;
+
+                    case CustomRPC.UnSwoop:
+                        Role.GetRole<Swooper>().UnSwoop();
                         break;
 
                     case CustomRPC.SetTiebreaker:
@@ -677,7 +675,7 @@ namespace TownOfUs
                 CrewmateModifiers.Clear();
                 GlobalModifiers.Clear();
 
-                RecordRewind.points.Clear();
+                RecordRewind.RewindPoints.Clear();
                 Murder.KilledPlayers.Clear();
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,

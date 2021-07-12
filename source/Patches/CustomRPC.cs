@@ -71,6 +71,7 @@
         UnCamouflage,
         Mine,
         Swoop,
+        UnSwoop,
         Douse,
         Ignite,
         AltruistRevive,

@@ -1,7 +1,7 @@
 ﻿using System;
 using TownOfUs.Extensions;
 using TownOfUs.Roles.Modifiers;
-using UnityEngine;
+using TownOfUs.ImpostorRoles.CamouflageMod;
 using Hazel;
 
 namespace TownOfUs.Roles
@@ -34,7 +34,8 @@ namespace TownOfUs.Roles
                     TargetColor = Color,
                     Icon = TownOfUs.SampleSprite,
                     Position = TOUConstants.OverKillbutton,
-                    OnDurationEnd = UnMorph
+                    OnDurationEnd = UnMorph,
+                    IsHighlighted = () => SampledPlayer == null || !CamouflageUnCamouflage.IsCamoed
                 });
             }
         }

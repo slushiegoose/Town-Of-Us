@@ -5,6 +5,7 @@ using TownOfUs.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TownOfUs.ImpostorRoles.CamouflageMod;
 
 namespace TownOfUs.Roles
 {
@@ -46,7 +47,7 @@ namespace TownOfUs.Roles
                 AbilityManager.Add(MimicButton = new PlainAbilityData
                 {
                     Callback = MimicCallback,
-                    IsHighlighted = () => true,
+                    IsHighlighted = () => !CamouflageUnCamouflage.IsCamoed,
                     MaxTimer = CustomGameOptions.MimicCooldown,
                     Icon = MimicSprite,
                     Position = TOUConstants.BottomLeftA,

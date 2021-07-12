@@ -95,7 +95,7 @@ namespace TownOfUs.Roles
                 (CustomGameOptions.SnitchSeesNeutrals && Faction == Faction.Neutral))
             {
                 var snitch = GetRole<Snitch>();
-                if (snitch.TasksDone && snitch.Player.AmOwner)
+                if (snitch != null && snitch.TasksDone && snitch.Player.AmOwner)
                     return true;
             }
 
@@ -418,14 +418,16 @@ namespace TownOfUs.Roles
         [HarmonyPatch]
         public static class NamePatch
         {
-            public static void SetNameText(TextMeshPro nameText, PlayerControl player)
+            public static void SetNameText(TextMeshPro nameText, PlayerControl player, bool resetName = true)
             {
-                if (player == null) return;
+                if (player == null || (!resetName && nameText.text == "")) return;
                 if (CamouflageUnCamouflage.IsCamoed)
                 {
                     nameText.text = "";
                     return;
                 }
+                if (resetName)
+                    nameText.text = player.name;
                 var role = GetRole(player);
                 if (role == null) return;
 
@@ -518,7 +520,7 @@ namespace TownOfUs.Roles
                     -0.5f
                 );
 
-                SetNameText(player.nameText, player);
+                SetNameText(player.nameText, player, true);
                 UpdateDisplay(player);
             }
 
@@ -579,7 +581,10 @@ namespace TownOfUs.Roles
                 }
             }
 
-            public static void UpdateSingle(PlayerControl player) => OnSpawn(player);
+            public static void UpdateSingle(PlayerControl player, bool resetName = true) {
+                SetNameText(player.nameText, player, resetName);
+                UpdateDisplay(player);
+            }
             public static void UpdateSingle(PlayerVoteArea voteArea) =>
                 SetNameText(voteArea.NameText, Utils.PlayerById(voteArea.TargetPlayerId));
         }

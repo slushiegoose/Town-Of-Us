@@ -55,7 +55,7 @@ namespace TownOfUs.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             Investigated.Add(targetId);
-            NamePatch.UpdateSingle(target);
+            NamePatch.UpdateSingle(target, false);
         }
 
         public bool CheckSeeReveal(PlayerControl player)
