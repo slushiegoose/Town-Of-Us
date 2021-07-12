@@ -4,7 +4,7 @@ using TownOfUs.ImpostorRoles.JanitorMod;
 
 namespace TownOfUs.Roles
 {
-    public class Janitor : Role
+    public class Janitor : Impostor
     {
         public Janitor(PlayerControl player) : base(player)
         {
@@ -13,7 +13,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Clean bodies to prevent Crewmates from discovering them.";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Janitor;
-            Faction = Faction.Impostors;
         }
 
         public override void CreateButtons()

@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.Roles
 {
-    public class Swooper : Role
+    public class Swooper : Impostor
     {
         public KillButtonManager _swoopButton;
         public bool Enabled;
@@ -18,7 +18,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Turn invisible and sneakily kill";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Swooper;
-            Faction = Faction.Impostors;
         }
 
         public bool IsSwooped => TimeRemaining > 0f;

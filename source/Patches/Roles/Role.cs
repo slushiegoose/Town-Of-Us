@@ -25,8 +25,8 @@ namespace TownOfUs.Roles
 
         public List<KillButtonManager> ExtraButtons = new List<KillButtonManager>();
 
-        protected Func<string> ImpostorText;
-        protected Func<string> TaskText;
+        public Func<string> ImpostorText;
+        public Func<string> TaskText;
 
         protected Role(PlayerControl player)
         {
@@ -35,7 +35,7 @@ namespace TownOfUs.Roles
         }
 
         public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
-        protected internal string Name { get; set; }
+        public string Name { get; set; }
 
         private PlayerControl _player { get; set; }
 
@@ -50,33 +50,22 @@ namespace TownOfUs.Roles
             }
         }
 
-        protected float Scale { get; set; } = 1f;
-        protected internal Color Color { get; set; }
-        protected internal RoleEnum RoleType { get; set; }
+        public Color Color { get; set; }
+        public RoleEnum RoleType { get; set; }
 
-        protected internal bool Hidden { get; set; } = false;
+        public virtual bool Hidden { get; set; } = false;
 
-        //public static Faction Faction;
-        protected internal Faction Faction { get; set; } = Faction.Crewmates;
+        public Faction Faction { get; set; } = Faction.Crewmates;
 
-        protected internal Color FactionColor
+        public Color FactionColor => Faction switch
         {
-            get
-            {
-                return Faction switch
-                {
-                    Faction.Crewmates => Color.green,
-                    Faction.Impostors => Color.red,
-                    Faction.Neutral => CustomGameOptions.NeutralRed ? Color.red : Color.grey,
-                    _ => Color.white
-                };
-            }
-        }
+            Faction.Crewmates => Color.green,
+            Faction.Impostors => Color.red,
+            Faction.Neutral => CustomGameOptions.NeutralRed ? Color.red : Color.grey,
+            _ => Color.white
+        };
 
-        public static uint NetId => PlayerControl.LocalPlayer.NetId;
         public string PlayerName { get; set; }
-
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
         private bool Equals(Role other)
         {
@@ -91,35 +80,41 @@ namespace TownOfUs.Roles
             return Equals((Role)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Player, (int)RoleType);
-        }
+        public override int GetHashCode() => HashCode.Combine(Player, (int)RoleType);
 
         public virtual void CreateButtons()
         {
-
         }
 
-        internal virtual bool Criteria()
+        public virtual bool Criteria()
         {
             if (Player.AmOwner) return true;
+
+            if (
+                Faction == Faction.Impostors ||
+                (CustomGameOptions.SnitchSeesNeutrals && Faction == Faction.Neutral))
+            {
+                var snitch = GetRole<Snitch>();
+                if (snitch.TasksDone && snitch.Player.AmOwner)
+                    return true;
+            }
 
             var seer = GetRole<Seer>();
             if (seer != null && seer.Player.AmOwner && seer.Investigated.Contains(Player.PlayerId))
                 return true;
 
             var localData = PlayerControl.LocalPlayer.Data;
-            if (localData.IsDead && CustomGameOptions.DeadSeeRoles && Utils.ShowDeadBodies)
+            var isDead = localData.IsDead && Utils.ShowDeadBodies;
+            if (isDead && CustomGameOptions.DeadSeeRoles)
                 return true;
 
             if (localData.IsImpostor && Player.Data.IsImpostor)
-                return CustomGameOptions.ImpostorSeeRoles || localData.IsDead;
+                return CustomGameOptions.ImpostorSeeRoles || isDead;
 
             return false;
         }
 
-        protected virtual void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
+        public virtual void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
         }
 
@@ -128,7 +123,7 @@ namespace TownOfUs.Roles
             NobodyWins = true;
         }
 
-        internal static bool NobodyEndCriteria(ShipStatus __instance)
+        public static bool NobodyEndCriteria(ShipStatus __instance)
         {
             bool CheckNoImpsNoCrews()
             {
@@ -163,7 +158,7 @@ namespace TownOfUs.Roles
             return true;
         }
 
-        internal virtual bool CheckEndCriteria(ShipStatus __instance)
+        public virtual bool CheckEndCriteria(ShipStatus __instance)
         {
             return true;
         }
@@ -197,13 +192,13 @@ namespace TownOfUs.Roles
             {
                 var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(Player.transform, false);
-                task.Text = $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+                task.Text = Utils.ColorText(Color, $"Role: {Name}\n{TaskText()}");
                 Player.myTasks.Insert(0, task);
                 return;
             }
 
             Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text =
-                $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+                Utils.ColorText(Color, $"Role: {Name}\n{TaskText()}");
         }
 
         public static T Gen<T>(Type type, PlayerControl player, CustomRPC rpc)
@@ -325,7 +320,10 @@ namespace TownOfUs.Roles
                 if (role.RoleType == RoleEnum.Shifter && role.Player != PlayerControl.LocalPlayer) return;
                 var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
-                task.Text = $"{role.ColorString}Role: {role.Name}\n{role.TaskText()}</color>";
+                task.Text = Utils.ColorText(
+                    role.Color,
+                    $"Role: {role.Name}\n{role.TaskText()}"
+                );
                 player.myTasks.Insert(0, task);
             }
         }

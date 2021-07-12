@@ -36,7 +36,7 @@ namespace TownOfUs.Roles
             }
         }
 
-        internal override bool Criteria()
+        public override bool Criteria()
         {
             var localPlayer = PlayerControl.LocalPlayer;
             return Player.AmOwner || (

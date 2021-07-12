@@ -15,12 +15,11 @@ namespace TownOfUs.Roles
             Name = imp ? "Loving Impostor" : "Lover";
             Color = new Color(1f, 0.4f, 0.8f, 1f);
             ImpostorText = () =>
-                "You are in " + ColorString + "Love</color> with " + ColorString + OtherLover.Player.name;
+                $"You are in {Utils.ColorText(Color, "Love")} with {Utils.ColorText(Color, OtherLover.Player.name)}";
             TaskText = () => $"Stay alive with your love {OtherLover.Player.name} \n and win together";
             RoleType = imp ? RoleEnum.LoverImpostor : RoleEnum.Lover;
             Num = num;
             LoverImpostor = loverImpostor;
-            Scale = imp ? 2.3f : 1f;
             Faction = imp ? Faction.Impostors : Faction.Crewmates;
         }
 
@@ -29,7 +28,7 @@ namespace TownOfUs.Roles
         public int Num { get; set; }
         public bool LoverImpostor { get; set; }
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
+        public override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
             var loverTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             loverTeam.Add(PlayerControl.LocalPlayer);
@@ -37,7 +36,7 @@ namespace TownOfUs.Roles
             __instance.yourTeam = loverTeam;
         }
 
-        internal override bool Criteria()
+        public override bool Criteria()
         {
             return OtherLover.Player.AmOwner || base.Criteria();
         }
@@ -88,7 +87,7 @@ namespace TownOfUs.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool CheckEndCriteria(ShipStatus __instance)
+        public override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (FourPeopleLeft()) return false;
 

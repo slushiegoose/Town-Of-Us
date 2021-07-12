@@ -6,7 +6,7 @@ using TownOfUs.Extensions;
 
 namespace TownOfUs.Roles
 {
-    public class Miner : Role
+    public class Miner : Impostor
     {
         private Vector2 _VentSize;
         public readonly List<Vent> Vents = new List<Vent>();
@@ -34,7 +34,6 @@ namespace TownOfUs.Roles
             TaskText = () => ImpostorText();
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Miner;
-            Faction = Faction.Impostors;
         }
 
         public override void CreateButtons()

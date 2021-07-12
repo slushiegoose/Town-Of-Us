@@ -100,7 +100,7 @@ namespace TownOfUs.Roles
             NamePatch.UpdateDisplay(player);
         }
 
-        internal override bool CheckEndCriteria(ShipStatus __instance)
+        public override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 0)
             {
@@ -133,7 +133,7 @@ namespace TownOfUs.Roles
             Player.Data.IsImpostor = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
+        public override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
             var arsonistTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             arsonistTeam.Add(PlayerControl.LocalPlayer);

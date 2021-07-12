@@ -4,7 +4,7 @@ using TownOfUs.Extensions;
 
 namespace TownOfUs.Roles
 {
-    public class Undertaker : Role, IVisualAlteration
+    public class Undertaker : Impostor, IVisualAlteration
     {
         public BodyAbilityData DragDropButton;
         public DeadBody CurrentlyDragging { get; set; }
@@ -16,7 +16,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Drag bodies around to hide them from being reported";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Undertaker;
-            Faction = Faction.Impostors;
         }
 
         public override void CreateButtons()

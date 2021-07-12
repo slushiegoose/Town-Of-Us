@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TownOfUs.Roles
 {
-    public class Assassin : Role
+    public class Assassin : Impostor
     {
         public Dictionary<byte, (GameObject, GameObject)> Buttons = new Dictionary<byte, (GameObject, GameObject)>();
 
@@ -35,7 +35,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Guess the roles of the people and kill them mid-meeting";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Assassin;
-            Faction = Faction.Impostors;
 
             RemainingKills = CustomGameOptions.AssassinKills;
 

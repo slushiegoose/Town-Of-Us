@@ -59,7 +59,7 @@ namespace TownOfUs.Roles
                 Utils.RpcMurderPlayer(Player, Player);
         }
 
-        internal override bool Criteria()
+        public override bool Criteria()
         {
             return Player.AmOwner || CustomGameOptions.ShowSheriff || base.Criteria();
         }

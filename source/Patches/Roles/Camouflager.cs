@@ -3,7 +3,7 @@ using Hazel;
 
 namespace TownOfUs.Roles
 {
-    public class Camouflager : Role
+    public class Camouflager : Impostor
 
     {
         public bool Enabled;
@@ -15,7 +15,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Camouflage and get secret kills";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Camouflager;
-            Faction = Faction.Impostors;
         }
 
         public override void CreateButtons()

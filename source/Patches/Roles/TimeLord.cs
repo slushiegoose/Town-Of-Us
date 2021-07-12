@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TownOfUs.CrewmateRoles.TimeLordMod;
 using UnityEngine;
 
@@ -13,7 +13,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Rewind Time!";
             Color = new Color(0f, 0f, 1f, 1f);
             RoleType = RoleEnum.TimeLord;
-            Scale = 1.4f;
         }
 
         public DateTime StartRewind { get; set; }

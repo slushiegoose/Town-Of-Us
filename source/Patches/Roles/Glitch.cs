@@ -245,7 +245,7 @@ namespace TownOfUs.Roles
             return AssetBundle.LoadFromMemory(assets);
         }
 
-        internal override bool CheckEndCriteria(ShipStatus __instance)
+        public override bool CheckEndCriteria(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected) return true;
 
@@ -277,7 +277,7 @@ namespace TownOfUs.Roles
             Player.Data.IsImpostor = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
+        public override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
         {
             var glitchTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             glitchTeam.Add(PlayerControl.LocalPlayer);

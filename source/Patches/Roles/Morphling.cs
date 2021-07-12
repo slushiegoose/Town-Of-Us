@@ -6,7 +6,7 @@ using Hazel;
 
 namespace TownOfUs.Roles
 {
-    public class Morphling : Role, IVisualAlteration
+    public class Morphling : Impostor, IVisualAlteration
     {
         public PlayerControl MorphedPlayer;
         public PlayerControl SampledPlayer;
@@ -20,7 +20,6 @@ namespace TownOfUs.Roles
             TaskText = () => "Morph into crewmates to be disguised";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Morphling;
-            Faction = Faction.Impostors;
         }
 
         public override void CreateButtons()
