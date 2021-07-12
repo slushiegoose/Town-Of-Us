@@ -382,7 +382,7 @@ namespace TownOfUs.CustomOption
             Shifter =
                 new CustomHeaderOption(num++, "<color=#999999FF>Shifter</color>");
             ShifterCd =
-                new CustomNumberOption(num++, "Shifter Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+                new CustomNumberOption(num++, "Shifter Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
             WhoShifts = new CustomStringOption(num++,
                 "Who gets the Shifter role on Shift", new[] {"NoImps", "RegCrew", "Nobody"});
 
