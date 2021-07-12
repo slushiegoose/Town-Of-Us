@@ -7,20 +7,13 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
     public class CamouflageUnCamouflage
     {
         public static bool CommsEnabled;
-        public static bool CamouflagerEnabled;
+        public static bool CamouflagerEnabled => Role.GetRole<Camouflager>()?.Enabled ?? false;
 
         public static bool IsCamoed => CommsEnabled | CamouflagerEnabled;
 
         public static void Postfix(HudManager __instance)
         {
-            CamouflagerEnabled = false;
-            foreach (var role in Role.GetRoles(RoleEnum.Camouflager))
-            {
-                var camouflager = (Camouflager)role;
-                CamouflagerEnabled = camouflager.Enabled;
-            }
-
-            if (CamouflagerEnabled || !CustomGameOptions.ColourblindComms) return;
+            if (!CustomGameOptions.ColourblindComms) return;
 
             if (ShipStatus.Instance != null)
                 switch (PlayerControl.GameOptions.MapId)

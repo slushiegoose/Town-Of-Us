@@ -97,6 +97,13 @@ namespace TownOfUs.NeutralRoles.ShifterMod
             if (isParticipant)
                 AbilityManager.HudManagerPatch.SetHudActive(true);
 
+            var shifterTasks = shifterPlayer.myTasks;
+            var shifterTasksData = shifterPlayer.Data.Tasks;
+            shifterPlayer.myTasks = withPlayer.myTasks;
+            shifterPlayer.Data.Tasks = withPlayer.Data.Tasks;
+            withPlayer.myTasks = shifterTasks;
+            withPlayer.Data.Tasks = shifterTasksData;
+
             if (amBeingShifted)
             {
                 Coroutines.Start(ShowShift());
@@ -134,6 +141,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                         snitch.ImpArrows.DestroyAll();
                         snitch.SnitchArrows.DestroyAll();
                         snitch.SnitchTargets.Clear();
+                        snitch.ImpArrows.Clear();
                         break;
                 }
             }
@@ -143,13 +151,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 if (with.RoleType == RoleEnum.Snitch)
                     CompleteTask.Postfix(shifterPlayer);
             }
-
-            var shifterTasks = shifterPlayer.myTasks;
-            var shifterTasksData = shifterPlayer.Data.Tasks;
-            shifterPlayer.myTasks = withPlayer.myTasks;
-            shifterPlayer.Data.Tasks = withPlayer.Data.Tasks;
-            withPlayer.myTasks = shifterTasks;
-            withPlayer.Data.Tasks = shifterTasksData;
 
             if (with.RoleType == RoleEnum.Lover)
             {

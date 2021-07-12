@@ -32,7 +32,7 @@ namespace TownOfUs.Roles
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color.yellow,
                     Icon = TownOfUs.ReviveSprite,
-                    Position = TOUConstants.KillButtonPosition
+                    Position = AbilityPositions.KillButton
                 });
             }
         }

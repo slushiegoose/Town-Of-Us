@@ -41,7 +41,7 @@ namespace TownOfUs.Roles
                     MaxTimer = CustomGameOptions.GlitchKillCooldown,
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color,
-                    Position = TOUConstants.KillButtonPosition
+                    Position = AbilityPositions.KillButton
                 });
 
                 AbilityManager.Add(MimicButton = new PlainAbilityData
@@ -50,7 +50,7 @@ namespace TownOfUs.Roles
                     IsHighlighted = () => !CamouflageUnCamouflage.IsCamoed,
                     MaxTimer = CustomGameOptions.MimicCooldown,
                     Icon = MimicSprite,
-                    Position = TOUConstants.BottomLeftA,
+                    Position = AbilityPositions.BottomLeftA,
                     OnDurationEnd = UnMimic,
                 });
 
@@ -61,7 +61,7 @@ namespace TownOfUs.Roles
                     Range = GameOptionsData.KillDistances[CustomGameOptions.GlitchHackDistance],
                     TargetColor = Color,
                     Icon = HackSprite,
-                    Position = TOUConstants.BottomLeftB
+                    Position = AbilityPositions.BottomLeftB
                 });
             }
         }

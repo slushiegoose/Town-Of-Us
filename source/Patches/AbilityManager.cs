@@ -19,11 +19,32 @@ namespace TownOfUs
         {
             data.Timer = data.MaxTimer;
             var hudKill = HudManager.Instance.KillButton;
-            if (Buttons.Count == 0 && data.Position == TOUConstants.KillButtonPosition)
+            if (Buttons.Count == 0 && data.Position == AbilityPositions.KillButton)
                 data.KillButton = hudKill;
             else
                 data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
             Buttons.Add(data);
+        }
+
+        [HarmonyPatch(typeof(MeetingHud))]
+        public static class MeetingPatch
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch(nameof(MeetingHud.Start))]
+            public static void MeetingStart()
+            {
+                foreach (var button in Buttons)
+                {
+                    if (button.DurationLeft > 0f)
+                    {
+                        button.OnDurationEnd();
+                        var maxTimer = button.Timer = button.MaxTimer;
+                        button.DurationLeft = -1f;
+                        button.KillButton.SetCoolDown(maxTimer, maxTimer);
+                        continue;
+                    }
+                }
+            }
         }
 
         [HarmonyPatch(typeof(ExileController))]
@@ -163,7 +184,9 @@ namespace TownOfUs
 
                     if (buttonData.Icon != null)
                         button.renderer.sprite = buttonData.Icon;
-                    button.transform.localPosition = buttonData.Position;
+                    
+                    if (buttonData.Position != AbilityPositions.KillButton)
+                        button.transform.localPosition = TOUConstants.GetPosition(buttonData.Position);
 
                     var durationLeft = buttonData.DurationLeft;
                     if (durationLeft != -1f)
@@ -356,6 +379,6 @@ namespace TownOfUs
         public bool SyncWithKill = false;
 
         public Sprite Icon;
-        public Vector3 Position;
+        public AbilityPositions Position;
     }
 }

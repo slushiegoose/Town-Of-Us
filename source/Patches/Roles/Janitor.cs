@@ -26,7 +26,7 @@ namespace TownOfUs.Roles
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color.yellow,
                     Icon = TownOfUs.JanitorClean,
-                    Position = TOUConstants.OverKillbutton,
+                    Position = AbilityPositions.OverKillButton,
                     SyncWithKill = true
                 });
             }

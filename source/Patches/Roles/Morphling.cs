@@ -33,7 +33,7 @@ namespace TownOfUs.Roles
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color,
                     Icon = TownOfUs.SampleSprite,
-                    Position = TOUConstants.OverKillbutton,
+                    Position = AbilityPositions.OverKillButton,
                     OnDurationEnd = UnMorph,
                     IsHighlighted = () => SampledPlayer == null || !CamouflageUnCamouflage.IsCamoed
                 });

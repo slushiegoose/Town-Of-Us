@@ -29,7 +29,7 @@ namespace TownOfUs.Roles
                     IsHighlighted = CanUseFix,
                     MaxTimer = 10f,
                     Icon = TownOfUs.EngineerFix,
-                    Position = TOUConstants.KillButtonPosition,
+                    Position = AbilityPositions.KillButton,
                 });
             }
         }

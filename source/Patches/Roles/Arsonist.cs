@@ -34,7 +34,7 @@ namespace TownOfUs.Roles
                     TargetColor = Color,
                     TargetFilter = player => !IsDoused(player),
                     Icon = TownOfUs.DouseSprite,
-                    Position = TOUConstants.KillButtonPosition
+                    Position = AbilityPositions.KillButton
                 });
 
                 AbilityManager.Add(new PlainAbilityData
@@ -43,7 +43,7 @@ namespace TownOfUs.Roles
                     IsHighlighted = CanIgnite,
                     MaxTimer = 10f,
                     Icon = TownOfUs.IgniteSprite,
-                    Position = TOUConstants.OverKillbutton
+                    Position = AbilityPositions.OverKillButton
                 });
             }
         }

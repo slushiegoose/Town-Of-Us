@@ -25,7 +25,7 @@ namespace TownOfUs.Roles
                     MaxTimer = CustomGameOptions.SheriffKillCd,
                     Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
                     TargetColor = Color,
-                    Position = TOUConstants.KillButtonPosition
+                    Position = AbilityPositions.KillButton
                 });
             }
         }

@@ -2,21 +2,42 @@
 
 namespace TownOfUs
 {
+    public enum AbilityPositions
+    {
+        KillButton,
+        OverKillButton,
+        BottomLeftA,
+        BottomLeftB
+    }
+
     public static class TOUConstants
     {
-        public static Vector3 KillButtonPosition = new Vector3(3.2359f, -2.3f, -9);
-        public static Vector3 OverKillbutton = new Vector3(
-            KillButtonPosition.x,
-            -1f,
-            KillButtonPosition.z
-        );
-
-        public static Vector3 BottomLeftA = new Vector3(-4.5859f, -2.3f, -9f);
-        public static Vector3 BottomLeftB = new Vector3(
-            BottomLeftA.x,
-            -1f,
-            BottomLeftB.z
-        );
+        public static Vector3 GetPosition(AbilityPositions position)
+        {
+            var hudManager = HudManager.Instance;
+            var hudKill = hudManager.KillButton.transform.localPosition;
+            var hudReport = hudManager.ReportButton.transform.localPosition;
+            var hudUse = hudManager.UseButton.transform.localPosition;
+            return position switch
+            {
+                AbilityPositions.KillButton => hudKill,
+                AbilityPositions.OverKillButton => new Vector3(
+                    hudKill.x,
+                    hudReport.y,
+                    hudKill.z
+                ),
+                AbilityPositions.BottomLeftA => new Vector3(
+                    -hudUse.x,
+                    hudKill.y,
+                    hudKill.z
+                ),
+                AbilityPositions.BottomLeftB => new Vector3(
+                    -hudUse.x,
+                    hudReport.y,
+                    hudKill.z
+                )
+            };
+        }
     }
 
     public enum MapTypes

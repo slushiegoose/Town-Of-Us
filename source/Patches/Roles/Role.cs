@@ -418,10 +418,13 @@ namespace TownOfUs.Roles
         [HarmonyPatch]
         public static class NamePatch
         {
-            public static void SetNameText(TextMeshPro nameText, PlayerControl player, bool resetName = true)
+            public static void SetNameText(TextMeshPro nameText, PlayerControl player, bool resetName = true, bool inMeeting = false)
             {
                 if (player == null || (!resetName && nameText.text == "")) return;
-                if (CamouflageUnCamouflage.IsCamoed)
+                var camoActive = inMeeting
+                    ? CustomGameOptions.MeetingColourblind
+                    : CamouflageUnCamouflage.IsCamoed;
+                if (camoActive)
                 {
                     nameText.text = "";
                     return;
@@ -529,7 +532,21 @@ namespace TownOfUs.Roles
             public static void OnMeetingStart(MeetingHud __instance)
             {
                 foreach (var voteArea in __instance.playerStates)
-                    SetNameText(voteArea.NameText, Utils.PlayerById(voteArea.TargetPlayerId));
+                {
+                    var player = Utils.PlayerById(voteArea.TargetPlayerId);
+                    SetNameText(
+                        voteArea.NameText,
+                        player,
+                        inMeeting: true
+                    );
+                    if (CustomGameOptions.MeetingColourblind)
+                    {
+                        var playerIcon = voteArea.PlayerIcon;
+                        PlayerControl.SetPlayerMaterialColors(Color.grey, playerIcon.Body);
+                        PlayerControl.SetSkinImage(0U, playerIcon.SkinSlot);
+                        playerIcon.HatSlot.SetHat(0U, 0);
+                    }
+                }
             }
 
             public static void UpdateAll()

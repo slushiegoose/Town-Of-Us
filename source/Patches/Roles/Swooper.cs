@@ -27,7 +27,7 @@ namespace TownOfUs.Roles
                     Callback = SwoopCallback,
                     MaxTimer = CustomGameOptions.SwoopCd,
                     Icon = TownOfUs.SwoopSprite,
-                    Position = TOUConstants.OverKillbutton,
+                    Position = AbilityPositions.OverKillButton,
                     MaxDuration = CustomGameOptions.SwoopDuration,
                     OnDurationEnd = UnSwoop
                 });

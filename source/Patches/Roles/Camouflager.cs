@@ -27,7 +27,7 @@ namespace TownOfUs.Roles
                     Callback = CamouCallback,
                     MaxTimer = CustomGameOptions.CamouflagerCd,
                     Icon = TownOfUs.Camouflage,
-                    Position = TOUConstants.OverKillbutton,
+                    Position = AbilityPositions.OverKillButton,
                     MaxDuration = CustomGameOptions.CamouflagerDuration,
                     OnDurationEnd = CamouEnd
                 });

@@ -45,7 +45,7 @@ namespace TownOfUs.Roles
                     Callback = MineCallback,
                     MaxTimer = CustomGameOptions.MineCd,
                     Icon = TownOfUs.MineSprite,
-                    Position = TOUConstants.OverKillbutton,
+                    Position = AbilityPositions.OverKillButton,
                     IsHighlighted = CanPlace
                 });
             }

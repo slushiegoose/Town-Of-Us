@@ -25,7 +25,7 @@ namespace TownOfUs.Roles
                     Callback = RewindCallback,
                     MaxTimer = CustomGameOptions.RewindCooldown,
                     Icon = TownOfUs.Rewind,
-                    Position = TOUConstants.KillButtonPosition,
+                    Position = AbilityPositions.KillButton,
                     IsHighlighted = () => true
                 });
             }
