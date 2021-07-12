@@ -111,6 +111,9 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             voteArea.Overlay.color = Color.white;
             voteArea.XMark.gameObject.SetActive(true);
             voteArea.XMark.transform.localScale = Vector3.one;
+
+            voteArea.Buttons.SetActive(false);
+            var amHost = AmongUsClient.Instance.AmHost;
             foreach (var playerVoteArea in meetingHud.playerStates)
             {
                 if (playerVoteArea.VotedFor != player.PlayerId) continue;
@@ -120,33 +123,29 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 meetingHud.ClearVote();
             }
 
-            if (AmongUsClient.Instance.AmHost)
+            if (!amHost) return;
+            foreach (var role in Role.GetRoles(RoleEnum.Mayor))
             {
-                foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                var mayor = (Mayor)role;
+                if (role.Player.PlayerId == player.PlayerId)
                 {
-                    if (role is Mayor mayor)
-                    {
-                        if (role.Player == player)
-                        {
-                            mayor.ExtraVotes.Clear();
-                        }
-                        else
-                        {
-                            var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
-
-                            if (mayor.Player == PlayerControl.LocalPlayer)
-                                mayor.VoteBank += votesRegained;
-
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                (byte) CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
-                            writer.Write(mayor.Player.PlayerId);
-                            writer.Write(votesRegained);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        }
-                    }
+                    mayor.ExtraVotes.Clear();
                 }
-                meetingHud.CheckForEndVoting();
+                else
+                {
+                    var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
+
+                    if (mayor.Player == PlayerControl.LocalPlayer)
+                        mayor.VoteBank += votesRegained;
+
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                        (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
+                    writer.Write(mayor.Player.PlayerId);
+                    writer.Write(votesRegained);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
+            meetingHud.CheckForEndVoting();
         }
     }
 }
