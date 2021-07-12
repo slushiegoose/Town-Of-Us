@@ -116,6 +116,17 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                             player?.myRend.material.SetColor("_VisorColor", Palette.VisorColor);
                         }
                         break;
+                    case RoleEnum.Spy:
+                        var countOverlay = MapBehaviour.Instance?.countOverlay;
+                        if (countOverlay != null)
+                            foreach (var area in countOverlay.CountAreas)
+                                foreach (var icon in area.myIcons)
+                                {
+                                    var sprite = icon.GetComponent<SpriteRenderer>();
+                                    if (sprite != null)
+                                        PlayerControl.SetPlayerMaterialColors(Color.yellow, sprite);
+                                }
+                        break;
                     case RoleEnum.Snitch:
                         var snitch = (Snitch)with;
                         snitch.ImpArrows.DestroyAll();
