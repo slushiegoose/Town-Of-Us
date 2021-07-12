@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -22,7 +22,6 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
             switch (tasksLeft)
             {
                 case 1:
-
                     role.RegenTask();
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Snitch))
                     {
@@ -40,7 +39,7 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
                         gameObj.layer = 5;
                         role.ImpArrows.Add(arrow);
                     }
-
+                    Role.NamePatch.UpdateAll();
                     break;
 
                 case 0:
@@ -62,7 +61,7 @@ namespace TownOfUs.CrewmateRoles.SnitchMod
                             role.SnitchTargets.Add(imp);
                         }
                     }
-
+                    Role.NamePatch.UpdateAll();
                     break;
             }
         }

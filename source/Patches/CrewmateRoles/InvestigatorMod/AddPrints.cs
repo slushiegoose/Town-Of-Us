@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -15,14 +15,13 @@ namespace TownOfUs.CrewmateRoles.InvestigatorMod
         private static float Interval => CustomGameOptions.FootprintInterval;
         private static bool Vent => CustomGameOptions.VentFootprintVisible;
 
-        private static Vector2 Position(PlayerControl player)
-        {
-            return player.GetTruePosition() + new Vector2(0, 0.366667f);
-        }
-
+        private static Vector2 Position(PlayerControl player) =>
+            player.GetTruePosition() + new Vector2(0, 0.366667f);
 
         public static void Postfix(PlayerControl __instance)
         {
+            // only update on local player
+            if (!__instance.AmOwner) return;
             if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator)) return;
             // New Footprint
             var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
@@ -32,17 +31,19 @@ namespace TownOfUs.CrewmateRoles.InvestigatorMod
                 _time -= Interval;
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (player == null || player.Data.IsDead ||
-                        player.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    if (player.Data.IsDead || player.AmOwner) continue;
                     var canPlace = !investigator.AllPrints.Any(print =>
                         Vector3.Distance(print.Position, Position(player)) < 0.5f &&
                         print.Color.a > 0.5 &&
-                        print.Player.PlayerId == player.PlayerId);
+                        print.Player.PlayerId == player.PlayerId
+                    );
 
-                    if (Vent && ShipStatus.Instance != null)
-                        if (ShipStatus.Instance.AllVents.Any(vent =>
-                            Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f))
-                            canPlace = false;
+                    if (
+                        Vent && ShipStatus.Instance != null &&
+                        ShipStatus.Instance.AllVents.Any(vent =>
+                            Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f
+                        )
+                    ) canPlace = false;
 
                     if (canPlace) new Footprint(player, investigator);
                 }

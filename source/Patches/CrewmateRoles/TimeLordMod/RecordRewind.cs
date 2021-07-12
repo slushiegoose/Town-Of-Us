@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -10,54 +10,58 @@ using Object = UnityEngine.Object;
 
 namespace TownOfUs.CrewmateRoles.TimeLordMod
 {
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class RecordRewind
     {
-        public static bool rewinding = false;
-        public static TimeLord whoIsRewinding;
-        public static List<PointInTime> points = new List<PointInTime>();
-        private static float deadTime;
-        private static bool isDead;
-        private static float recordTime => CustomGameOptions.RewindDuration;
+        public static bool Rewinding = false;
+        public static List<PointInTime> RewindPoints = new List<PointInTime>();
+        public static float TimeLeft = float.MinValue;
+        public static float RecordTime => CustomGameOptions.RewindDuration;
+
+        private static float DeadTime;
+        private static bool IsDead;
 
         public static void Record()
         {
-            if (points.Count > Mathf.Round(recordTime / Time.deltaTime)) points.RemoveAt(points.Count - 1);
+            if (RewindPoints.Count > Mathf.Round(RecordTime / Time.deltaTime)) RewindPoints.RemoveAt(RewindPoints.Count - 1);
 
-            if (PlayerControl.LocalPlayer == null) return;
+            var localPlayer = PlayerControl.LocalPlayer;
+
+            if (localPlayer == null) return;
 
             Vector3 position;
             Vector2 velocity;
-            if (!PlayerControl.LocalPlayer.moveable && points.Count > 0)
+            if (!localPlayer.moveable && RewindPoints.Count > 0)
             {
-                position = points[0].position;
+                position = RewindPoints[0].Position;
                 velocity = Vector2.zero;
             }
             else
             {
-                position = PlayerControl.LocalPlayer.transform.position;
-                velocity = PlayerControl.LocalPlayer.gameObject.GetComponent<Rigidbody2D>().velocity;
+                position = localPlayer.transform.position;
+                velocity = localPlayer.gameObject.GetComponent<Rigidbody2D>().velocity;
             }
 
 
-            points.Insert(0, new PointInTime(
-                position,
-                velocity,
-                Time.time
-            ));
+            RewindPoints.Insert(0, new PointInTime {
+                Position = position,
+                Velocity = velocity,
+                Unix = Time.time
+            });
 
-            if (PlayerControl.LocalPlayer.Data.IsDead && !isDead)
+            if (localPlayer.Data.IsDead && !IsDead)
             {
-                isDead = true;
-                deadTime = TempData.LastDeathReason == DeathReason.Exile ||
-                           PlayerControl.LocalPlayer.Is(RoleEnum.Altruist)
-                    ? 0
-                    : Time.time;
+                IsDead = true;
+                DeadTime =
+                    TempData.LastDeathReason == DeathReason.Exile ||
+                    localPlayer.Is(RoleEnum.Altruist)
+                        ? 0
+                        : Time.time;
             }
-            else if (!PlayerControl.LocalPlayer.Data.IsDead && isDead)
+            else if (!localPlayer.Data.IsDead && IsDead)
             {
-                isDead = false;
-                deadTime = 0;
+                IsDead = false;
+                DeadTime = 0;
             }
         }
 
@@ -71,37 +75,37 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
                 catch
                 {
                 }
-            //System.Console.WriteLine("Rewinding...");
-            //System.Console.Write(points.Count);
 
-            if (points.Count > 2)
+            if (RewindPoints.Count > 2)
             {
-                points.RemoveAt(0);
-                points.RemoveAt(0);
+                RewindPoints.RemoveAt(0);
+                RewindPoints.RemoveAt(0);
+                // fixed in #236
+                var localPlayer = PlayerControl.LocalPlayer;
                 //PlayerControl.LocalPlayer.Physics.ExitAllVents
-                if (!PlayerControl.LocalPlayer.inVent)
+                if (!localPlayer.inVent)
                 {
-                    if (!PlayerControl.LocalPlayer.Collider.enabled)
+                    if (!localPlayer.Collider.enabled)
                     {
-                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-                        PlayerControl.LocalPlayer.Collider.enabled = true;
-                        PlayerControl.LocalPlayer.NetTransform.enabled = true;
+                        localPlayer.MyPhysics.ResetMoveState();
+                        localPlayer.Collider.enabled = true;
+                        localPlayer.NetTransform.enabled = true;
 
 
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(localPlayer.NetId,
                             (byte) CustomRPC.FixAnimation, SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(localPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
 
 
-                    var currentPoint = points[0];
+                    var currentPoint = RewindPoints[0];
 
-                    PlayerControl.LocalPlayer.transform.position = currentPoint.position;
-                    PlayerControl.LocalPlayer.gameObject.GetComponent<Rigidbody2D>().velocity =
-                        currentPoint.velocity * 3;
+                    localPlayer.transform.position = currentPoint.Position;
+                    localPlayer.gameObject.GetComponent<Rigidbody2D>().velocity =
+                        currentPoint.Velocity * 3;
 
-                    if (isDead && currentPoint.unix < deadTime && PlayerControl.LocalPlayer.Data.IsDead &&
+                    if (IsDead && currentPoint.Unix < DeadTime && localPlayer.Data.IsDead &&
                         CustomGameOptions.RewindRevive)
                     {
                         var player = PlayerControl.LocalPlayer;
@@ -109,22 +113,21 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
                         ReviveBody(player);
                         player.myTasks.RemoveAt(0);
 
-                        deadTime = 0;
-                        isDead = false;
+                        DeadTime = 0;
+                        IsDead = false;
 
-                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.RewindRevive, SendOption.Reliable, -1);
-                        write.Write(PlayerControl.LocalPlayer.PlayerId);
+                        var write = AmongUsClient.Instance.StartRpcImmediately(localPlayer.NetId,
+                            (byte)CustomRPC.RewindRevive, SendOption.Reliable, -1);
+                        write.Write(localPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(write);
                     }
                 }
 
-                points.RemoveAt(0);
+                RewindPoints.RemoveAt(0);
             }
-
             else
             {
-                StartStop.StopRewind(whoIsRewinding);
+                StartStop.StopRewind();
             }
         }
 
@@ -140,19 +143,19 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
                 Object.Destroy(body.gameObject);
         }
 
-        public static void Postfix()
+        public static void Postfix(PlayerControl __instance)
         {
-            if (rewinding)
-                Rewind();
-            else Record();
+            if (!__instance.AmOwner) return;
 
-            foreach (var role in Role.GetRoles(RoleEnum.TimeLord))
+            if (Rewinding)
             {
-                var TimeLord = (TimeLord) role;
-                if ((DateTime.UtcNow - TimeLord.StartRewind).TotalMilliseconds >
-                    CustomGameOptions.RewindDuration * 1000f && TimeLord.FinishRewind < TimeLord.StartRewind)
-                    StartStop.StopRewind(TimeLord);
+                Rewind();
+                TimeLeft = Mathf.Clamp(TimeLeft - Time.fixedDeltaTime, 0f, RecordTime);
+                if (TimeLeft == 0f)
+                    StartStop.StopRewind();
             }
+            else
+                Record();
         }
     }
 }

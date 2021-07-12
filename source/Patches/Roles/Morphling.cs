@@ -1,20 +1,17 @@
-using System;
+﻿using System;
 using TownOfUs.Extensions;
 using TownOfUs.Roles.Modifiers;
-using UnityEngine;
+using TownOfUs.ImpostorRoles.CamouflageMod;
+using Hazel;
 
 namespace TownOfUs.Roles
 {
-    public class Morphling : Role, IVisualAlteration
-
+    public class Morphling : Impostor, IVisualAlteration
     {
-        public KillButtonManager _morphButton;
-        public PlayerControl ClosestPlayer;
-        public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
-
         public PlayerControl SampledPlayer;
-        public float TimeRemaining;
+
+        public PlayerAbilityData MorphButton;
 
         public Morphling(PlayerControl player) : base(player)
         {
@@ -23,48 +20,63 @@ namespace TownOfUs.Roles
             TaskText = () => "Morph into crewmates to be disguised";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Morphling;
-            Faction = Faction.Impostors;
         }
 
-        public KillButtonManager MorphButton
+        public override void CreateButtons()
         {
-            get => _morphButton;
-            set
+            if (Player.AmOwner)
             {
-                _morphButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AbilityManager.Add(MorphButton = new PlayerAbilityData
+                {
+                    Callback = SampleMorphCallback,
+                    MaxTimer = CustomGameOptions.MorphlingCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color,
+                    Icon = TownOfUs.SampleSprite,
+                    Position = TOUConstants.OverKillbutton,
+                    OnDurationEnd = UnMorph,
+                    IsHighlighted = () => SampledPlayer == null || !CamouflageUnCamouflage.IsCamoed
+                });
             }
         }
 
-        public bool Morphed => TimeRemaining > 0f;
+        public void UnMorph()
+        {
+            Utils.Unmorph(Player);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.ResetAnim, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
 
         public void Morph()
         {
-            TimeRemaining -= Time.deltaTime;
-            Utils.Morph(Player, MorphedPlayer);
+            Utils.Morph(Player, SampledPlayer);
         }
 
-        public void Unmorph()
-        {
-            MorphedPlayer = null;
-            Utils.Unmorph(Player);
-            LastMorphed = DateTime.UtcNow;
-        }
 
-        public float MorphTimer()
+        public void SampleMorphCallback(PlayerControl target)
         {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMorphed;
-            var num = CustomGameOptions.MorphlingCd * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            if (SampledPlayer == null)
+            {
+                SampledPlayer = target;
+                MorphButton.Icon = TownOfUs.MorphSprite;
+                MorphButton.Timer = 1f;
+                MorphButton.MaxDuration = CustomGameOptions.MorphlingDuration;
+            }
+            else
+            {
+                Morph();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)CustomRPC.Morph, SendOption.Reliable, -1);
+                writer.Write(SampledPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
-            if (Morphed)
+            if (MorphedPlayer != null)
             {
                 appearance = MorphedPlayer.GetDefaultAppearance();
                 var modifier = Modifier.GetModifier(MorphedPlayer);

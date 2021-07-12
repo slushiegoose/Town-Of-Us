@@ -1,4 +1,4 @@
-namespace TownOfUs
+﻿namespace TownOfUs
 {
     public enum CustomRPC
     {
@@ -57,7 +57,6 @@ namespace TownOfUs
         PhantomLose,
 
         JanitorClean,
-        FixLights,
         EngineerFix,
         SetExtraVotes,
         SetSwaps,
@@ -69,8 +68,10 @@ namespace TownOfUs
         RewindRevive,
         Morph,
         Camouflage,
+        UnCamouflage,
         Mine,
         Swoop,
+        UnSwoop,
         Douse,
         Ignite,
         AltruistRevive,
@@ -82,11 +83,8 @@ namespace TownOfUs
         SetGlitch,
         BypassKill,
         SetMimic,
-        RpcResetAnim,
+        ResetAnim,
         SetHacked,
-
-        ExecutionerToJester,
-
 
         Start,
         SyncCustomSettings,

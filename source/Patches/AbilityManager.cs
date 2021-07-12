@@ -1,0 +1,361 @@
+﻿using UnityEngine;
+using System;
+using System.Collections.Generic;
+using HarmonyLib;
+using System.Linq;
+
+namespace TownOfUs
+{
+    public static class AbilityManager
+    {
+        public static List<AbilityData> Buttons = new List<AbilityData>();
+
+        private static void ChangeButtonsState(bool active) => HudManager.Instance.SetHudActive(active);
+
+        public static void EnableButtons() => ChangeButtonsState(true);
+        public static void DisableButtons() => ChangeButtonsState(false);
+
+        public static void Add(AbilityData data)
+        {
+            data.Timer = data.MaxTimer;
+            var hudKill = HudManager.Instance.KillButton;
+            if (Buttons.Count == 0 && data.Position == TOUConstants.KillButtonPosition)
+                data.KillButton = hudKill;
+            else
+                data.KillButton = UnityEngine.Object.Instantiate(hudKill, hudKill.transform.parent);
+            Buttons.Add(data);
+        }
+
+        [HarmonyPatch(typeof(ExileController))]
+        public static class ExileControllerPatch
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(ExileController.WrapUp))]
+            public static void PostMeeting()
+            {
+                for (var i = 0;i < Buttons.Count;i++)
+                {
+                    var button = Buttons[0];
+                    button.Timer = button.MaxTimer;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(KillButtonManager))]
+        public static class KillButtonPatch
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch(nameof(KillButtonManager.PerformKill))]
+            public static bool PerformKill(KillButtonManager __instance)
+            {
+                if (
+                    !__instance.isActiveAndEnabled ||
+                    __instance.isCoolingDown
+                ) return false;
+
+                var dataIdx = Buttons.FindIndex(x => x.KillButton == __instance);
+
+                if (dataIdx == -1) return true;
+
+                var data = Buttons[dataIdx];
+
+                var isPlainAbility = data is PlainAbilityData;
+                var isPlayerAbility = !isPlainAbility && data is PlayerAbilityData;
+                var isBodyAbility = !isPlayerAbility && data is BodyAbilityData;
+
+                void Callback(object target)
+                {
+                    if (isPlainAbility)
+                        ((PlainAbilityData)data).Callback();
+                    else if (isPlayerAbility)
+                        ((PlayerAbilityData)data).Callback((PlayerControl)target);
+                    else if (isBodyAbility)
+                        ((BodyAbilityData)data).Callback((DeadBody)target);
+                }
+
+                if (!float.IsNaN(data.MaxDuration))
+                {
+                    data.DurationLeft = data.MaxDuration;
+                    Callback(null);
+                }
+
+                if (data.IsHighlighted != null)
+                {
+                    if (data.IsHighlighted())
+                    {
+                        if (!float.IsNaN(data.MaxTimer))
+                            data.Timer = data.MaxTimer;
+                        Callback(null);
+                    }
+                    return false;
+                }
+
+                if (!isPlainAbility)
+                {
+                    object target = null;
+                    if (isPlayerAbility)
+                        target = __instance.CurrentTarget;
+                    else if (isBodyAbility)
+                        target = ((BodyAbilityData)data).Target;
+
+                    if (target != null)
+                    {
+                        if (data.SyncWithKill)
+                            PlayerControl.LocalPlayer.killTimer = PlayerControl.GameOptions.KillCooldown;
+                        else
+                            data.Timer = data.MaxTimer;
+
+                        Callback(target);
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerControl))]
+        public static class PlayerControlPatch
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(PlayerControl.Die))]
+            public static void OnDeath(PlayerControl __instance)
+            {
+                for (var i = 0;i < Buttons.Count;i++)
+                {
+                    var buttonData = Buttons[i];
+                    if (buttonData is PlainAbilityData) continue;
+                    var material = buttonData is PlayerAbilityData playerAbility
+                        ? playerAbility.Target?.myRend.material
+                        : ((BodyAbilityData) buttonData).Target?.bodyRenderer.material;
+                    material?.SetFloat("_Outline", 0f);
+                }
+
+                if (__instance.AmOwner)
+                    HudManagerPatch.SetHudActive(true);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(PlayerControl.Revive))]
+            public static void OnRevive(PlayerControl __instance)
+            {
+                if (__instance.AmOwner)
+                    HudManagerPatch.SetHudActive(true);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
+            public static void FixedUpdate(PlayerControl __instance)
+            {
+                if (!__instance.AmOwner || __instance.Data.IsDead) return;
+                var isImpostor = __instance.Data.IsImpostor;
+                for (var i = 0;i < Buttons.Count;i++)
+                {
+                    var buttonData = Buttons[i];
+                    var isHudKill = buttonData.KillButton == HudManager.Instance.KillButton;
+                    if (
+                        isImpostor && 
+                        isHudKill
+                    ) continue;
+
+                    var button = buttonData.KillButton;
+
+                    if (!button.isActiveAndEnabled) continue;
+
+                    if (buttonData.Icon != null)
+                        button.renderer.sprite = buttonData.Icon;
+                    button.transform.localPosition = buttonData.Position;
+
+                    var durationLeft = buttonData.DurationLeft;
+                    if (durationLeft != -1f)
+                    {
+                        var maxDuration = buttonData.MaxDuration;
+
+                        durationLeft = buttonData.DurationLeft = Mathf.Clamp(
+                            buttonData.DurationLeft - Time.fixedDeltaTime,
+                            0f,
+                            maxDuration
+                        );
+
+                        if (durationLeft > 0f)
+                            button.SetCoolDown(durationLeft, maxDuration);
+                        else if (durationLeft == 0f)
+                        {
+                            buttonData.OnDurationEnd();
+                            buttonData.Timer = buttonData.MaxTimer;
+                            buttonData.DurationLeft = -1f;
+                            button.SetCoolDown(buttonData.MaxTimer, buttonData.MaxTimer);
+                        }
+                        continue;
+                    }
+
+                    if (!__instance.CanMove)
+                    {
+                        if (Minigame.Instance != null)
+                        {
+                            if (Minigame.Instance.MyTask == null)
+                                break;
+                        }
+                        else
+                            break;
+                    }
+
+                    if (buttonData.Timer > 0f || __instance.killTimer > 0f)
+                    {
+                        if (buttonData.SyncWithKill)
+                            buttonData.Timer = __instance.killTimer;
+                        else
+                        {
+                            buttonData.Timer -= Time.fixedDeltaTime;
+                            if (isHudKill)
+                                __instance.killTimer = buttonData.Timer;
+                        }
+                        button.SetCoolDown(buttonData.Timer, buttonData.MaxTimer);
+                    }
+
+                    if (!float.IsNaN(buttonData.MaxDuration))
+                    {
+                        button.renderer.color = Palette.EnabledColor;
+                        button.renderer.material.SetFloat("_Desat", 0f);
+                        continue;
+                    }
+
+                    if (buttonData.IsHighlighted != null)
+                    {
+                        var highlighted = buttonData.IsHighlighted();
+                        button.renderer.color =
+                            highlighted ? Palette.EnabledColor : Palette.DisabledClear;
+                        button.renderer.material.SetFloat("_Desat", highlighted ? 0f : 1f);
+                        continue;
+                    }
+
+                    if (buttonData is PlainAbilityData) continue;
+
+                    var targetAbility = (TargetAbilityData)buttonData;
+                    var isPlayerAbility = buttonData is PlayerAbilityData;
+                    PlayerAbilityData playerAbility = null;
+                    BodyAbilityData bodyAbility = null;
+                    Material material = null;
+                    if (isPlayerAbility)
+                    {
+                        playerAbility = (PlayerAbilityData)buttonData;
+                        var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
+                        if (playerAbility.TargetFilter != null)
+                            targets = targets.Where(playerAbility.TargetFilter).ToList();
+
+                        Utils.SetTarget(
+                            ref playerAbility.Target,
+                            button,
+                            targetAbility.Range,
+                            targets
+                        );
+
+                        material = playerAbility.Target?.myRend.material;
+                    }
+                    else
+                    {
+                        bodyAbility = (BodyAbilityData)buttonData;
+                        var targets = UnityEngine.Object.FindObjectsOfType<DeadBody>().ToList();
+                        if (bodyAbility.TargetFilter != null)
+                            targets = targets.Where(bodyAbility.TargetFilter).ToList();
+
+                        var oldTarget = bodyAbility.Target;
+
+                        DeadBody target = null;
+
+                        Utils.SetTarget(
+                            ref target,
+                            button,
+                            targetAbility.Range,
+                            targets
+                        );
+
+                        if (oldTarget != null && oldTarget.ParentId != target?.ParentId)
+                            oldTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
+
+                        material = target?.bodyRenderer.material;
+
+                        var hasTarget = target != null;
+                        var renderer = button.renderer;
+                        renderer.color = hasTarget ? Palette.EnabledColor : Palette.DisabledClear;
+                        renderer.material.SetFloat("_Desat", hasTarget ? 0f : 1f);
+
+                        bodyAbility.Target = target;
+                    }
+
+                    if (material != null)
+                    {
+                        material.SetFloat("_Outline", button.isActive ? 1 : 0);
+                        material.SetColor("_OutlineColor", targetAbility.TargetColor);
+                    }
+                }
+
+                if (!isImpostor && Buttons.Count > 0 && Input.GetKeyInt(KeyCode.Q))
+                    Buttons[0].KillButton.PerformKill();
+
+            }
+        }
+
+        [HarmonyPatch(typeof(HudManager))]
+        public static class HudManagerPatch
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(HudManager.SetHudActive))]
+            public static void SetHudActive([HarmonyArgument(0)] bool isActive)
+            {
+                for (var i = 0;i < Buttons.Count;i++) {
+                    Buttons[i].KillButton.gameObject.SetActive(
+                        isActive && !PlayerControl.LocalPlayer.Data.IsDead
+                    );
+                }
+            }
+        }
+    }
+
+    public class BodyAbilityData : TargetAbilityData
+    {
+        public DeadBody Target;
+        public Action<DeadBody> Callback;
+        public Func<DeadBody, bool> TargetFilter;
+    }
+
+    public class PlayerAbilityData : TargetAbilityData
+    {
+        public PlayerControl Target;
+        public Action<PlayerControl> Callback;
+        public Func<PlayerControl, bool> TargetFilter;
+    }
+
+    public class PlainAbilityData : AbilityData
+    {
+        public Action Callback;
+    }
+
+    public abstract class TargetAbilityData : AbilityData
+    {
+        public Color TargetColor;
+        public float Range;
+    }
+
+    public abstract class AbilityData
+    {
+        private float _Timer { get; set; }
+
+        public KillButtonManager KillButton;
+
+        public float MaxTimer = float.NaN;
+        public float Timer
+        {
+            get =>_Timer;
+            set => _Timer = Mathf.Clamp(value, 0f, MaxTimer);
+        }
+
+        public Func<bool> IsHighlighted;
+        public float DurationLeft = -1f;
+        public float MaxDuration = float.NaN;
+        public Action OnDurationEnd;
+        public bool SyncWithKill = false;
+
+        public Sprite Icon;
+        public Vector3 Position;
+    }
+}

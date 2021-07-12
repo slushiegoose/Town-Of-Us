@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 
 namespace TownOfUs.ImpostorRoles.CamouflageMod
@@ -16,54 +16,44 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
             CamouflagerEnabled = false;
             foreach (var role in Role.GetRoles(RoleEnum.Camouflager))
             {
-                var camouflager = (Camouflager) role;
-                if (camouflager.Camouflaged)
-                {
-                    CamouflagerEnabled = true;
-                    camouflager.Camouflage();
-                }
-                else if (camouflager.Enabled)
-                {
-                    CamouflagerEnabled = false;
-                    camouflager.UnCamouflage();
-                }
+                var camouflager = (Camouflager)role;
+                CamouflagerEnabled = camouflager.Enabled;
             }
 
-            if (CustomGameOptions.ColourblindComms)
-            {
-                if (ShipStatus.Instance != null)
-                    switch (PlayerControl.GameOptions.MapId)
-                    {
-                        case 0:
-                        case 2:
-                        case 3:
-                        case 4:
-                            var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-                            if (comms1.IsActive)
-                            {
-                                CommsEnabled = true;
-                                Utils.Camouflage();
-                                return;
-                            }
+            if (CamouflagerEnabled || !CustomGameOptions.ColourblindComms) return;
 
-                            break;
-                        case 1:
-                            var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
-                            if (comms2.IsActive)
-                            {
-                                CommsEnabled = true;
-                                Utils.Camouflage();
-                                return;
-                            }
-
-                            break;
-                    }
-
-                if (CommsEnabled)
+            if (ShipStatus.Instance != null)
+                switch (PlayerControl.GameOptions.MapId)
                 {
-                    CommsEnabled = false;
-                    Utils.UnCamouflage();
+                    case 0:
+                    case 2:
+                    case 3:
+                    case 4:
+                        var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
+                        if (comms1.IsActive)
+                        {
+                            CommsEnabled = true;
+                            Utils.Camouflage();
+                            return;
+                        }
+
+                        break;
+                    case 1:
+                        var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
+                        if (comms2.IsActive)
+                        {
+                            CommsEnabled = true;
+                            Utils.Camouflage();
+                            return;
+                        }
+
+                        break;
                 }
+
+            if (CommsEnabled)
+            {
+                CommsEnabled = false;
+                Utils.UnCamouflage();
             }
         }
     }

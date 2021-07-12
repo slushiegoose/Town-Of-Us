@@ -2,7 +2,7 @@
 
 namespace TownOfUs.Roles
 {
-    public class Underdog : Role
+    public class Underdog : Impostor
     {
         public Underdog(PlayerControl player) : base(player)
         {
@@ -11,7 +11,6 @@ namespace TownOfUs.Roles
             TaskText = () => "long kill cooldown when 2 imps, short when 1 imp";
             Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Underdog;
-            Faction = Faction.Impostors;
         }
 
         public float MaxTimer() => PlayerControl.GameOptions.KillCooldown * (

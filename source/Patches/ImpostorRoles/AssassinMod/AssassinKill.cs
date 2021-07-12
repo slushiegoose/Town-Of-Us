@@ -87,7 +87,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 }
             }
             player.Die(DeathReason.Kill);
-            if (checkLover && player.isLover() && CustomGameOptions.BothLoversDie)
+            if (checkLover && player.IsLover() && CustomGameOptions.BothLoversDie)
                 MurderPlayer(Role.GetRole<Lover>(player).OtherLover.Player, false);
 
             var meetingHud = MeetingHud.Instance;
@@ -100,6 +100,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 PlayerId = player.PlayerId,
                 KillerId = player.PlayerId,
                 KillTime = System.DateTime.UtcNow,
+                DeathPosition = player.GetTruePosition()
             };
 
             Murder.KilledPlayers.Add(deadPlayer);

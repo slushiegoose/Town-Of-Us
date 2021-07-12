@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
 
@@ -16,7 +16,7 @@ namespace TownOfUs.NeutralRoles.JesterMod
                     ((Jester) role).Loses();
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.JesterLose,
+                (byte)CustomRPC.JesterLose,
                 SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TownOfUs.ImpostorRoles.AssassinMod
 {
+    /*
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
     public class UpdateMeetingHud
     {
@@ -42,5 +43,5 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 voteArea.NameText.transform.localPosition = new Vector3(0.6f, 0.03f, -0.1f);
             }
         }
-    }
+    }*/
 }

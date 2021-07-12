@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using HarmonyLib;
@@ -56,9 +56,8 @@ namespace TownOfUs.Handshake
                         var clientId = handshakeReader.ReadInt32();
                         var touVersion = handshakeReader.ReadInt32();
                         
-                        // List<int> HandshakedClients - exists to disconnect legacy clients that don't send handshake
                         PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"InnerNetClient.HandleMessage.Prefix - Adding {clientId} with TOU version {touVersion} to List<int>HandshakedClients");
-                        if (!HandshakedClients.Contains(clientId));
+                        if (!HandshakedClients.Contains(clientId))
                             HandshakedClients.Add(clientId);
 
                         if (touVersion != TOU_VERSION)

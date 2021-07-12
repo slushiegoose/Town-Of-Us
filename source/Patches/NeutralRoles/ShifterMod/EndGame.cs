@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
 
@@ -11,12 +11,9 @@ namespace TownOfUs.NeutralRoles.ShifterMod
         {
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask) return true;
 
-            foreach (var role in Role.AllRoles)
-                if (role.RoleType == RoleEnum.Shifter)
-                    ((Shifter) role).Loses();
+            Role.GetRole<Shifter>()?.Loses();
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.ShifterLose,
-                SendOption.Reliable, -1);
+                (byte)CustomRPC.ShifterLose, SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;

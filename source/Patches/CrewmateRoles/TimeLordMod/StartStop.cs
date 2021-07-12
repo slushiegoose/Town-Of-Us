@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -6,28 +6,27 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
 {
     public class StartStop
     {
-        public static Color oldColor;
+        public static Color OldColor;
 
-        public static void StartRewind(TimeLord role)
+        public static void StartRewind()
         {
-            //System.Console.WriteLine("START...");
-            RecordRewind.rewinding = true;
-            RecordRewind.whoIsRewinding = role;
+            RecordRewind.Rewinding = true;
             PlayerControl.LocalPlayer.moveable = false;
-            oldColor = HudManager.Instance.FullScreen.color;
+            OldColor = HudManager.Instance.FullScreen.color;
             HudManager.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
             HudManager.Instance.FullScreen.enabled = true;
-            role.StartRewind = DateTime.UtcNow;
+
+            RecordRewind.TimeLeft = RecordRewind.RecordTime;
         }
 
-        public static void StopRewind(TimeLord role)
+        public static void StopRewind()
         {
-            //System.Console.WriteLine("STOP...");
-            role.FinishRewind = DateTime.UtcNow;
-            RecordRewind.rewinding = false;
+            RecordRewind.Rewinding = false;
             PlayerControl.LocalPlayer.moveable = true;
             HudManager.Instance.FullScreen.enabled = false;
-            HudManager.Instance.FullScreen.color = oldColor;
+            HudManager.Instance.FullScreen.color = OldColor;
+
+            RecordRewind.TimeLeft = float.MinValue;
         }
     }
 }

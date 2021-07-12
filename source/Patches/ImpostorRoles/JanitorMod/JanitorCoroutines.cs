@@ -1,18 +1,17 @@
-using System.Collections;
+﻿using System.Collections;
 using TownOfUs.Roles;
 using UnityEngine;
+using TownOfUs.Extensions;
 
 namespace TownOfUs.ImpostorRoles.JanitorMod
 {
-    public class Coroutine
+    public class JanitorCoroutines
     {
         private static readonly int BodyColor = Shader.PropertyToID("_BodyColor");
         private static readonly int BackColor = Shader.PropertyToID("_BackColor");
 
         public static IEnumerator CleanCoroutine(DeadBody body, Janitor role)
         {
-            KillButtonTarget.SetTarget(DestroyableSingleton<HudManager>.Instance.KillButton, null, role);
-            role.Player.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
             var renderer = body.bodyRenderer;
             var backColor = renderer.material.GetColor(BackColor);
             var bodyColor = renderer.material.GetColor(BodyColor);
@@ -25,7 +24,7 @@ namespace TownOfUs.ImpostorRoles.JanitorMod
                 yield return null;
             }
 
-            Object.Destroy(body.gameObject);
+            body.gameObject?.Destroy();
         }
     }
 }

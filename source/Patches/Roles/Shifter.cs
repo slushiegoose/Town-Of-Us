@@ -1,5 +1,6 @@
-using System;
+﻿using Hazel;
 using UnityEngine;
+using TownOfUs.NeutralRoles.ShifterMod;
 
 namespace TownOfUs.Roles
 {
@@ -15,22 +16,39 @@ namespace TownOfUs.Roles
             Faction = Faction.Neutral;
         }
 
-        public PlayerControl ClosestPlayer;
-        public DateTime LastShifted { get; set; }
+        public override void CreateButtons()
+        {
+            if (Player.AmOwner)
+            {
+                AbilityManager.Add(new PlayerAbilityData
+                {
+                    Callback = ShiftCallback,
+                    MaxTimer = CustomGameOptions.ShifterCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color,
+                    Icon = TownOfUs.Shift,
+                    Position = TOUConstants.KillButtonPosition
+                });
+            }
+        }
+
+        public void ShiftCallback(PlayerControl target)
+        {
+            if (target.IsShielded())
+            {
+                Utils.RpcBreakShield(target);
+                return;
+            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.Shift, SendOption.Reliable, -1);
+            writer.Write(target.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Shift.ShiftRoles(this, GetRole(target));
+        }
 
         public void Loses()
         {
             Player.Data.IsImpostor = true;
-        }
-
-        public float ShifterShiftTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastShifted;
-            var num = CustomGameOptions.ShifterCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }
