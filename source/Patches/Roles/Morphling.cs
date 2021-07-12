@@ -35,7 +35,6 @@ namespace TownOfUs.Roles
                     Icon = TownOfUs.SampleSprite,
                     Position = AbilityPositions.OverKillButton,
                     OnDurationEnd = UnMorph,
-                    IsHighlighted = () => SampledPlayer == null || !CamouflageUnCamouflage.IsCamoed
                 });
             }
         }
@@ -47,10 +46,12 @@ namespace TownOfUs.Roles
                 (byte)CustomRPC.ResetAnim, SendOption.Reliable, -1);
             writer.Write(Player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+            MorphedPlayer = null;
         }
 
         public void Morph()
         {
+            MorphedPlayer = SampledPlayer;
             Utils.Morph(Player, SampledPlayer);
         }
 

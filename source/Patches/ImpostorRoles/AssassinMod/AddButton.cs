@@ -77,6 +77,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
             role.Guesses.Add(targetId, "None");
             role.Buttons[targetId] = (cycle, guess);
+            voteArea.NameText.text += "\nGuess";
         }
 
         private static Action Cycle(Assassin role, PlayerVoteArea voteArea)
@@ -91,7 +92,11 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 if (++guessIndex == role.PossibleGuesses.Count)
                     guessIndex = 0;
 
-                role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
+                var roleName = role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
+                var nameText = voteArea.NameText;
+                var lines = nameText.text.Split("\n");
+                lines[^1] = Utils.ColorText(role.ColorMapping[roleName], $"{roleName}??");
+                nameText.text = string.Join("\n", lines);
             }
 
             return Listener;
@@ -126,6 +131,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             return Listener;
         }
 
+        [HarmonyPriority(Priority.Last)]
         public static void Postfix(MeetingHud __instance)
         {
             foreach (var role in Role.GetRoles(RoleEnum.Assassin))
