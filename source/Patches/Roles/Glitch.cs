@@ -47,7 +47,6 @@ namespace TownOfUs.Roles
                 AbilityManager.Add(MimicButton = new PlainAbilityData
                 {
                     Callback = MimicCallback,
-                    IsHighlighted = () => !CamouflageUnCamouflage.IsCamoed,
                     MaxTimer = CustomGameOptions.MimicCooldown,
                     Icon = MimicSprite,
                     Position = AbilityPositions.BottomLeftA,
