@@ -31,7 +31,7 @@ namespace TownOfUs.Roles
                     TargetColor = Color,
                     TargetFilter = player => !Investigated.Contains(player.PlayerId),
                     Icon = TownOfUs.SeerSprite,
-                    Position = AbilityPositions.OverKillButton
+                    Position = AbilityPositions.KillButton
                 });
             }
         }
