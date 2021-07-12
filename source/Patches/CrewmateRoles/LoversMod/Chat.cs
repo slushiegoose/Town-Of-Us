@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace TownOfUs.CrewmateRoles.LoversMod
 {
@@ -17,14 +17,26 @@ namespace TownOfUs.CrewmateRoles.LoversMod
             }
         }
 
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+        [HarmonyPatch]
         public static class EnableChat
         {
-            public static void Postfix(HudManager __instance)
+            public static void Enable()
             {
-                if (PlayerControl.LocalPlayer.IsLover() & !__instance.Chat.isActiveAndEnabled)
-                    __instance.Chat.SetVisible(true);
+                if (PlayerControl.LocalPlayer.IsLover())
+                    HudManager.Instance.Chat.SetVisible(true);
             }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
+            public static void MeetingClose() => Enable();
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.SpawnPlayer))]
+            public static void SpawnPlayer() => Enable();
+
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Revive))]
+            public static void OnRevive() => Enable();
         }
     }
 }

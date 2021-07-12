@@ -5,21 +5,16 @@ using TownOfUs.Roles;
 namespace TownOfUs.CrewmateRoles.LoversMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
-    public class Die
+    public static class Die
     {
-        public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] DeathReason reason)
+        public static void Postfix(PlayerControl __instance)
         {
-            __instance.Data.IsDead = true;
+            if (!CustomGameOptions.BothLoversDie || !__instance.IsLover()) return;
 
-
-            var flag3 = __instance.IsLover() && CustomGameOptions.BothLoversDie;
-            if (!flag3) return true;
             var otherLover = Role.GetRole<Lover>(__instance).OtherLover.Player;
-            if (otherLover.Data.IsDead) return true;
+            if (otherLover.Data.IsDead) return;
 
-            if (AmongUsClient.Instance.AmHost) Utils.RpcMurderPlayer(otherLover, otherLover);
-
-            return true;
+            Utils.MurderPlayer(otherLover, otherLover);
         }
     }
 }

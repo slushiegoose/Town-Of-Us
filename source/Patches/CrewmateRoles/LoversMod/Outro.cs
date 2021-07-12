@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TMPro;
 using TownOfUs.Roles;
@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TownOfUs.CrewmateRoles.LoversMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    internal class Outro
+    public static class Outro
     {
         public static void Postfix(EndGameManager __instance)
         {
@@ -23,7 +23,6 @@ namespace TownOfUs.CrewmateRoles.LoversMod
                 pos = __instance.WinText.transform.localPosition;
                 pos.y = 1.5f;
                 text.transform.position = pos;
-//				text.scale = 0.5f;
                 return;
             }
 
@@ -57,7 +56,6 @@ namespace TownOfUs.CrewmateRoles.LoversMod
             pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;
             text.transform.position = pos;
-//			text.scale = 1f;
         }
     }
 }
