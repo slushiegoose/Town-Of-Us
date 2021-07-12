@@ -28,7 +28,6 @@ namespace TownOfUs.Roles
             if (CustomGameOptions.AssassinCrewmateGuess)
                 PossibleGuesses.Add(RoleEnum.Crewmate);
 
-            PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Count: {PossibleGuesses.Count}");
         }
 
         public bool GuessedThisMeeting { get; set; } = false;
