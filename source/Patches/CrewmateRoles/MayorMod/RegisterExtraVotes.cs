@@ -39,15 +39,15 @@ namespace TownOfUs.MayorMod
             return true;
         }
 
-        [HarmonyPrefix()]
+        [HarmonyPrefix]
         [HarmonyPatch(nameof(MeetingHud.Confirm))]
-        public static void ConfirmPrefix(MeetingHud __instance)
+        public static void ConfirmVote(MeetingHud __instance)
         {
             if (!IsMayor || __instance.state != MeetingHud.VoteStates.Voted) return;
             __instance.state = MeetingHud.VoteStates.NotVoted;
         }
 
-        [HarmonyPostfix()]
+        [HarmonyPostfix]
         [HarmonyPatch(nameof(MeetingHud.Confirm))]
         public static void AllowSkip(MeetingHud __instance)
         {
@@ -59,7 +59,7 @@ namespace TownOfUs.MayorMod
             }
         }
 
-        [HarmonyPostfix()]
+        [HarmonyPostfix]
         [HarmonyPatch(nameof(MeetingHud.Update))]
         public static void UpdateVoteText(MeetingHud __instance)
         {
@@ -176,7 +176,7 @@ namespace TownOfUs.MayorMod
             TownOfUs.LogMessage($"Tie?: {tie}");
         }
 
-        [HarmonyPrefix()]
+        [HarmonyPrefix]
         [HarmonyPatch(nameof(MeetingHud.CheckForEndVoting))]
         public static bool CheckForEndVoting(MeetingHud __instance)
         {
@@ -196,7 +196,7 @@ namespace TownOfUs.MayorMod
             return false;
         }
 
-        [HarmonyPrefix()]
+        [HarmonyPrefix]
         [HarmonyPatch(nameof(MeetingHud.PopulateResults))]
         public static bool PopulateResults(
             MeetingHud __instance,
@@ -273,7 +273,7 @@ namespace TownOfUs.MayorMod
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        [HarmonyPrefix()]
+        [HarmonyPrefix]
         [HarmonyPatch(nameof(MeetingHud.CastVote))]
         public static bool CastVote(
             MeetingHud __instance,
@@ -295,7 +295,7 @@ namespace TownOfUs.MayorMod
             return false;
         }
 
-        [HarmonyPrefix()]
+        [HarmonyPrefix]
         [HarmonyPatch(nameof(MeetingHud.Start))]
         public static void ResetVotes()
         {
