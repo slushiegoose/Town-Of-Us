@@ -1,9 +1,9 @@
+﻿﻿using System;
+using System.Collections;
+using System.Linq;
 using HarmonyLib;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
-using System;
-using System.Collections;
-using System.Linq;
 using TownOfUs.CrewmateRoles.InvestigatorMod;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CrewmateRoles.SnitchMod;
@@ -246,9 +246,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 if (resetShifter) shifterRole.RegenTask();
             }
 
-            //System.Console.WriteLine(shifter.Is(RoleEnum.Sheriff));
-            //System.Console.WriteLine(other.Is(RoleEnum.Sheriff));
-            //System.Console.WriteLine(Roles.Role.GetRole(shifter));
             if (shifter.AmOwner || other.AmOwner)
             {
                 if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)

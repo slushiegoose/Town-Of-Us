@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUs.Roles;
@@ -9,51 +9,46 @@ using Random = UnityEngine.Random;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public class SetPhantom
     {
         public static PlayerControl WillBePhantom;
         public static Vector2 StartPosition;
 
-        public static void Postfix(MeetingHud __instance)
+        public static void Postfix(ExileController __instance)
         {
-            var exiled = __instance.exiledPlayer?.Object;
-            if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer) return;
-            if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)) return;
-            if (PlayerControl.LocalPlayer != WillBePhantom) return;
+            var exiled = __instance.exiled?.Object;
+            var localPlayer = PlayerControl.LocalPlayer;
+            if (!localPlayer.Data.IsDead && exiled != localPlayer) return;
+            if (exiled == localPlayer && localPlayer.Is(RoleEnum.Jester)) return;
+            if (localPlayer != WillBePhantom) return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
+            if (!localPlayer.Is(RoleEnum.Phantom))
             {
-                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
-                var role = new Phantom(PlayerControl.LocalPlayer);
+                Role.RoleDictionary.Remove(localPlayer.PlayerId);
+                var role = new Phantom(localPlayer);
                 role.RegenTask();
                 Lights.SetLights();
 
                 RemoveTasks(PlayerControl.LocalPlayer);
-                PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                localPlayer.MyPhysics.ResetMoveState();
 
-                System.Console.WriteLine("Become Phantom - Phantom");
+                localPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
 
-                PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                var writer = AmongUsClient.Instance.StartRpcImmediately(localPlayer.NetId,
                     (byte) CustomRPC.PhantomDied, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
-            if (Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught) return;
+            if (Role.GetRole<Phantom>(localPlayer).Caught) return;
             var startingVent =
                 ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(startingVent.transform.position);
-            startingVent.Use();
+            localPlayer.NetTransform.RpcSnapTo(startingVent.transform.position);
+            localPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
         }
 
         public static void RemoveTasks(PlayerControl player)
         {
-            var totalTasks = PlayerControl.GameOptions.NumCommonTasks + PlayerControl.GameOptions.NumLongTasks +
-                             PlayerControl.GameOptions.NumShortTasks;
-
-
             foreach (var task in player.myTasks)
                 if (task.TryCast<NormalPlayerTask>() != null)
                 {

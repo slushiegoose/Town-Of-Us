@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -9,44 +9,50 @@ namespace TownOfUs
     {
         private static bool CheckUndertaker(PlayerControl player)
         {
-            var role = Role.GetRole<Undertaker>(player);
-            return player.Data.IsDead || role.CurrentlyDragging != null;
+            var role = Role.GetRole(player);
+            return
+                role.RoleType != RoleEnum.Undertaker ||
+                ((Undertaker)role).CurrentlyDragging == null;
         }
+
         public static bool Prefix(Vent __instance, out float __result,
             [HarmonyArgument(0)] GameData.PlayerInfo playerInfo,
             [HarmonyArgument(1)] out bool canUse,
             [HarmonyArgument(2)] out bool couldUse)
         {
             __result = float.MaxValue;
-
             var player = playerInfo.Object;
-            if (player.Is(RoleEnum.Morphling)
-                || player.Is(RoleEnum.Swooper)
-                || (player.Is(RoleEnum.Phantom) && !player.CanMove)
-                || (player.Is(RoleEnum.Undertaker) && CheckUndertaker(player)))
+            var center = player.Collider.bounds.center;
+            var position = __instance.transform.position;
+            if (player.inVent)
             {
-                return canUse = couldUse = false;
+                couldUse = canUse = true;
+                __result = Vector2.Distance(center, position);
+                return false;
             }
 
-
-            if (player.Is(RoleEnum.Engineer) && !player.Data.IsDead)
+            couldUse = canUse = !playerInfo.IsDead && player.CanMove;
+            if (!canUse) return false;
+            if (playerInfo.IsImpostor)
+            {
+                couldUse = canUse = !player.IsAny(new RoleEnum[] {
+                    RoleEnum.Swooper, RoleEnum.Morphling
+                }) && CheckUndertaker(player);
+            }
+            else
+            {
+                couldUse = canUse = player.Is(RoleEnum.Engineer);
+            }
+            if (canUse)
             {
                 
-                canUse = couldUse = false;
-                playerInfo.IsImpostor = true;
-                return true;
+                __result = Vector2.Distance(center, position);
+                canUse &= __result <= __instance.UsableDistance &&
+                    !PhysicsHelpers.AnythingBetween(
+                        player.Collider, center, position, Constants.ShipOnlyMask, false
+                     );
             }
-            
-            canUse = couldUse = false;
-            return true;
-        }
-
-        public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo)
-        {
-            if (playerInfo.Object.Is(RoleEnum.Engineer))
-            {
-                playerInfo.IsImpostor = false;
-            }
+            return false;
         }
     }
 }
