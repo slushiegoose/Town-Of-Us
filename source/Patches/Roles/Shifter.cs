@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -7,10 +7,8 @@ namespace TownOfUs.Roles
     {
         public Shifter(PlayerControl player) : base(player)
         {
-            Name = "Shifter";
             ImpostorText = () => "Shift around different roles";
             TaskText = () => "Steal other people's roles.\nFake Tasks:";
-            Color = new Color(0.6f, 0.6f, 0.6f, 1f);
             RoleType = RoleEnum.Shifter;
             Faction = Faction.Neutral;
         }

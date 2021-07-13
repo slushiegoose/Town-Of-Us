@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TownOfUs.Roles
 {
@@ -10,10 +10,8 @@ namespace TownOfUs.Roles
 
         public Phantom(PlayerControl player) : base(player)
         {
-            Name = "Phantom";
             ImpostorText = () => "";
             TaskText = () => "Complete all your tasks without being caught!";
-            Color = new Color(0.4f, 0.16f, 0.38f, 1f);
             RoleType = RoleEnum.Phantom;
             Faction = Faction.Neutral;
         }

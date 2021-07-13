@@ -16,12 +16,16 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             foreach (var voteArea in __instance.playerStates)
             {
                 var targetId = voteArea.TargetPlayerId;
-                assassin.Guesses.TryGetValue(targetId, out var currentGuess);
+                ;
 
                 if (
                     assassin.GuessedThisMeeting ||
-                    string.IsNullOrEmpty(currentGuess)
+                    !assassin.Guesses.TryGetValue(targetId, out var currentGuessIdx)
                 ) continue;
+
+                var currentGuess = currentGuessIdx == -1
+                    ? RoleEnum.None
+                    : assassin.PossibleGuesses[currentGuessIdx];
 
                 var playerData = Utils.PlayerById(targetId)?.Data;
                 if (playerData == null || playerData.Disconnected)
@@ -31,11 +35,11 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                     continue;
                 }
 
-                var nameText = "\n" + (currentGuess == "None"
+                var nameText = "\n" + (currentGuess == RoleEnum.None
                     ? "Guess"
                     : "<color=#" +
-                        assassin.ColorMapping[currentGuess].ToHtmlStringRGBA() +
-                    $">{currentGuess}??</color>"
+                        Role.GetColor(currentGuess).ToHtmlStringRGBA() +
+                    $">{Role.GetName(currentGuess)}??</color>"
                 );
 
                 voteArea.NameText.text += nameText;

@@ -110,6 +110,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             voteArea.Overlay.color = Color.white;
             voteArea.XMark.gameObject.SetActive(true);
             voteArea.XMark.transform.localScale = Vector3.one;
+            voteArea.Buttons.SetActive(false);
             var amHost = AmongUsClient.Instance.AmHost;
             foreach (var playerVoteArea in meetingHud.playerStates)
             {

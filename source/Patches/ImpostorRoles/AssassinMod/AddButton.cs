@@ -4,6 +4,7 @@ using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.ImpostorRoles.AssassinMod
@@ -28,6 +29,42 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             return role != null && role.Criteria();
         }
 
+        private static GameObject CreateButton(
+            PlayerVoteArea voteArea,
+            Sprite sprite,
+            float yOffset,
+            Action onClick)
+        {
+            var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
+            var parent = confirmButton.transform.parent.parent;
+
+            var gameObject = Object.Instantiate(confirmButton, voteArea.transform);
+            var renderer = gameObject.GetComponent<SpriteRenderer>();
+            renderer.sprite = sprite;
+            gameObject.transform.position = confirmButton.transform.position - new Vector3(0.7f, yOffset, 0f);
+            gameObject.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+            gameObject.layer = 5;
+            gameObject.transform.parent = parent;
+
+            var button = gameObject.GetComponent<PassiveButton>();
+
+            var clickEvent = button.OnClick = new Button.ButtonClickedEvent();
+            clickEvent.AddListener(onClick);
+            clickEvent.AddListener((UnityAction)(() =>
+            {
+                voteArea.Buttons.SetActive(false);
+            }));
+
+            var bounds = renderer.bounds;
+            bounds.size = new Vector3(0.52f, 0.3f, 0.16f);
+
+            var collider = gameObject.GetComponent<BoxCollider2D>();
+            collider.size = renderer.sprite.bounds.size;
+            collider.offset = Vector2.zero;
+            gameObject.transform.GetChild(0).gameObject.Destroy();
+
+            return gameObject;
+        }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
         {
@@ -38,44 +75,10 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 return;
             }
 
-            var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
-            var parent = confirmButton.transform.parent.parent;
+            var cycle = CreateButton(voteArea, CycleSprite, -0.15f, Cycle(role, voteArea));
+            var guess = CreateButton(voteArea, GuessSprite, 0.15f, Guess(role, voteArea));
 
-            var cycle = Object.Instantiate(confirmButton, voteArea.transform);
-            var cycleRenderer = cycle.GetComponent<SpriteRenderer>();
-            cycleRenderer.sprite = CycleSprite;
-            cycle.transform.position = confirmButton.transform.position - new Vector3(0.5f, -0.15f, 0f);
-            cycle.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-            cycle.layer = 5;
-            cycle.transform.parent = parent;
-            var cycleEvent = new Button.ButtonClickedEvent();
-            cycleEvent.AddListener(Cycle(role, voteArea));
-            cycle.GetComponent<PassiveButton>().OnClick = cycleEvent;
-            var cycleCollider = cycle.GetComponent<BoxCollider2D>();
-            cycleCollider.size = cycleRenderer.sprite.bounds.size;
-            cycleCollider.offset = Vector2.zero;
-            cycle.transform.GetChild(0).gameObject.Destroy();
-
-
-            var guess = Object.Instantiate(confirmButton, voteArea.transform);
-            var guessRenderer = guess.GetComponent<SpriteRenderer>();
-            guessRenderer.sprite = GuessSprite;
-            guess.transform.position = confirmButton.transform.position - new Vector3(0.5f, 0.15f, 0f);
-            guess.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-            guess.layer = 5;
-            guess.transform.parent = parent;
-            var guessEvent = new Button.ButtonClickedEvent();
-            guessEvent.AddListener(Guess(role, voteArea));
-            guess.GetComponent<PassiveButton>().OnClick = guessEvent;
-            var bounds = guess.GetComponent<SpriteRenderer>().bounds;
-            bounds.size = new Vector3(0.52f, 0.3f, 0.16f);
-            var guessCollider = guess.GetComponent<BoxCollider2D>();
-            guessCollider.size = guessRenderer.sprite.bounds.size;
-            guessCollider.offset = Vector2.zero;
-            guess.transform.GetChild(0).gameObject.Destroy();
-
-
-            role.Guesses.Add(targetId, "None");
+            role.Guesses.Add(targetId, -1);
             role.Buttons[targetId] = (cycle, guess);
         }
 
@@ -84,14 +87,12 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             void Listener()
             {
                 if (MeetingHud.Instance.state == MeetingHud.VoteStates.Discussion) return;
-                var currentGuess = role.Guesses[voteArea.TargetPlayerId];
-                var guessIndex = currentGuess == "None"
-                    ? -1
-                    : role.PossibleGuesses.IndexOf(currentGuess);
-                if (++guessIndex == role.PossibleGuesses.Count)
-                    guessIndex = 0;
+                
+                var currentGuessIdx = role.Guesses[voteArea.TargetPlayerId];
+                if (++currentGuessIdx == role.PossibleGuesses.Count)
+                    currentGuessIdx = 0;
 
-                role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
+                role.Guesses[voteArea.TargetPlayerId] = currentGuessIdx;
             }
 
             return Listener;
@@ -106,12 +107,13 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                     IsExempt(voteArea)
                 ) return;
                 var targetId = voteArea.TargetPlayerId;
-                var currentGuess = role.Guesses[targetId];
-                if (currentGuess == "None") return;
+                var currentGuessIdx = role.Guesses[targetId];
+                if (currentGuessIdx == -1) return;
 
+                var currentGuess = role.PossibleGuesses[currentGuessIdx];
                 var playerRole = Role.GetRole(voteArea);
 
-                var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
+                var toDie = playerRole.RoleType == currentGuess ? playerRole.Player : role.Player;
 
                 AssassinKill.RpcMurderPlayer(toDie);
                 role.RemainingKills--;

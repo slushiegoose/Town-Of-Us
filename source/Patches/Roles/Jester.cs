@@ -1,4 +1,4 @@
-using Il2CppSystem.Collections.Generic;
+﻿using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -10,10 +10,8 @@ namespace TownOfUs.Roles
 
         public Jester(PlayerControl player) : base(player)
         {
-            Name = "Jester";
             ImpostorText = () => "Get voted out";
             TaskText = () => "Get voted out!\nFake Tasks:";
-            Color = new Color(1f, 0.75f, 0.8f, 1f);
             RoleType = RoleEnum.Jester;
             Faction = Faction.Neutral;
         }
