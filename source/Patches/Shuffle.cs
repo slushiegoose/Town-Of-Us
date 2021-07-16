@@ -23,6 +23,7 @@ namespace TownOfUs
 
         public static T TakeFirst<T>(this List<T> list)
         {
+            if (list.Count == 0) return default;
             var item = list[0];
             list.RemoveAt(0);
             return item;

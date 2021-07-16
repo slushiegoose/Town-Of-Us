@@ -131,8 +131,12 @@ namespace TownOfUs
             if (LoversOn)
                 Lover.Gen(crewmates, impostors);
 
-            foreach (var (type, rpc, _) in ImpostorRoles)
-                Role.Gen<Role>(type, impostors, rpc);
+            while (impostors.Count > 0)
+            {
+                var (type, rpc, _) = ImpostorRoles.TakeFirst();
+                if (type == null) break;
+                Role.Gen<Role>(type, impostors.TakeFirst(), rpc);
+            }
 
             foreach (var crewmate in crewmates)
                 Role.Gen<Role>(typeof(Crewmate), crewmate, CustomRPC.SetCrewmate);
@@ -173,17 +177,16 @@ namespace TownOfUs
             canHaveModifier.RemoveAll(player => !player.Data.IsImpostor);
             canHaveModifier.Shuffle();
 
-            foreach (var player in canHaveModifier)
+            while (canHaveModifier.Count > 0)
             {
                 var (type, rpc, _) = CrewmateModifiers.TakeFirst();
-                Role.Gen<Modifier>(type, player, rpc);
+                Role.Gen<Modifier>(type, canHaveModifier.TakeFirst(), rpc);
             }
 
             if (PhantomOn)
             {
-                var vanilla = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(RoleEnum.Crewmate)).ToList();
-                var toChooseFrom = vanilla.Any()
-                    ? vanilla
+                var toChooseFrom = crewmates.Count > 0
+                    ? crewmates
                     : PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crewmates) && !x.isLover())
                         .ToList();
                 var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
