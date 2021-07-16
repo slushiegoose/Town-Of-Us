@@ -131,8 +131,12 @@ namespace TownOfUs
             if (LoversOn)
                 Lover.Gen(crewmates, impostors);
 
-            foreach (var (type, rpc, _) in ImpostorRoles)
+            foreach (var player in impostors)
+            {
+                var (type, rpc, _) = ImpostorRoles.TakeFirst();
+                if (type == null) break;
                 Role.Gen<Role>(type, impostors, rpc);
+            }
 
             foreach (var crewmate in crewmates)
                 Role.Gen<Role>(typeof(Crewmate), crewmate, CustomRPC.SetCrewmate);
@@ -167,8 +171,11 @@ namespace TownOfUs
             var canHaveModifier = PlayerControl.AllPlayerControls.ToArray().ToList();
             canHaveModifier.Shuffle();
 
-            foreach (var (type, rpc, _) in GlobalModifiers)
+            foreach (var player in canHaveModifier) {
+                var (type, rpc, _) = GlobalModifiers.TakeFirst();
+                if (type == null) break;
                 Role.Gen<Modifier>(type, canHaveModifier, rpc);
+            }
 
             canHaveModifier.RemoveAll(player => !player.Data.IsImpostor);
             canHaveModifier.Shuffle();
@@ -176,6 +183,7 @@ namespace TownOfUs
             foreach (var player in canHaveModifier)
             {
                 var (type, rpc, _) = CrewmateModifiers.TakeFirst();
+                if (type == null) break;
                 Role.Gen<Modifier>(type, player, rpc);
             }
 
