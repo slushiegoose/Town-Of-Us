@@ -145,9 +145,7 @@ namespace TownOfUs
             foreach (var (type, rpc, _) in GlobalModifiers)
                 Role.Gen<Modifier>(type, canHaveModifier, rpc);
 
-            canHaveModifier.RemoveAll(
-                player => player.Is(Faction.Impostors) || player.Is(Faction.Neutral)
-            );
+            canHaveModifier.RemoveAll(player => !player.Is(Faction.Crewmates));
             canHaveModifier.Shuffle();
 
             while (canHaveModifier.Count > 0)
