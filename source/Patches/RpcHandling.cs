@@ -42,35 +42,6 @@ namespace TownOfUs
             return num <= probability;
         }
 
-        /*
-        private static void GenExe(List<GameData.PlayerInfo> infected, List<PlayerControl> crewmates)
-        {
-            PlayerControl pc;
-            var targets = Utils.getCrewmates(infected).Where(x =>
-            {
-                var role = Role.GetRole(x);
-                if (role == null) return true;
-                return role.Faction == Faction.Crewmates;
-            }).ToList();
-            if (targets.Count > 1)
-            {
-                var rand = Random.RandomRangeInt(0, targets.Count);
-                pc = targets[rand];
-                var role = Role.Gen(typeof(Executioner), crewmates.Where(x => x.PlayerId != pc.PlayerId).ToList(),
-                    CustomRPC.SetExecutioner);
-                if (role != null)
-                {
-                    crewmates.Remove(role.Player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.SetTarget, SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
-                    writer.Write(pc.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    ((Executioner) role).target = pc;
-                }
-            }
-        }*/
-
         private static void SortRoles(List<(Type, CustomRPC, int)> roles, int max = int.MaxValue)
         {
             roles.Shuffle();
@@ -131,8 +102,12 @@ namespace TownOfUs
             if (LoversOn)
                 Lover.Gen(crewmates, impostors);
 
-            foreach (var (type, rpc, _) in ImpostorRoles)
-                Role.Gen<Role>(type, impostors, rpc);
+            while (impostors.Count > 0)
+            {
+                var (type, rpc, _) = ImpostorRoles.TakeFirst();
+                if (type == null) break;
+                Role.Gen<Role>(type, impostors.TakeFirst(), rpc);
+            }
 
             foreach (var crewmate in crewmates)
                 Role.Gen<Role>(typeof(Crewmate), crewmate, CustomRPC.SetCrewmate);
@@ -170,20 +145,19 @@ namespace TownOfUs
             foreach (var (type, rpc, _) in GlobalModifiers)
                 Role.Gen<Modifier>(type, canHaveModifier, rpc);
 
-            canHaveModifier.RemoveAll(player => !player.Data.IsImpostor);
+            canHaveModifier.RemoveAll(player => !player.Is(Faction.Crewmates));
             canHaveModifier.Shuffle();
 
-            foreach (var player in canHaveModifier)
+            while (canHaveModifier.Count > 0)
             {
                 var (type, rpc, _) = CrewmateModifiers.TakeFirst();
-                Role.Gen<Modifier>(type, player, rpc);
+                Role.Gen<Modifier>(type, canHaveModifier.TakeFirst(), rpc);
             }
 
             if (PhantomOn)
             {
-                var vanilla = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(RoleEnum.Crewmate)).ToList();
-                var toChooseFrom = vanilla.Any()
-                    ? vanilla
+                var toChooseFrom = crewmates.Count > 0
+                    ? crewmates
                     : PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crewmates) && !x.isLover())
                         .ToList();
                 var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
