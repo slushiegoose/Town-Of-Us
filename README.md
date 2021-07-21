@@ -82,7 +82,6 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
   <ul> <li> Change Role percentages by 10% (or 5% with Shift) </li> </ul>
   <ul> <li> New Button for the Undertaker </li> </ul>
   <ul> <li> New Button for the Button Barry </li> </ul>
-  <ul> <li> Assassin can only cycle through enabled roles </li> </ul>
   <ul> <li> Phantom can't switch between vent </li> </ul>
   <ul> <li> Increased Max Cooldown for the Shifter to 60s </li> </ul>
   <ul> <li> Swapper can no longer get the Button Barry Modifier </li> </ul>
