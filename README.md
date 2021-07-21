@@ -86,8 +86,8 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
   <ul> <li> Increased Max Cooldown for the Shifter to 60s </li> </ul>
   <ul> <li> Swapper can no longer get the Button Barry Modifier </li> </ul>
   <ul> <li> Glitch can no longer get the Button Barry Modifier </li> </ul>
-  <ul> <li> Mayor vote are refunded if the player DC  </li> </ul>
-  <ul> <li> Mayor vote are refunded if the player is killed by the assassin </li> </ul>
+  <ul> <li> Mayor votes are refunded if the player DC  </li> </ul>
+  <ul> <li> Mayor votes are refunded if the player is killed by the assassin </li> </ul>
   <ul> <li> Handshake refactor </li> </ul>
   <ul> <li> Fix for the Crashing Issues </li> </ul>
   <ul> <li> Fix for the Interaction Shifter/Giant </li> </ul>
