@@ -56,6 +56,7 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 # Releases
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
+| 2021.6.30s & 2021.6.30e | v2.2.0 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.2.0/TOU_220.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.4 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.4/TOU_214.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.3 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.3/TownOfUs213_1.zip) |
 | 2021.6.15s & 2021.6.15e | v2.1.2 | [Download](https://github.com/polusgg/Town-Of-Us/releases/download/v2.1.2/TownOfUs212_1.zip) |
@@ -75,6 +76,41 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 
 <details>
   <summary> Changelog </summary>
+  <details>
+  <summary> v2.2.0 </summary>
+  <ul> <li> Compatibility for v2021.6.30 </li> </ul>
+  <ul> <li> Change Role percentages by 10% (or 5% with Shift) </li> </ul>
+  <ul> <li> New Button for the Undertaker </li> </ul>
+  <ul> <li> Assassin can only cycle through enabled roles </li> </ul>
+  <ul> <li> Phantom can't switch between vent </li> </ul>
+  <ul> <li> Increased Max Cooldown for the Shifter to 60s </li> </ul>
+  <ul> <li> Swapper can no longer get the Button Barry Modifier </li> </ul>
+  <ul> <li> Glitch can no longer get the Button Barry Modifier </li> </ul>
+  <ul> <li> Mayor votes are refunded if the player DC  </li> </ul>
+  <ul> <li> Mayor votes are refunded if the player is killed by the assassin </li> </ul>
+  <ul> <li> Handshake refactor </li> </ul>
+  <ul> <li> Fix for the Crashing Issues </li> </ul>
+  <ul> <li> Fix for the Interaction Shifter/Giant </li> </ul>
+  <ul> <li> Fix for the Interaction Shifter/Engineer </li> </ul>    
+  <ul> <li> Fix for the Interaction Glitch/Jester </li> </ul>
+  <ul> <li> Fix for the Interaction Morphling/Giant </li> </ul>
+  <ul> <li> Fix for the Altruist Body Issues </li> </ul>
+  <ul> <li> Fix for the Assassin DC Issues </li> </ul>
+  <ul> <li> Fix for the Executioner Spawn Issues </li> </ul>
+  <ul> <li> Fix for the Phantom Vent Spawn Issues </li> </ul>    
+  <ul> <li> Fix for the Phantom Walking Through Walls Issues </li> </ul>
+  <ul> <li> Fix for the Phantom Doors Issues </li> </ul>
+  <ul> <li> Fix for the Phantom Tasks Issues </li> </ul>
+  <ul> <li> Fix for the Swooper Invisible Issues </li> </ul>    
+  <ul> <li> Fix for the Time Lord Flashing Ability Issues </li> </ul>
+  <ul> <li> Fix for the Time Lord Rewind Vent Issues </li> </ul>
+  <ul> <li> Fix for the Undertaker Dragging Issues </li> </ul>    
+  <ul> <li> Fix for the Underdog Cooldown Issues </li> </ul>
+  <ul> <li> Fix for the Giant Modifier Size Issues </li> </ul>
+  <ul> <li> Fix for the State Of Dead/DC Bodies In Meeting Issues </li> </ul>   
+  <ul> <li> Fix for the Voting Visual Issues </li> </ul>      
+  <ul> <li> Minor enhancements and bug fixes </li> </ul>
+ </details>
   <details>
   <summary> v2.1.4 </summary>
   <ul> <li> New Role (Phantom, Undertaker, Underdog) </li> </ul>
