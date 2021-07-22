@@ -79,14 +79,14 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
   <details>
   <summary> v2.2.0 </summary>
   <ul> <li> Compatibility for v2021.6.30 </li> </ul>
-  <ul> <li> Change Role percentages by 10% (or 5% with Shift) </li> </ul>
-  <ul> <li> New Button for the Undertaker </li> </ul>
-  <ul> <li> New Button for the Button Barry </li> </ul>
-  <ul> <li> Phantom can't switch between vent </li> </ul>
+  <ul> <li> Role percentages now change by 10%, or 5% if you hold shift </li> </ul>
+  <ul> <li> New Drag/Drop Buttons for the Undertaker </li> </ul>
+  <ul> <li> New Button Image for the Button Barry </li> </ul>
+  <ul> <li> Phantom can't switch between vents </li> </ul>
   <ul> <li> Increased Max Cooldown for the Shifter to 60s </li> </ul>
   <ul> <li> Swapper can no longer get the Button Barry Modifier </li> </ul>
   <ul> <li> Glitch can no longer get the Button Barry Modifier </li> </ul>
-  <ul> <li> Mayor votes are refunded if the player DC  </li> </ul>
+  <ul> <li> Mayor votes are refunded if the player disconnects </li> </ul>
   <ul> <li> Mayor votes are refunded if the player is killed by the assassin </li> </ul>
   <ul> <li> Handshake refactor </li> </ul>
   <ul> <li> Fix for the Crashing Issues </li> </ul>
@@ -550,7 +550,7 @@ Swapping roles with an Impostor fails and kills the Shifter.
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Shifter | The percentage probability of the Shifter appearing | Percentage | 0% |
-| Shifter Cooldown | The cooldown on the Shifter's Shift button | Time | 25s |
+| Shifter Cooldown | The cooldown on the Shifter's Shift button | Time | 30s |
 | Who gets the Shifter role on Shift | Who will receive the Shifter role upon getting Shifted into | Non-Impostors / Regular Crewmates / Nobody | Non-Impostors |
 
 -----------------------
