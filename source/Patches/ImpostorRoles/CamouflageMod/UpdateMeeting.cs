@@ -16,7 +16,7 @@ namespace TownOfUs.ImpostorRoles.CamouflageMod
                     PlayerControl.SetPlayerMaterialColors(Color.grey, state.PlayerIcon.Body);
                     state.PlayerIcon.HatSlot.SetHat(0, 0);
                     var skinById = DestroyableSingleton<HatManager>.Instance.AllSkins.ToArray()[0];
-                    state.PlayerIcon.SkinSlot.sprite = skinById.IdleFrame;
+                    state.PlayerIcon.Skin.layer.sprite = skinById.IdleFrame;
                 }
         }
     }

@@ -21,7 +21,7 @@ namespace TownOfUs.CrewmateRoles.EngineerMod
             if (__instance.KillButton == null) return;
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
-
+            
             __instance.KillButton.renderer.sprite = Sprite;
             __instance.KillButton.SetCoolDown(0f, 10f);
             __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead &&

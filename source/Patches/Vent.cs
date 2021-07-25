@@ -12,41 +12,40 @@ namespace TownOfUs
             var role = Role.GetRole<Undertaker>(player);
             return player.Data.IsDead || role.CurrentlyDragging != null;
         }
-        public static bool Prefix(Vent __instance, out float __result,
+        public static bool Prefix(Vent __instance,
             [HarmonyArgument(0)] GameData.PlayerInfo playerInfo,
-            [HarmonyArgument(1)] out bool canUse,
-            [HarmonyArgument(2)] out bool couldUse)
+            [HarmonyArgument(1)] ref bool canUse,
+            [HarmonyArgument(2)] ref bool couldUse,
+            ref float __result)
         {
             __result = float.MaxValue;
+            canUse = couldUse = false;
 
             var player = playerInfo.Object;
+            if (player.inVent)
+            {
+                __result = Vector2.Distance(player.Collider.bounds.center, __instance.transform.position);
+                canUse = couldUse = true;
+                return false;
+            }
+                
+
             if (player.Is(RoleEnum.Morphling)
                 || player.Is(RoleEnum.Swooper)
-                || (player.Is(RoleEnum.Phantom) && !player.CanMove)
-                || (player.Is(RoleEnum.Undertaker) && CheckUndertaker(player)))
-            {
-                return canUse = couldUse = false;
-            }
+                || (player.Is(RoleEnum.Undertaker) && Role.GetRole<Undertaker>(player).CurrentlyDragging != null))
+                return false;
 
 
-            if (player.Is(RoleEnum.Engineer) && !player.Data.IsDead)
-            {
-                
-                canUse = couldUse = false;
+            if (player.Is(RoleEnum.Engineer))
                 playerInfo.IsImpostor = true;
-                return true;
-            }
             
-            canUse = couldUse = false;
             return true;
         }
 
         public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo)
         {
             if (playerInfo.Object.Is(RoleEnum.Engineer))
-            {
                 playerInfo.IsImpostor = false;
-            }
         }
     }
 }

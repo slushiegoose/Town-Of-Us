@@ -5,29 +5,11 @@ using UnityEngine;
 
 namespace TownOfUs.NeutralRoles.ArsonistMod
 {
-    [HarmonyPatch]
-    public class HudManagerUpdate
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class HudManagerUpdate
     {
         public static Sprite IgniteSprite => TownOfUs.IgniteSprite;
-
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        [HarmonyPostfix]
-        public static void UpdateMeeting(MeetingHud __instance)
-        {
-            var localPlayer = PlayerControl.LocalPlayer;
-            var _role = Role.GetRole(localPlayer);
-            if (_role?.RoleType != RoleEnum.Arsonist) return;
-            var role = (Arsonist)_role;
-            foreach (var state in __instance.playerStates)
-            {
-                var player = PlayerControl.AllPlayerControls.ToArray()
-                    .FirstOrDefault(x => x.PlayerId == state.TargetPlayerId);
-                if (player == null) continue;
-                if (role.DousedPlayers.Contains(player.PlayerId)) state.NameText.color = Color.black;
-            }
-        }
-
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+        
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1) return;

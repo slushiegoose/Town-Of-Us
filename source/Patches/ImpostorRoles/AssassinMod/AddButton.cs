@@ -1,5 +1,7 @@
 ﻿using System;
 using HarmonyLib;
+using Reactor.Extensions;
+using TMPro;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -34,22 +36,27 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             var targetId = voteArea.TargetPlayerId;
             if (IsExempt(voteArea))
             {
-                role.Buttons[targetId] = (null, null);
+                role.Buttons[targetId] = (null, null, null);
                 return;
             }
 
             var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var parent = confirmButton.transform.parent.parent;
-
+            
+            var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
+            voteArea.NameText.transform.localPosition = new Vector3(0.55f, 0.12f, -0.1f);
+            nameText.transform.localPosition = new Vector3(0.55f, -0.12f, -0.1f);
+            nameText.text = "Guess";
+            
             var cycle = Object.Instantiate(confirmButton, voteArea.transform);
             var cycleRenderer = cycle.GetComponent<SpriteRenderer>();
             cycleRenderer.sprite = CycleSprite;
-            cycle.transform.position = confirmButton.transform.position - new Vector3(0.5f, -0.15f, 0f);
+            cycle.transform.localPosition = new Vector3(-0.35f, 0.15f, -2f);
             cycle.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             cycle.layer = 5;
             cycle.transform.parent = parent;
             var cycleEvent = new Button.ButtonClickedEvent();
-            cycleEvent.AddListener(Cycle(role, voteArea));
+            cycleEvent.AddListener(Cycle(role, voteArea, nameText));
             cycle.GetComponent<PassiveButton>().OnClick = cycleEvent;
             var cycleCollider = cycle.GetComponent<BoxCollider2D>();
             cycleCollider.size = cycleRenderer.sprite.bounds.size;
@@ -60,7 +67,7 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
             var guess = Object.Instantiate(confirmButton, voteArea.transform);
             var guessRenderer = guess.GetComponent<SpriteRenderer>();
             guessRenderer.sprite = GuessSprite;
-            guess.transform.position = confirmButton.transform.position - new Vector3(0.5f, 0.15f, 0f);
+            guess.transform.localPosition = new Vector3(-0.35f, -0.15f, -2f);
             guess.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             guess.layer = 5;
             guess.transform.parent = parent;
@@ -76,10 +83,10 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
 
 
             role.Guesses.Add(targetId, "None");
-            role.Buttons[targetId] = (cycle, guess);
+            role.Buttons[targetId] = (cycle, guess, nameText);
         }
 
-        private static Action Cycle(Assassin role, PlayerVoteArea voteArea)
+        private static Action Cycle(Assassin role, PlayerVoteArea voteArea, TextMeshPro nameText)
         {
             void Listener()
             {
@@ -91,7 +98,11 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 if (++guessIndex == role.PossibleGuesses.Count)
                     guessIndex = 0;
 
-                role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
+                var newGuess = role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
+
+                nameText.text = newGuess == "None"
+                    ? "Guess"
+                    : $"<color=#{role.ColorMapping[newGuess].ToHtmlStringRGBA()}>{newGuess}</color>";
             }
 
             return Listener;

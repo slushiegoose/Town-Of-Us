@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using HarmonyLib;
 using Hazel;
+using Reactor.Extensions;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -47,9 +48,8 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                         (byte) CustomRPC.Drop, SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    var position = PlayerControl.LocalPlayer.transform.position;
+                    var position = PlayerControl.LocalPlayer.GetTruePosition();
                     writer.Write(position);
-                    writer.Write(position.z);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     var body = role.CurrentlyDragging;
@@ -58,7 +58,7 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
                     __instance.renderer.sprite = TownOfUs.DragSprite;
                     role.LastDragged = DateTime.UtcNow;
 
-                    body.transform.position = position;
+                    //body.transform.position = position;
 
 
                     return false;

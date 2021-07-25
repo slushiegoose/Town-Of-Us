@@ -5,6 +5,8 @@ namespace TownOfUs.Roles.Modifiers
 {
     public class BigBoiModifier : Modifier, IVisualAlteration
     {
+        public static float SpeedFactor = 0.7f;
+        
         public BigBoiModifier(PlayerControl player) : base(player)
         {
             Name = "Giant";
@@ -16,7 +18,7 @@ namespace TownOfUs.Roles.Modifiers
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             appearance = Player.GetDefaultAppearance();
-            appearance.SpeedFactor = 0.5f;
+            appearance.SpeedFactor = SpeedFactor;
             appearance.SizeFactor = new Vector3(1.0f, 1.0f, 1.0f);
             return true;
         }

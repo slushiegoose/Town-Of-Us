@@ -4,6 +4,7 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using InnerNet;
+using Reactor;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using TownOfUs.Roles.Modifiers;
@@ -89,30 +90,36 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                 mayor.VotedOnce = false;
             }
         }
-
-        private static void Vote(MeetingHud __instance, GameData.PlayerInfo votingPlayer, int amountOfVotes,
-            Component origin, bool isMayor = false)
+        
+        [HarmonyPrefix]
+        [HarmonyPatch(
+            nameof(MeetingHud.HandleDisconnect),
+            typeof(PlayerControl), typeof(InnerNet.DisconnectReasons)
+        )]
+        public static void Prefix(
+            MeetingHud __instance, [HarmonyArgument(0)] PlayerControl player)
         {
-            ////System.Console.WriteLine(PlayerControl.GameOptions.AnonymousVotes);
-            var renderer =
-                Object.Instantiate(__instance.PlayerVotePrefab);
-            if (PlayerControl.GameOptions.AnonymousVotes || CustomGameOptions.MayorAnonymous && isMayor
-                ) //Should be AnonymousVotes but weird
-                //System.Console.WriteLine("ANONS");
-                PlayerControl.SetPlayerMaterialColors(Palette.DisabledGrey, renderer);
-            else
-                //System.Console.WriteLine("NONANONS");
-                PlayerControl.SetPlayerMaterialColors(votingPlayer.ColorId, renderer);
-
-
-            renderer.transform.SetParent(origin.transform);
-            renderer.transform.localPosition = __instance.VoteOrigin +
-                                               new Vector3(__instance.VoteButtonOffsets.x * amountOfVotes,
-                                                   0f, 0f);
-            renderer.transform.localScale = Vector3.zero;
-            __instance.StartCoroutine(Effects.Bloop(amountOfVotes * 0.3f, renderer.transform, 1f, 0.5f));
-            origin.GetComponent<VoteSpreader>().AddVote(renderer);
+            if (AmongUsClient.Instance.AmHost)
+            {
+                foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                {
+                    if (role is Mayor mayor)
+                    {
+                        var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
+                        
+                        if (mayor.Player == PlayerControl.LocalPlayer)
+                            mayor.VoteBank += votesRegained;
+                        
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                            (byte) CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
+                        writer.Write(mayor.Player.PlayerId);
+                        writer.Write(mayor.VoteBank);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+                }
+            }
         }
+
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
         public static class Confirm
@@ -158,7 +165,6 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                 if (playerVoteArea.DidVote)
                 {
                     role.ExtraVotes.Add(suspectPlayerId);
-                    role.VoteBank--;
                 }
                 else
                 {
@@ -228,7 +234,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                         }
                         else if (voteState.VotedForId == playerVoteArea.TargetPlayerId)
                         {
-                            Vote(__instance, playerInfo, allNums[i], playerVoteArea);
+                            __instance.BloopAVoteIcon(playerInfo, allNums[i], playerVoteArea.transform);
                             allNums[i]++;
                         }
                     }
@@ -238,6 +244,10 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                 {
                     var mayor = (Mayor) role;
                     var playerInfo = GameData.Instance.GetPlayerById(role.Player.PlayerId);
+                    
+                    var anonVotesOption = PlayerControl.GameOptions.AnonymousVotes;
+                    PlayerControl.GameOptions.AnonymousVotes = true;
+                    
                     foreach (var extraVote in mayor.ExtraVotes)
                     {
                         if (extraVote == PlayerVoteArea.HasNotVoted ||
@@ -248,7 +258,8 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                         }
                         if (extraVote == PlayerVoteArea.SkippedVote)
                         {
-                            Vote(__instance, playerInfo, amountOfSkippedVoters, __instance.SkippedVoting, true);
+                            
+                            __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
                             amountOfSkippedVoters++;
                         }
                         else
@@ -257,11 +268,13 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                             {
                                 var area = __instance.playerStates[i];
                                 if (extraVote != area.TargetPlayerId) continue;
-                                Vote(__instance, playerInfo, allNums[i], area, true);
+                                __instance.BloopAVoteIcon(playerInfo, allNums[i], area.transform);
                                 allNums[i]++;
                             }
                         }
                     }
+                    
+                    PlayerControl.GameOptions.AnonymousVotes = anonVotesOption;
                 }
 
                 return false;

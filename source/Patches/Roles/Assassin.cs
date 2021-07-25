@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace TownOfUs.Roles
 {
     public class Assassin : Role
     {
-        public Dictionary<byte, (GameObject, GameObject)> Buttons = new Dictionary<byte, (GameObject, GameObject)>();
+        public Dictionary<byte, (GameObject, GameObject, TMP_Text)> Buttons = new Dictionary<byte, (GameObject, GameObject, TMP_Text)>();
 
 
         public Dictionary<string, Color> ColorMapping = new Dictionary<string, Color>

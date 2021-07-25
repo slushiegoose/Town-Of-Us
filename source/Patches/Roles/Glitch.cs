@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Reactor;
 using TownOfUs.CrewmateRoles.MedicMod;
+using Reactor.Extensions;
 using TownOfUs.Extensions;
 using TownOfUs.Roles.Modifiers;
 using UnityEngine;
@@ -250,7 +252,7 @@ namespace TownOfUs.Roles
                 hackText = new GameObject("_Player").AddComponent<ImportantTextTask>();
                 hackText.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
                 hackText.Text =
-                    $"{__instance.ColorString}Hacked {hackPlayer.Data.PlayerName} ({CustomGameOptions.HackDuration}s)</color>\n";
+                    $"{__instance.ColorString}Hacked {hackPlayer.Data.PlayerName} ({CustomGameOptions.HackDuration}s)</color>";
                 hackText.Index = hackPlayer.PlayerId;
                 tickDictionary.Add(hackPlayer.PlayerId, DateTime.UtcNow);
                 PlayerControl.LocalPlayer.myTasks.Insert(0, hackText);
@@ -291,8 +293,8 @@ namespace TownOfUs.Roles
                                     HudManager.Instance.UseButton.transform.position.y, -50f);
                             lockImg[1].layer = 5;
                             HudManager.Instance.UseButton.enabled = false;
-                            HudManager.Instance.UseButton.UseButton.color = Palette.DisabledClear;
-                            HudManager.Instance.UseButton.UseButton.material.SetFloat("_Desat", 1f);
+                            HudManager.Instance.UseButton.currentButtonShown.graphic.color = Palette.DisabledClear;
+                            HudManager.Instance.UseButton.currentButtonShown.graphic.material.SetFloat("_Desat", 1f);
                         }
 
                         if (HudManager.Instance.ReportButton != null)
@@ -348,7 +350,7 @@ namespace TownOfUs.Roles
                     var totalHacktime = (DateTime.UtcNow - tickDictionary[hackPlayer.PlayerId]).TotalMilliseconds /
                                         1000;
                     hackText.Text =
-                        $"{__instance.ColorString}Hacked {hackPlayer.Data.PlayerName} ({CustomGameOptions.HackDuration - Math.Round(totalHacktime)}s)</color>\n";
+                        $"{__instance.ColorString}Hacked {hackPlayer.Data.PlayerName} ({CustomGameOptions.HackDuration - Math.Round(totalHacktime)}s)</color>";
                     if (MeetingHud.Instance || totalHacktime > CustomGameOptions.HackDuration || hackPlayer == null ||
                         hackPlayer.Data.IsDead)
                     {
@@ -361,8 +363,8 @@ namespace TownOfUs.Roles
                             HudManager.Instance.UseButton.enabled = true;
                             HudManager.Instance.ReportButton.enabled = true;
                             HudManager.Instance.KillButton.enabled = true;
-                            HudManager.Instance.UseButton.UseButton.color = Palette.EnabledColor;
-                            HudManager.Instance.UseButton.UseButton.material.SetFloat("_Desat", 0f);
+                            HudManager.Instance.UseButton.currentButtonShown.graphic.color = Palette.EnabledColor;
+                            HudManager.Instance.UseButton.currentButtonShown.graphic.material.SetFloat("_Desat", 0f);
                             var role = GetRole(PlayerControl.LocalPlayer);
                             if (role != null)
                                 if (role.ExtraButtons.Count > 0)
@@ -396,7 +398,7 @@ namespace TownOfUs.Roles
                 var mimicText = new GameObject("_Player").AddComponent<ImportantTextTask>();
                 mimicText.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
                 mimicText.Text =
-                    $"{__instance.ColorString}Mimicking {mimicPlayer.Data.PlayerName} ({CustomGameOptions.MimicDuration}s)</color>\n";
+                    $"{__instance.ColorString}Mimicking {mimicPlayer.Data.PlayerName} ({CustomGameOptions.MimicDuration}s)</color>";
                 PlayerControl.LocalPlayer.myTasks.Insert(0, mimicText);
 
                 while (true)
@@ -405,7 +407,7 @@ namespace TownOfUs.Roles
                     __instance.MimicTarget = mimicPlayer;
                     var totalMimickTime = (DateTime.UtcNow - mimicActivation).TotalMilliseconds / 1000;
                     mimicText.Text =
-                        $"{__instance.ColorString}Mimicking {mimicPlayer.Data.PlayerName} ({CustomGameOptions.MimicDuration - Math.Round(totalMimickTime)}s)</color>\n";
+                        $"{__instance.ColorString}Mimicking {mimicPlayer.Data.PlayerName} ({CustomGameOptions.MimicDuration - Math.Round(totalMimickTime)}s)</color>";
                     if (totalMimickTime > CustomGameOptions.MimicDuration ||
                         PlayerControl.LocalPlayer.Data.IsDead ||
                         AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Ended)

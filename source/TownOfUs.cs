@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -7,6 +7,8 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.IL2CPP;
 using HarmonyLib;
+using Reactor;
+using Reactor.Extensions;
 using TownOfUs.CustomHats;
 using TownOfUs.CustomOption;
 using TownOfUs.Extensions;
@@ -18,9 +20,12 @@ using UnityEngine.SceneManagement;
 
 namespace TownOfUs
 {
-    [BepInPlugin("com.slushiegoose.townofus", "Town Of Us", "2.1.4")]
+    [BepInPlugin(Id, "Town Of Us", "2.2.0")]
+    [BepInDependency(ReactorPlugin.Id)]
     public class TownOfUs : BasePlugin
     {
+        public const string Id = "com.slushiegoose.townofus";
+        
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
         public static Sprite SwapperSwitch;
@@ -62,13 +67,9 @@ namespace TownOfUs
         public ConfigEntry<ushort> Port { get; set; }
         //public static Sprite BirthdayVoteSprite;
 
-        public static void LogMessage(object message) =>
-            PluginSingleton<TownOfUs>.Instance.Log.LogMessage(message);
 
         public override void Load()
         {
-            PluginSingleton<TownOfUs>.Instance = this;
-
             System.Console.WriteLine("000.000.000.000/000000000000000000");
 
             _harmony = new Harmony("com.slushiegoose.townofus");
@@ -77,6 +78,7 @@ namespace TownOfUs
 
             JanitorClean = CreateSprite("TownOfUs.Resources.Janitor.png");
             EngineerFix = CreateSprite("TownOfUs.Resources.Engineer.png");
+            //EngineerArrow = CreateSprite("TownOfUs.Resources.EngineerArrow.png");
             SwapperSwitch = CreateSprite("TownOfUs.Resources.SwapperSwitch.png");
             SwapperSwitchDisabled = CreateSprite("TownOfUs.Resources.SwapperSwitchDisabled.png");
             Shift = CreateSprite("TownOfUs.Resources.Shift.png");
@@ -103,15 +105,10 @@ namespace TownOfUs
             CycleSprite = CreateSprite("TownOfUs.Resources.Cycle.png");
             GuessSprite = CreateSprite("TownOfUs.Resources.Guess.png");
 
-
             PalettePatch.Load();
             ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
 
             // RegisterInIl2CppAttribute.Register();
-            ClassInjector.RegisterTypeInIl2Cpp<Coroutines.Component>();
-
-            var gameObject = new GameObject(nameof(TownOfUs)).DontDestroy();
-            gameObject.AddComponent<Coroutines.Component>();
 
             Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
             Port = Config.Bind("Custom", "Port", (ushort) 22023);
@@ -141,6 +138,7 @@ namespace TownOfUs
             }));
 
             _harmony.PatchAll();
+            DirtyPatches.Initialize(_harmony);
         }
 
         public static Sprite CreateSprite(string name, bool hat = false)

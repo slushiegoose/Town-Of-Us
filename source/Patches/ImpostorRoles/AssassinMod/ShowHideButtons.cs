@@ -9,11 +9,12 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
     {
         public static void HideButtons(Assassin role)
         {
-            foreach (var (_, (cycle, guess)) in role.Buttons)
+            foreach (var (_, (cycle, guess, guessText)) in role.Buttons)
             {
                 if (cycle == null) continue;
                 cycle.SetActive(false);
                 guess.SetActive(false);
+                guessText.gameObject.SetActive(false);
 
                 cycle.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
                 guess.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
@@ -37,14 +38,15 @@ namespace TownOfUs.ImpostorRoles.AssassinMod
                 return;
             }
 
-            var (cycle, guess) = role.Buttons[targetId];
+            var (cycle, guess, guessText) = role.Buttons[targetId];
             if (cycle == null) return;
             cycle.SetActive(false);
             guess.SetActive(false);
+            guessText.gameObject.SetActive(false);
 
             cycle.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
             guess.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
-            role.Buttons[targetId] = (null, null);
+            role.Buttons[targetId] = (null, null, null);
             role.Guesses.Remove(targetId);
         }
 

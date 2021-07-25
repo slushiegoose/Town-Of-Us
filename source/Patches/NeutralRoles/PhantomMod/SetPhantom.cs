@@ -9,15 +9,21 @@ using Random = UnityEngine.Random;
 
 namespace TownOfUs.NeutralRoles.PhantomMod
 {
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
+    [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
+    public static class AirshipExileController_WrapUpAndSpawn
+    {
+        public static void Postfix(AirshipExileController __instance) => SetPhantom.ExileControllerPostfix(__instance);
+    }
+    
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public class SetPhantom
     {
         public static PlayerControl WillBePhantom;
         public static Vector2 StartPosition;
 
-        public static void Postfix(MeetingHud __instance)
+        public static void ExileControllerPostfix(ExileController __instance)
         {
-            var exiled = __instance.exiledPlayer?.Object;
+            var exiled = __instance.exiled?.Object;
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer) return;
             if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)) return;
             if (PlayerControl.LocalPlayer != WillBePhantom) return;
@@ -45,8 +51,10 @@ namespace TownOfUs.NeutralRoles.PhantomMod
             var startingVent =
                 ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(startingVent.transform.position);
-            startingVent.Use();
+            PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
         }
+
+        public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
 
         public static void RemoveTasks(PlayerControl player)
         {
@@ -59,12 +67,18 @@ namespace TownOfUs.NeutralRoles.PhantomMod
                 {
                     var normalPlayerTask = task.Cast<NormalPlayerTask>();
 
+                    var updateArrow = normalPlayerTask.taskStep > 0;
+                    
+                    normalPlayerTask.taskStep = 0;
                     normalPlayerTask.Initialize();
                     if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
                         foreach (var console in Object.FindObjectsOfType<TowelTaskConsole>())
                             console.Image.color = Color.white;
-
                     normalPlayerTask.taskStep = 0;
+
+                    if (updateArrow)
+                        normalPlayerTask.UpdateArrow();
+                    
                     var taskInfo = player.Data.FindTaskById(task.Id);
                     taskInfo.Complete = false;
                 }

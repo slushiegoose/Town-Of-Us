@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InnerNet;
+using Reactor.Extensions;
 using TownOfUs.CrewmateRoles.MedicMod;
+using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -28,7 +30,12 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             if (CustomGameOptions.AltruistTargetBody)
                 if (target != null)
-                    Object.Destroy(target.gameObject);
+                {
+                    foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                    {
+                        if (deadBody.ParentId == target.ParentId) deadBody.gameObject.Destroy();
+                    }
+                }
 
             var startTime = DateTime.UtcNow;
             while (true)
@@ -42,9 +49,10 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
                 if (MeetingHud.Instance) yield break;
             }
 
-            var altruistBody = Object.FindObjectsOfType<DeadBody>()
-                .FirstOrDefault(b => b.ParentId == role.Player.PlayerId);
-            if (altruistBody != null) Object.Destroy(altruistBody.gameObject);
+            foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+            {
+                if (deadBody.ParentId == role.Player.PlayerId) deadBody.gameObject.Destroy();
+            }
 
             var player = Utils.PlayerById(parentId);
 
@@ -68,12 +76,12 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
                     Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
                 revived.Add(lover);
 
-                var loverBody = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == lover.PlayerId);
-
-                if (loverBody != null)
+                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {
-                    lover.NetTransform.SnapTo(loverBody.TruePosition);
-                    Object.Destroy(loverBody.gameObject);
+                    if (deadBody.ParentId == lover.PlayerId)
+                    {
+                        deadBody.gameObject.Destroy();
+                    }
                 }
             }
 

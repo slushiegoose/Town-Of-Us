@@ -11,9 +11,9 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Swooper))
             {
-                var miner = (Swooper) role;
-                miner.LastSwooped = DateTime.UtcNow;
-                miner.LastSwooped = miner.LastSwooped.AddSeconds(-10f);
+                var swooper = (Swooper) role;
+                swooper.LastSwooped = DateTime.UtcNow;
+                swooper.LastSwooped = swooper.LastSwooped.AddSeconds(-10f);
             }
         }
     }

@@ -34,7 +34,7 @@ namespace TownOfUs.ImpostorRoles.SwooperMod
                 return;
             }
 
-            role.SwoopButton.SetCoolDown(role.SwoopTimer(), CustomGameOptions.MineCd);
+            role.SwoopButton.SetCoolDown(role.SwoopTimer(), CustomGameOptions.SwoopCd);
 
 
             role.SwoopButton.renderer.color = Palette.EnabledColor;

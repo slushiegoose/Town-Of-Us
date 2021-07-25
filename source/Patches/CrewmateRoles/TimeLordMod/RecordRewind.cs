@@ -78,7 +78,12 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
             {
                 points.RemoveAt(0);
                 points.RemoveAt(0);
-                //PlayerControl.LocalPlayer.Physics.ExitAllVents
+                if (PlayerControl.LocalPlayer.inVent)
+                {
+                    PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
+                    PlayerControl.LocalPlayer.MyPhysics.ExitAllVents();
+                }
+                
                 if (!PlayerControl.LocalPlayer.inVent)
                 {
                     if (!PlayerControl.LocalPlayer.Collider.enabled)

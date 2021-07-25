@@ -2,22 +2,19 @@
   <PropertyGroup>
     <RootNamespace>TownOfUs</RootNamespace>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.3</Version>
+    <Version>2.2.0</Version>
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
-    <GameProvider>Static</GameProvider>
-    <GameVersion>../AmongUs</GameVersion>
+    <GameProvider>Github</GameProvider>
+    <GameVersion>2021.6.30s</GameVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reactor.MSBuild" Version="0.1.2" />
+    <PackageReference Include="Reactor" Version="1.0.0-rc.1" />
+    <PackageReference Include="Reactor.MSBuild" Version="0.1.5" />
   </ItemGroup>
-
-  <Target Name="Copy" AfterTargets="Build">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(GameVersion)/BepInEx/plugins/" />
-  </Target>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\*" />

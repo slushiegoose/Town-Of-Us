@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Reactor.Extensions;
 using TownOfUs.CrewmateRoles.MedicMod;
 using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
@@ -366,7 +367,7 @@ namespace TownOfUs
                 };
 
                 Murder.KilledPlayers.Add(deadBody);
-
+                
                 if (!killer.AmOwner) return;
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))

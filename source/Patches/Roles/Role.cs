@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Hazel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reactor.Extensions;
 using TMPro;
 using TownOfUs.CustomHats;
-using TownOfUs.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles.Modifiers;
 using UnhollowerBaseLib;
@@ -232,11 +232,12 @@ namespace TownOfUs.Roles
         public static T Gen<T>(Type type, List<PlayerControl> players, CustomRPC rpc)
         {
             var player = players[Random.RandomRangeInt(0, players.Count)];
+            
             var role = Gen<T>(type, player, rpc);
             players.Remove(player);
             return role;
         }
-
+        
         public static Role GetRole(PlayerControl player)
         {
             if (player == null) return null;
@@ -384,7 +385,6 @@ namespace TownOfUs.Roles
             public static void Postfix(PlayerControl __instance)
             {
                 if (__instance != PlayerControl.LocalPlayer) return;
-
                 var role = GetRole(PlayerControl.LocalPlayer);
                 if (role == null) return;
                 var instance = DestroyableSingleton<HudManager>.Instance;
@@ -561,7 +561,7 @@ namespace TownOfUs.Roles
                             continue;
                         }
 
-                    if (PlayerControl.LocalPlayer.Data.IsImpostor && player.Data.IsImpostor) continue;
+                    if (player.Data != null && PlayerControl.LocalPlayer.Data.IsImpostor && player.Data.IsImpostor) continue;
                 }
             }
         }

@@ -5,12 +5,11 @@ using Object = UnityEngine.Object;
 
 namespace TownOfUs.CrewmateRoles.TimeLordMod
 {
-    [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public static class HUDClose
     {
-        public static void Postfix(Object obj)
+        public static void Postfix()
         {
-            if (ExileController.Instance == null || obj != ExileController.Instance.gameObject) return;
             foreach (var role in Role.GetRoles(RoleEnum.TimeLord))
             {
                 var TimeLord = (TimeLord) role;

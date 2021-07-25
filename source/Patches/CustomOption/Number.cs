@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace TownOfUs.CustomOption
@@ -29,6 +29,7 @@ namespace TownOfUs.CustomOption
             return (float) Value;
         }
 
+       
         protected internal void Increase()
         {
             var increment = Increment > 5 && Input.GetKeyInt(KeyCode.LeftShift)

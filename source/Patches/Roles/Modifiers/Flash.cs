@@ -5,6 +5,8 @@ namespace TownOfUs.Roles.Modifiers
 {
     public class Flash : Modifier, IVisualAlteration
     {
+        public static float SpeedFactor = 1.23f;
+
         public Flash(PlayerControl player) : base(player)
         {
             Name = "Flash";
@@ -16,7 +18,7 @@ namespace TownOfUs.Roles.Modifiers
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             appearance = Player.GetDefaultAppearance();
-            appearance.SpeedFactor = 1.5f;
+            appearance.SpeedFactor = SpeedFactor;
             return true;
         }
     }

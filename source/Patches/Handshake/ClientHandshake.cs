@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using Hazel;
 using InnerNet;
+using Reactor;
 using UnityEngine;
 
 namespace TownOfUs.Handshake
@@ -12,8 +14,8 @@ namespace TownOfUs.Handshake
     {
         private const byte TOU_ROOT_HANDSHAKE_TAG = 69;
         
-        // TODO: super sus but whatever - "2.1.4"
-        private const int TOU_VERSION = 214;
+        // TODO: super sus but whatever - "2.2.0"
+        private const int TOU_VERSION = 220;
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameJoined))]
         public static class AmongUsClient_OnGameJoined
@@ -58,8 +60,7 @@ namespace TownOfUs.Handshake
                         
                         // List<int> HandshakedClients - exists to disconnect legacy clients that don't send handshake
                         PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"InnerNetClient.HandleMessage.Prefix - Adding {clientId} with TOU version {touVersion} to List<int>HandshakedClients");
-                        if (!HandshakedClients.Contains(clientId));
-                            HandshakedClients.Add(clientId);
+                        HandshakedClients.Add(clientId);
 
                         if (touVersion != TOU_VERSION)
                         {
@@ -76,19 +77,18 @@ namespace TownOfUs.Handshake
         }
         
         // Handle legacy clients that don't send handshakes
-        private static List<int> HandshakedClients = new List<int>();
+        private static HashSet<int> HandshakedClients = new HashSet<int>();
         private static IEnumerator WaitForHandshake(InnerNetClient innerNetClient, int clientId)
         {
             PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"WaitForHandshake(innerNetClient, clientId = {clientId})");
-            while (innerNetClient.GameState == InnerNetClient.GameStates.Ended)
-                yield return null;
 
             yield return new WaitForSeconds(5f);
             PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"WaitForHandshake() - Waited 5 seconds");
             if (!HandshakedClients.Contains(clientId))
             {
                 PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"WaitForHandshake() - HandshakedClients did not contain clientId {clientId}");
-                innerNetClient.SendCustomDisconnect(clientId);
+                if (innerNetClient.allClients.ToArray().Any(x => x.Id == clientId))
+                    innerNetClient.SendCustomDisconnect(clientId);
             }
             else
             {
@@ -101,8 +101,7 @@ namespace TownOfUs.Handshake
         {
             public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData data)
             {
-                PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"AmongUsClient.OnPlayerJoined.Postfix");
-                if (AmongUsClient.Instance.AmHost)
+                if (AmongUsClient.Instance.AmHost && __instance.GameState != InnerNetClient.GameStates.Ended)
                 {
                     PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Am host and clientId {data.Id} sent JoinGameResponse");
                     Coroutines.Start(WaitForHandshake(__instance, data.Id));

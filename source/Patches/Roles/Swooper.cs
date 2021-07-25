@@ -53,7 +53,7 @@ namespace TownOfUs.Roles
             if (PlayerControl.LocalPlayer.Data.IsImpostor || PlayerControl.LocalPlayer.Data.IsDead) color.a = 0.1f;
 
 
-            Player.MyRend.color = Color.clear;
+            Player.MyRend.color = color;
 
             Player.HatRenderer.SetHat(0, 0);
             Player.nameText.text = "";

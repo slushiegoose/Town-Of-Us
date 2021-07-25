@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using HarmonyLib;
+using Reactor.Extensions;
 using TownOfUs.CustomOption;
 using TownOfUs.Extensions;
 using UnityEngine;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
+using Reactor;
 using TownOfUs.CrewmateRoles.MayorMod;
 using TownOfUs.Extensions;
 using TownOfUs.Roles;
@@ -84,9 +85,31 @@ namespace TownOfUs.CrewmateRoles.SwapperMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
         public static class CheckForEndVoting
         {
+            private static bool CheckVoted(PlayerVoteArea playerVoteArea)
+            {
+                if (playerVoteArea.AmDead || playerVoteArea.DidVote)
+                    return true;
+                    
+                var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
+                if (playerInfo == null)
+                    return true;
+
+                var playerControl = playerInfo.Object;
+                
+                if (playerControl.Is(RoleEnum.Assassin) && playerInfo.IsDead)
+                {
+                    playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
+                    playerVoteArea.SetDead(false, true);
+                    return true;
+                }
+                    
+                
+                return true;
+            }
+            
             public static bool Prefix(MeetingHud __instance)
             {
-                if (__instance.playerStates.All(ps => ps.AmDead || ps.DidVote))
+                if (__instance.playerStates.All(ps => ps.AmDead || ps.DidVote && CheckVoted(ps)))
                 {
                     var self = CalculateVotes(__instance);
 

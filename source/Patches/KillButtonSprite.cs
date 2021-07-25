@@ -3,6 +3,15 @@ using UnityEngine;
 
 namespace TownOfUs
 {
+    [HarmonyPatch(typeof(KillButtonManager), nameof(KillButtonManager.Start))]
+    public static class KillButtonAwake
+    {
+        public static void Prefix(KillButtonManager __instance)
+        {
+            __instance.transform.Find("Text_TMP").gameObject.SetActive(false);
+        }
+    }
+    
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class KillButtonSprite
     {
@@ -20,6 +29,7 @@ namespace TownOfUs
         public static void Postfix(HudManager __instance)
         {
             if (__instance.KillButton == null) return;
+
             var flag = false;
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Shifter))
             {

@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TMPro;
 using TownOfUs.Roles;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
             role.Abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
             role.Abstain.voteComplete = skip.voteComplete;
             role.Abstain.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
-            role.Abstain.GetComponent<SpriteRenderer>().sprite = Abstain;
+            role.Abstain.skipVoteText.text = "Abstain";
         }
 
 
