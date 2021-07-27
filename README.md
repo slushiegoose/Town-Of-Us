@@ -716,7 +716,7 @@ The Undertaker is an Impostor that can drag and drop bodies.
 ### **Team: Impostors**
 
 The Underdog is an Impostor with a prolonged kill cooldown.\
-Once their partener dies they will have their kill cooldown shortened.
+When they are the only remaining Impostor, they will have their kill cooldown shortened.
 
 ### Game Options
 | Name | Description | Type | Default |
