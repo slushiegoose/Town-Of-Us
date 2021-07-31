@@ -652,7 +652,6 @@ namespace TownOfUs
                         readByte1 = reader.ReadByte();
                         var dienerPlayer2 = Utils.PlayerById(readByte1);
                         var dienerRole2 = Role.GetRole<Undertaker>(dienerPlayer2);
-                        var body2 = dienerRole2.CurrentlyDragging;
                         dienerRole2.CurrentlyDragging = null;
 
                         break;
