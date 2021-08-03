@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUs.Roles;
 
 namespace TownOfUs.CrewmateRoles.MayorMod
@@ -39,9 +39,7 @@ namespace TownOfUs.CrewmateRoles.MayorMod
                     role.VotedOnce = true;
                 }
                 else
-                {
                     role.SelfVote = true;
-                }
 
                 __instance.Parent.Confirm(__instance.TargetPlayerId);
                 return false;

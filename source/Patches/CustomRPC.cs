@@ -1,4 +1,4 @@
-namespace TownOfUs
+﻿namespace TownOfUs
 {
     public enum CustomRPC
     {
@@ -43,7 +43,6 @@ namespace TownOfUs
         SetCrewmate,
         SetImpostor,
 
-
         LoveWin,
         GlitchWin,
         ArsonistWin,
@@ -87,11 +86,8 @@ namespace TownOfUs
 
         ExecutionerToJester,
 
-
         Start,
         SyncCustomSettings,
         FixAnimation,
-        
-        AddMayorVoteBank
     }
 }

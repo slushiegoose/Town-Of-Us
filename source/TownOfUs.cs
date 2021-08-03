@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -41,7 +41,6 @@ namespace TownOfUs
         public static Sprite MorphSprite;
         public static Sprite Camouflage;
         public static Sprite Arrow;
-        public static Sprite Abstain;
         public static Sprite MineSprite;
         public static Sprite SwoopSprite;
         public static Sprite DouseSprite;
@@ -49,24 +48,17 @@ namespace TownOfUs
         public static Sprite ReviveSprite;
         public static Sprite ButtonSprite;
         public static Sprite PolusSprite;
-
         public static Sprite CycleSprite;
         public static Sprite GuessSprite;
-
-
         public static Sprite DragSprite;
         public static Sprite DropSprite;
 
         private static DLoadImage _iCallLoadImage;
-
-
         private Harmony _harmony;
 
         public ConfigEntry<string> Ip { get; set; }
 
         public ConfigEntry<ushort> Port { get; set; }
-        //public static Sprite BirthdayVoteSprite;
-
 
         public override void Load()
         {
@@ -78,7 +70,6 @@ namespace TownOfUs
 
             JanitorClean = CreateSprite("TownOfUs.Resources.Janitor.png");
             EngineerFix = CreateSprite("TownOfUs.Resources.Engineer.png");
-            //EngineerArrow = CreateSprite("TownOfUs.Resources.EngineerArrow.png");
             SwapperSwitch = CreateSprite("TownOfUs.Resources.SwapperSwitch.png");
             SwapperSwitchDisabled = CreateSprite("TownOfUs.Resources.SwapperSwitchDisabled.png");
             Shift = CreateSprite("TownOfUs.Resources.Shift.png");
@@ -92,7 +83,6 @@ namespace TownOfUs
             MorphSprite = CreateSprite("TownOfUs.Resources.Morph.png");
             Camouflage = CreateSprite("TownOfUs.Resources.Camouflage.png");
             Arrow = CreateSprite("TownOfUs.Resources.Arrow.png");
-            Abstain = CreateSprite("TownOfUs.Resources.Abstain.png");
             MineSprite = CreateSprite("TownOfUs.Resources.Mine.png");
             SwoopSprite = CreateSprite("TownOfUs.Resources.Swoop.png");
             DouseSprite = CreateSprite("TownOfUs.Resources.Douse.png");
