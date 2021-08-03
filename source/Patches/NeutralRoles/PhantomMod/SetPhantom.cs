@@ -4,6 +4,9 @@ using Hazel;
 using TownOfUs.Roles;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using Reactor.Extensions;
+using Il2CppSystem.Collections.Generic;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -26,10 +29,10 @@ namespace TownOfUs.NeutralRoles.PhantomMod
             {
                 Role.RoleDictionary.Remove(localPlayer.PlayerId);
                 var role = new Phantom(localPlayer);
+                RemoveTasks(PlayerControl.LocalPlayer);
                 role.RegenTask();
                 Lights.SetLights();
 
-                RemoveTasks(PlayerControl.LocalPlayer);
                 localPlayer.MyPhysics.ResetMoveState();
 
                 localPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
@@ -47,8 +50,52 @@ namespace TownOfUs.NeutralRoles.PhantomMod
             localPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
         }
 
-        public static void RemoveTasks(PlayerControl player) =>
-            player.SetTasks(player.Data.Tasks);
+        public static void RemoveTasks(PlayerControl player)
+        {
+            for (var i = 0;i < player.myTasks.Count;i++)
+            {
+                var oldTask = player.myTasks[i].TryCast<NormalPlayerTask>();
+                if (oldTask == null) continue;
+                var taskInfo = player.Data.FindTaskById(oldTask.Id);
+                taskInfo.Complete = false;
+                var playerTask = Object.Instantiate(
+                    oldTask, player.transform
+                );
+                playerTask.Id = oldTask.Id;
+                playerTask.Owner = player;
+                playerTask.taskStep = 0;
+                var consoles = playerTask.FindConsoles();
+                if (consoles.Count > 0)
+                {
+                    foreach (var console in consoles)
+                    {
+                        console.gameObject.SetActive(true);
+                        var towelTask = console.TryCast<TowelTaskConsole>();
+                        if (towelTask != null)
+                            towelTask.Image.color = Color.white;
+                    }
+                    playerTask.StartAt = consoles[0].Room;
+                }
+                else
+                {
+                    var console = playerTask.FindSpecialConsole((Il2CppSystem.Func<Console, bool>)(
+                        _console => _console.ValidTasks.Any(
+                            (TaskSet set) => set.taskType == playerTask.TaskType && set.taskStep.Contains(0)
+                        )
+                    ));
+                    console.gameObject.SetActive(true);
+                    playerTask.StartAt = console.Room;
+                }
+
+                playerTask.Arrow?.gameObject.SetActive(false);
+
+                playerTask.Initialize();
+
+                oldTask.gameObject.Destroy();
+
+                player.myTasks[i] = playerTask;
+            }
+        }
 
         public static void AddCollider(Phantom role)
         {

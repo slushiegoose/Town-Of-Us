@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -67,7 +67,8 @@ namespace TownOfUs
         public ConfigEntry<ushort> Port { get; set; }
         //public static Sprite BirthdayVoteSprite;
 
-
+        public static void LogMessage(object message) =>
+            PluginSingleton<TownOfUs>.Instance.Log.LogMessage(message);
         public override void Load()
         {
             System.Console.WriteLine("000.000.000.000/000000000000000000");

@@ -62,9 +62,9 @@ namespace TownOfUs
             if (TutorialManager.InstanceExists)
             {
                 var role = Role.Gen<Role>(
-                    typeof(Engineer),
+                    typeof(Crewmate),
                     PlayerControl.LocalPlayer,
-                    CustomRPC.SetEngineer
+                    CustomRPC.SetCrewmate
                 );
                 return;
             }
