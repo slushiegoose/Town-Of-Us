@@ -1,5 +1,6 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
+using TownOfUs.Roles;
 
 namespace TownOfUs
 {
@@ -36,24 +37,25 @@ namespace TownOfUs
         [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
         private class Console_CanUse
         {
-            private static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
+            private static void Postfix(
+                Console __instance,
+                [HarmonyArgument(0)] GameData.PlayerInfo playerInfo,
+                [HarmonyArgument(1)] ref bool canUse,
+                [HarmonyArgument(2)] ref bool couldUse,
+                ref float __result
+            )
             {
-                var playerControl = playerInfo.Object;
+                var player = playerInfo.Object;
 
-                var flag = playerControl.Is(RoleEnum.Glitch)
-                           || playerControl.Is(RoleEnum.Jester)
-                           || playerControl.Is(RoleEnum.Shifter)
-                           || playerControl.Is(RoleEnum.Executioner)
-                           || playerControl.Is(RoleEnum.Arsonist);
+                var role = Role.GetRole(player);
 
+                var isNeutral = role.Faction == Faction.Neutral && role.RoleType != RoleEnum.Phantom;
                 // If the console is not a sabotage repair console
-                if (flag && !__instance.AllowImpostor)
+                if (!__instance.AllowImpostor && isNeutral)
                 {
                     __result = float.MaxValue;
-                    return false;
+                    canUse = couldUse = false;
                 }
-
-                return true;
             }
         }
     }

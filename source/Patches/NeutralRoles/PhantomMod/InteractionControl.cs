@@ -163,13 +163,5 @@ namespace TownOfUs.NeutralRoles.PhantomMod
 
             return false;
         }
-
-        [HarmonyPatch(typeof(Console), nameof(Console.SetOutline))]
-        [HarmonyPrefix]
-        public static bool SetOutline(Console __instance)
-        {
-            __instance.CanUse(PlayerControl.LocalPlayer.Data, out bool _, out bool couldUse);
-            return couldUse;
-        }
     }
 }
