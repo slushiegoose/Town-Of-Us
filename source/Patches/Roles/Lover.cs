@@ -76,7 +76,7 @@ namespace TownOfUs.Roles
             //System.Console.WriteLine("LOVER3");
             var b = Random.RandomRangeInt(0, 3);
 
-            if ((b == 0) && (impostors.Count < 1 || !CustomGameOption.AllowLovingImpostor)) b = 1;
+            if ((b == 0) && (impostors.Count < 1 || !CustomGameOptions.AllowLovingImpostor)) b = 1;
 
             if ((b != 0) && (crewmates.Count <= 1)) b = 0;
 

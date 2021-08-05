@@ -285,7 +285,7 @@ namespace TownOfUs.CustomOption
             Lovers =
                 new CustomHeaderOption(num++, "<color=#FF66CCFF>Lovers</color>");
             BothLoversDie = new CustomToggleOption(num++, "Both Lovers Die");
-            AllowLovingImpostor = new CustomToggleOption(num+, "Allow Loving Impostor", true);
+            AllowLovingImpostor = new CustomToggleOption(num++, "Allow Loving Impostor", true);
 
             Sheriff =
                 new CustomHeaderOption(num++, "<color=#FFFF00FF>Sheriff</color>");
