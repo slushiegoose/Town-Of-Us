@@ -71,22 +71,22 @@ namespace TownOfUs.Roles
         {
             //System.Console.WriteLine("LOVER2");
             if (crewmates.Count <= 0) return;
-            if (crewmates.Count <= 1 && impostors.Count < 1) return;
+            if (crewmates.Count <= 1 && (impostors.Count < 1 || !CustomGameOptions.AllowLovingImpostor)) return;
 
             //System.Console.WriteLine("LOVER3");
             var b = Random.RandomRangeInt(0, 3);
 
-            if ((b == 0) & (impostors.Count < 1)) b = 1;
+            if ((b == 0) && (impostors.Count < 1 || !CustomGameOption.AllowLovingImpostor)) b = 1;
 
-            if ((b != 0) & (crewmates.Count <= 1)) b = 0;
+            if ((b != 0) && (crewmates.Count <= 1)) b = 0;
 
             //System.Console.WriteLine("LOVER4");
-            var flag2 = b == 0;
+            var lovingImpostor = b == 0;
             var num = Random.RandomRangeInt(0, crewmates.Count);
             var player1 = crewmates[num];
             crewmates.Remove(player1);
             PlayerControl player2;
-            if (flag2)
+            if (lovingImpostor)
             {
                 var num2 = Random.RandomRangeInt(0, impostors.Count);
                 player2 = impostors[num2];
