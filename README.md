@@ -333,17 +333,19 @@ As long as not everyone has voted, the Mayor can use as many votes from their Vo
 ## Lovers
 ### **Team: Crewmates or Impostors**
 The Lovers are two players who are linked together.\
-These two players get picked randomly between Crewmates and Impostors.\
+One of the Lovers is always a Crewmate. The other gets picked randomly between Crewmates and Impostors.\
 They gain the primary objective to stay alive together.\
 If they are both among the last 3 players, they win.\
 In order to so, they gain access to a private chat, only visible by them in between meetings.\
-However, they can also win with their respective team, hence why the Lovers do not know the role of the other lover.
+However, they can also win with their respective team, hence why the Lovers do not know the role of the other lover.\
+The second Lover will be an impostor 25% of the time, and only if there are 2 or more Impostors in the game.
 
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Lovers | The percentage probability of the Lovers appearing | Percentage | 0% |
 | Both Lovers Die | Whether the other Lover automatically dies if the other does | Toggle | True |
+| Allow Loving Impostor | Whether one of the Lovers can be an Impostor | Toggle | True |
 
 -----------------------
 ## Sheriff

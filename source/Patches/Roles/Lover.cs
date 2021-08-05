@@ -9,24 +9,31 @@ namespace TownOfUs.Roles
 {
     public class Lover : Role
     {
-        public Lover(PlayerControl player, int num, bool loverImpostor) : base(player)
+        /// <summary>
+        /// Creates a Lover role
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="num"></param>
+        /// <param name="loverImpostor"></param>
+        /// <returns></returns>
+        public Lover(PlayerControl player, bool impostor, bool eitherLoverImpostor) : base(player)
         {
-            var imp = num == 2 && loverImpostor;
-            Name = imp ? "Loving Impostor" : "Lover";
+            Name = impostor ? "Loving Impostor" : "Lover";
             Color = new Color(1f, 0.4f, 0.8f, 1f);
             ImpostorText = () =>
                 "You are in " + ColorString + "Love</color> with " + ColorString + OtherLover.Player.name;
             TaskText = () => $"Stay alive with your love {OtherLover.Player.name} \n and win together";
-            RoleType = imp ? RoleEnum.LoverImpostor : RoleEnum.Lover;
-            Num = num;
-            LoverImpostor = loverImpostor;
-            Scale = imp ? 2.3f : 1f;
-            Faction = imp ? Faction.Impostors : Faction.Crewmates;
+            RoleType = impostor ? RoleEnum.LoverImpostor : RoleEnum.Lover;
+            LoverImpostor = eitherLoverImpostor;
+            Scale = impostor ? 2.3f : 1f;
+            Faction = impostor ? Faction.Impostors : Faction.Crewmates;
         }
 
         public Lover OtherLover { get; set; }
         public bool LoveCoupleWins { get; set; }
-        public int Num { get; set; }
+        
+        // Returns true if either lover is an impostor
+    
         public bool LoverImpostor { get; set; }
 
         protected override void IntroPrefix(IntroCutscene._CoBegin_d__14 __instance)
@@ -67,21 +74,24 @@ namespace TownOfUs.Roles
             return Player.name + "\n" + "Lover";
         }
 
+        private static readonly int LOVING_IMPOSTOR_CHANCE = 25;
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)
         {
-            //System.Console.WriteLine("LOVER2");
-            if (crewmates.Count <= 0) return;
-            if (crewmates.Count <= 1 && (impostors.Count < 1 || !CustomGameOptions.AllowLovingImpostor)) return;
+            bool canMakeCrewCrewLovers = crewmates.Count >= 2;
+            bool canMakeCrewImpostorLovers = crewmates.Count >= 1 && impostors.Count >= 2 && CustomGameOptions.AllowLovingImpostor;
+            if (!canMakeCrewCrewLovers && !canMakeCrewImpostorLovers) {
+                return;
+            }
 
-            //System.Console.WriteLine("LOVER3");
-            var b = Random.RandomRangeInt(0, 3);
+            bool lovingImpostor;
+            if(canMakeCrewCrewLovers && !canMakeCrewImpostorLovers) {
+                lovingImpostor = false;
+            } else if (!canMakeCrewCrewLovers && canMakeCrewImpostorLovers) {
+                lovingImpostor = true;
+            } else {
+                lovingImpostor = Random.RandomRangeInt(1, 101) <= LOVING_IMPOSTOR_CHANCE;
+            }
 
-            if ((b == 0) && (impostors.Count < 1 || !CustomGameOptions.AllowLovingImpostor)) b = 1;
-
-            if ((b != 0) && (crewmates.Count <= 1)) b = 0;
-
-            //System.Console.WriteLine("LOVER4");
-            var lovingImpostor = b == 0;
             var num = Random.RandomRangeInt(0, crewmates.Count);
             var player1 = crewmates[num];
             crewmates.Remove(player1);
@@ -99,13 +109,15 @@ namespace TownOfUs.Roles
                 crewmates.Remove(player2);
             }
 
+            // These writes appear to be read by `case CustomRPC.SetCouple` in RpcHandling.cs
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                 (byte) CustomRPC.SetCouple, SendOption.Reliable, -1);
             writer.Write(player1.PlayerId);
             writer.Write(player2.PlayerId);
-            writer.Write(b);
-            var lover1 = new Lover(player1, 1, b == 0);
-            var lover2 = new Lover(player2, 2, b == 0);
+            writer.Write(lovingImpostor ? 0 : 1);
+
+            var lover1 = new Lover(player1, false, lovingImpostor);
+            var lover2 = new Lover(player2, lovingImpostor, lovingImpostor);
 
             lover1.OtherLover = lover2;
             lover2.OtherLover = lover1;
