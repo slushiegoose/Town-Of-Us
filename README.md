@@ -379,7 +379,8 @@ They can use vents to get across the map easily.
 ## Swapper
 ### **Team: Crewmates**
 The Swapper is a Crewmate that can swap the votes on 2 players during a meeting.\
-All the votes for the first player will instead be counted towards the second player and vice versa.
+All the votes for the first player will instead be counted towards the second player and vice versa.\
+The Swapper is unable to call an emergency meeting.
 
 ### Game Options
 | Name | Description | Type | Default |
