@@ -65,7 +65,7 @@ namespace TownOfUs.Roles
             return Player.name + "\n" + "Lover";
         }
 
-        private static readonly int LOVING_IMPOSTOR_CHANCE = 25;
+        private const int LOVING_IMPOSTOR_CHANCE = 25;
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)
         {
             var canMakeCrewCrewLovers = crewmates.Count >= 2;
