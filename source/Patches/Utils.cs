@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Reactor.Extensions;
 using TownOfUs.CrewmateRoles.MedicMod;
-using TownOfUs.CustomHats;
 using TownOfUs.Extensions;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles;
@@ -47,8 +46,7 @@ namespace TownOfUs
             Player.HatRenderer.SetHat(targetAppearance.HatId, targetAppearance.ColorId);
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
-                Player.Data.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2.0f,
+                Player.Data.HatId == 0U ? 1.5f : 2.0f,
                 -0.5f
             );
 
@@ -85,8 +83,7 @@ namespace TownOfUs
             Player.HatRenderer.SetHat(appearance.HatId, appearance.ColorId);
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
-                appearance.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(appearance.HatId) ? 2.2f : 2.0f,
+                appearance.HatId == 0U ? 1.5f : 2.0f,
                 -0.5f
             );
 
