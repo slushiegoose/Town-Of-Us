@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
-using TownOfUs.CustomHats;
 using TownOfUs.ImpostorRoles.CamouflageMod;
 using UnityEngine;
 
@@ -52,8 +51,7 @@ namespace TownOfUs.Roles
             if (!CustomGameOptions.RoleUnderName && player == null) return Player.name;
             Player.nameText.transform.localPosition = new Vector3(
                 0f,
-                Player.Data.HatId == 0U ? 1.5f :
-                HatCreation.TallIds.Contains(Player.Data.HatId) ? 2.2f : 2f,
+                Player.Data.HatId == 0U ? 1.5f : 2f,
                 -0.5f
             );
             if (PlayerControl.LocalPlayer.Data.IsImpostor && RoleType == RoleEnum.LoverImpostor)
