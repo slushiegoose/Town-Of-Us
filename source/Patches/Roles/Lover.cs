@@ -8,13 +8,6 @@ namespace TownOfUs.Roles
 {
     public class Lover : Role
     {
-        /// <summary>
-        /// Creates a Lover role
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="num"></param>
-        /// <param name="loverImpostor"></param>
-        /// <returns></returns>
         public Lover(PlayerControl player, bool impostor, bool eitherLoverImpostor) : base(player)
         {
             Name = impostor ? "Loving Impostor" : "Lover";
@@ -75,8 +68,8 @@ namespace TownOfUs.Roles
         private static readonly int LOVING_IMPOSTOR_CHANCE = 25;
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)
         {
-            bool canMakeCrewCrewLovers = crewmates.Count >= 2;
-            bool canMakeCrewImpostorLovers = crewmates.Count >= 1 && impostors.Count >= 2 && CustomGameOptions.AllowLovingImpostor;
+            var canMakeCrewCrewLovers = crewmates.Count >= 2;
+            var canMakeCrewImpostorLovers = crewmates.Count >= 1 && impostors.Count >= 2 && CustomGameOptions.AllowLovingImpostor;
             if (!canMakeCrewCrewLovers && !canMakeCrewImpostorLovers) {
                 return;
             }
@@ -112,7 +105,7 @@ namespace TownOfUs.Roles
                 (byte) CustomRPC.SetCouple, SendOption.Reliable, -1);
             writer.Write(player1.PlayerId);
             writer.Write(player2.PlayerId);
-            writer.Write(lovingImpostor ? 0 : 1);
+            writer.Write(lovingImpostor);
 
             var lover1 = new Lover(player1, false, lovingImpostor);
             var lover2 = new Lover(player2, lovingImpostor, lovingImpostor);

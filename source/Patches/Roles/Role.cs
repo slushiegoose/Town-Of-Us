@@ -48,12 +48,11 @@ namespace TownOfUs.Roles
             }
         }
 
-        /// <summary>
-        /// Appears to be used in the screen where the player finds out their role. Used to scale
-        /// up or down the font size of the player's role based on the length of the name of their
-        /// role. "CREWMATE" and "IMPOSTOR" which both have 8 letters, so they are the baseline.
-        /// </summary>
-        /// <value>What scaling factor to apply to the name of the role.</value>
+        /*
+         * Appears to be used in the screen where the player finds out their role. Used to scale
+         * up or down the font size of the player's role based on the length of the name of their
+         * role. "CREWMATE" and "IMPOSTOR" which both have 8 letters, so they are the baseline.
+         */
         protected float Scale { get; set; } = 1f;
         protected internal Color Color { get; set; }
         protected internal RoleEnum RoleType { get; set; }
