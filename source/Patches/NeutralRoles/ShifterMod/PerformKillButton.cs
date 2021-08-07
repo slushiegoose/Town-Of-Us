@@ -127,6 +127,7 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 case RoleEnum.Arsonist:
                 case RoleEnum.Crewmate:
                 case RoleEnum.Altruist:
+                case RoleEnum.Glitch:
 
                     if (role == RoleEnum.Investigator) Footprint.DestroyAll(Role.GetRole<Investigator>(other));
 
@@ -207,7 +208,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 case RoleEnum.Janitor:
                 case RoleEnum.LoverImpostor:
                 case RoleEnum.Impostor:
-                case RoleEnum.Glitch:
                 case RoleEnum.Shifter:
                     shifter.Data.IsImpostor = true;
                     shifter.MurderPlayer(shifter);
