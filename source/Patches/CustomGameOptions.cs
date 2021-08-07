@@ -47,7 +47,9 @@ namespace TownOfUs
         public static bool ShowSheriff => Generate.ShowSheriff.Get();
         public static bool SheriffKillOther => Generate.SheriffKillOther.Get();
         public static bool SheriffKillsJester => Generate.SheriffKillsJester.Get();
+        public static bool SheriffKillsShifter => Generate.SheriffKillsShifter.Get();
         public static bool SheriffKillsGlitch => Generate.SheriffKillsGlitch.Get();
+        public static bool SheriffKillsExecutioner => Generate.SheriffKillsExecutioner.Get();
         public static bool SheriffKillsArsonist => Generate.SheriffKillsArsonist.Get();
         public static float SheriffKillCd => Generate.SheriffKillCd.Get();
         public static int MayorVoteBank => (int) Generate.MayorVoteBank.Get();
