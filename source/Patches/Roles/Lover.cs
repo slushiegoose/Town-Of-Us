@@ -64,24 +64,18 @@ namespace TownOfUs.Roles
 
             return Player.name + "\n" + "Lover";
         }
-
-        private const int LOVING_IMPOSTOR_CHANCE = 25;
+        
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)
         {
+            var lovingImpostorEnabled = Random.RandomRangeInt(1, 101) <= CustomGameOptions.LovingImpostorOn;
+            
             var canMakeCrewCrewLovers = crewmates.Count >= 2;
-            var canMakeCrewImpostorLovers = crewmates.Count >= 1 && impostors.Count >= 2 && CustomGameOptions.AllowLovingImpostor;
+            var canMakeCrewImpostorLovers = crewmates.Count >= 1 && impostors.Count >= 2 && lovingImpostorEnabled;
             if (!canMakeCrewCrewLovers && !canMakeCrewImpostorLovers) {
                 return;
             }
 
-            bool lovingImpostor;
-            if(canMakeCrewCrewLovers && !canMakeCrewImpostorLovers) {
-                lovingImpostor = false;
-            } else if (!canMakeCrewCrewLovers && canMakeCrewImpostorLovers) {
-                lovingImpostor = true;
-            } else {
-                lovingImpostor = Random.RandomRangeInt(1, 101) <= LOVING_IMPOSTOR_CHANCE;
-            }
+            var lovingImpostor = canMakeCrewImpostorLovers;
 
             var num = Random.RandomRangeInt(0, crewmates.Count);
             var player1 = crewmates[num];
