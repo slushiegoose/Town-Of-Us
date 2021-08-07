@@ -101,7 +101,7 @@ namespace TownOfUs.Handshake
         {
             public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData data)
             {
-                if (AmongUsClient.Instance.AmHost && __instance.GameState != InnerNetClient.GameStates.Ended)
+                if (AmongUsClient.Instance.AmHost && __instance.GameState == InnerNetClient.GameStates.Started)
                 {
                     PluginSingleton<TownOfUs>.Instance.Log.LogMessage($"Am host and clientId {data.Id} sent JoinGameResponse");
                     Coroutines.Start(WaitForHandshake(__instance, data.Id));
