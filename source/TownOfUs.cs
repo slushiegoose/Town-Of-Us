@@ -9,9 +9,8 @@ using BepInEx.IL2CPP;
 using HarmonyLib;
 using Reactor;
 using Reactor.Extensions;
-using TownOfUs.CustomHats;
 using TownOfUs.CustomOption;
-using TownOfUs.Extensions;
+using TownOfUs.Patches.CustomHats;
 using TownOfUs.RainbowMod;
 using UnhollowerBaseLib;
 using UnhollowerRuntimeLib;
@@ -20,7 +19,7 @@ using UnityEngine.SceneManagement;
 
 namespace TownOfUs
 {
-    [BepInPlugin(Id, "Town Of Us", "2.2.0")]
+    [BepInPlugin(Id, "Town Of Us", "2.2.1")]
     [BepInDependency(ReactorPlugin.Id)]
     public class TownOfUs : BasePlugin
     {
@@ -113,13 +112,6 @@ namespace TownOfUs
                     break;
                 }
 
-            // ServerManager.Instance.AddOrUpdateRegion(new StaticRegionInfo(
-            // 	"Custom-Server", StringNames.NoTranslation, ip, new ServerInfo[]
-            // 	{
-            // 		new ServerInfo("Custom-Server", ip, Port.Value)
-            // 	}
-            // ).Cast<IRegionInfo>());
-
             ServerManager.DefaultRegions = defaultRegions.ToArray();
 
             SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>) ((scene, loadSceneMode) =>
@@ -131,10 +123,10 @@ namespace TownOfUs
             DirtyPatches.Initialize(_harmony);
         }
 
-        public static Sprite CreateSprite(string name, bool hat = false)
+        public static Sprite CreateSprite(string name)
         {
-            var pixelsPerUnit = hat ? 225f : 100f;
-            var pivot = hat ? new Vector2(0.5f, 0.8f) : new Vector2(0.5f, 0.5f);
+            var pixelsPerUnit = 100f;
+            var pivot = new Vector2(0.5f, 0.5f);
 
             var assembly = Assembly.GetExecutingAssembly();
             var tex = GUIExtensions.CreateEmptyTexture();
@@ -147,21 +139,7 @@ namespace TownOfUs
             return sprite;
         }
 
-        public static Sprite CreatePolusHat(string name)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var imageStream = assembly.GetManifestResourceStream(name);
-            var img = imageStream.ReadFully();
-
-            var tex = new Texture2D(128, 128, (TextureFormat) 1, false);
-            LoadImage(tex, img, false);
-            tex.DontDestroy();
-            var sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-            sprite.DontDestroy();
-            return sprite;
-        }
-
-        private static void LoadImage(Texture2D tex, byte[] data, bool markNonReadable)
+        public static void LoadImage(Texture2D tex, byte[] data, bool markNonReadable)
         {
             _iCallLoadImage ??= IL2CPP.ResolveICall<DLoadImage>("UnityEngine.ImageConversion::LoadImage");
             var il2CPPArray = (Il2CppStructArray<byte>) data;
