@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Reactor.Extensions;
@@ -15,8 +15,9 @@ namespace TownOfUs.CustomOption
         public static List<OptionBehaviour> DefaultOptions;
         public static float LobbyTextRowHeight { get; set; } = 0.081F;
 
+        public static Scroller OptionsScroller;
 
-        private static List<OptionBehaviour> CreateOptions(GameOptionsMenu __instance)
+        private static List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
 
@@ -57,15 +58,16 @@ namespace TownOfUs.CustomOption
                 options.Add(toggle);
             }
 
-            DefaultOptions = __instance.Children.ToList();
-            foreach (var defaultOption in __instance.Children) options.Add(defaultOption);
+            foreach (var defaultOption in DefaultOptions) options.Add(defaultOption);
 
             foreach (var option in CustomOption.AllOptions)
             {
+                var shouldShow = option.ShouldShow();
                 if (option.Setting != null)
                 {
-                    option.Setting.gameObject.SetActive(true);
-                    options.Add(option.Setting);
+                    option.Setting.gameObject.SetActive(shouldShow);
+                    if (shouldShow)
+                        options.Add(option.Setting);
                     continue;
                 }
 
@@ -76,24 +78,23 @@ namespace TownOfUs.CustomOption
                         toggle.transform.GetChild(1).gameObject.SetActive(false);
                         toggle.transform.GetChild(2).gameObject.SetActive(false);
                         option.Setting = toggle;
-                        options.Add(toggle);
                         break;
                     case CustomOptionType.Toggle:
                         var toggle2 = Object.Instantiate(togglePrefab, togglePrefab.transform.parent).DontDestroy();
                         option.Setting = toggle2;
-                        options.Add(toggle2);
                         break;
                     case CustomOptionType.Number:
                         var number = Object.Instantiate(numberPrefab, numberPrefab.transform.parent).DontDestroy();
                         option.Setting = number;
-                        options.Add(number);
                         break;
                     case CustomOptionType.String:
                         var str = Object.Instantiate(stringPrefab, stringPrefab.transform.parent).DontDestroy();
                         option.Setting = str;
-                        options.Add(str);
                         break;
                 }
+                option.Setting.gameObject.SetActive(shouldShow);
+                if (shouldShow)
+                    options.Add(option.Setting);
 
                 option.OptionCreated();
             }
@@ -136,44 +137,54 @@ namespace TownOfUs.CustomOption
             return false;
         }
 
-
-        [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
-        private class GameOptionsMenu_Start
+        [HarmonyPatch(typeof(GameOptionsMenu))]
+        public static class GameOptionsMenuPatch
         {
-            public static void Postfix(GameOptionsMenu __instance)
+            private static GameOptionsMenu OptionsMenuInstance;
+            private static float OriginalMaxY;
+            public static void RefreshOptions()
             {
-                var customOptions = CreateOptions(__instance);
-                var y = __instance.GetComponentsInChildren<OptionBehaviour>()
-                    .Max(option => option.transform.localPosition.y);
-                var x = __instance.Children[1].transform.localPosition.x;
-                var z = __instance.Children[1].transform.localPosition.z;
+                if (OptionsMenuInstance != null)
+                    RefreshOptions(OptionsMenuInstance);
+            }
+
+            public static void RefreshOptions(GameOptionsMenu __instance)
+            {
+                OptionsMenuInstance = __instance;
+                var customOptions = CreateOptions();
+                var child = DefaultOptions[1].transform.localPosition;
+                var x = child.x;
+                var z = child.z;
                 var i = 0;
 
                 foreach (var option in customOptions)
-                    option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
+                    option.transform.localPosition = new Vector3(x, OriginalMaxY - i++ * 0.5f, z);
 
                 __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(customOptions.ToArray());
             }
-        }
 
-        [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
-        private class GameOptionsMenu_Update
-        {
-            public static void Postfix(GameOptionsMenu __instance)
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(GameOptionsMenu.Start))]
+            public static void Start(GameOptionsMenu __instance)
+            {
+                DefaultOptions = __instance.Children.ToList();
+                OriginalMaxY = DefaultOptions.Max(option => option.transform.localPosition.y);
+                RefreshOptions(__instance);
+            }
+
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(GameOptionsMenu.Update))]
+            public static void Update(GameOptionsMenu __instance)
             {
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>()
                     .Max(option => option.transform.localPosition.y);
-                float x, z;
-                if (__instance.Children.Length == 1)
-                {
-                    x = __instance.Children[0].transform.localPosition.x;
-                    z = __instance.Children[0].transform.localPosition.z;
-                }
-                else
-                {
-                    x = __instance.Children[1].transform.localPosition.x;
-                    z = __instance.Children[1].transform.localPosition.z;
-                }
+
+                var child = __instance.Children[
+                    __instance.Children.Length == 1 ? 0 : 1
+                ].transform.localPosition;
+
+                var x = child.x;
+                var z = child.z;
 
                 var i = 0;
                 foreach (var option in __instance.Children)
@@ -223,14 +234,15 @@ namespace TownOfUs.CustomOption
                     return false;
                 }
 
+                
+
                 if (__instance == ExportButton.Setting)
                 {
                     if (!AmongUsClient.Instance.AmHost) return false;
                     ExportButton.Do();
                     return false;
                 }
-
-                if (__instance == ImportButton.Setting)
+                else if (__instance == ImportButton.Setting)
                 {
                     if (!AmongUsClient.Instance.AmHost) return false;
                     ImportButton.Do();
@@ -258,6 +270,8 @@ namespace TownOfUs.CustomOption
 
                 return true;
             }
+
+            public static void Postfix() => GameOptionsMenuPatch.RefreshOptions();
         }
 
         [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Increase))]
@@ -273,9 +287,10 @@ namespace TownOfUs.CustomOption
                     number.Increase();
                     return false;
                 }
-
                 return true;
             }
+
+            public static void Postfix() => GameOptionsMenuPatch.RefreshOptions();
         }
 
         [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Decrease))]
@@ -291,9 +306,10 @@ namespace TownOfUs.CustomOption
                     number.Decrease();
                     return false;
                 }
-
                 return true;
             }
+
+            public static void Postfix() => GameOptionsMenuPatch.RefreshOptions();
         }
 
         [HarmonyPatch(typeof(StringOption), nameof(StringOption.Increase))]
@@ -309,9 +325,10 @@ namespace TownOfUs.CustomOption
                     str.Increase();
                     return false;
                 }
-
                 return true;
             }
+
+            public static void Postfix() => GameOptionsMenuPatch.RefreshOptions();
         }
 
         [HarmonyPatch(typeof(StringOption), nameof(StringOption.Decrease))]
@@ -327,9 +344,10 @@ namespace TownOfUs.CustomOption
                     str.Decrease();
                     return false;
                 }
-
                 return true;
             }
+
+            public static void Postfix() => GameOptionsMenuPatch.RefreshOptions();
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSyncSettings))]
@@ -345,14 +363,13 @@ namespace TownOfUs.CustomOption
         }
 
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        private class HudManagerUpdate
+        public static class HudManagerUpdate
         {
             private const float
                 MinX = -5.233334F /*-5.3F*/,
                 OriginalY = 2.9F,
                 MinY = 3F; // Differs to cause excess options to appear cut off to encourage scrolling
 
-            private static Scroller Scroller;
             private static Vector3 LastPosition = new Vector3(MinX, MinY);
 
             public static void Prefix(HudManager __instance)
@@ -364,12 +381,12 @@ namespace TownOfUs.CustomOption
                 if (!CustomOption.LobbyTextScroller)
                 {
                     // Remove scroller if disabled late
-                    if (Scroller != null)
+                    if (OptionsScroller != null)
                     {
-                        __instance.GameSettings.transform.SetParent(Scroller.transform.parent);
+                        __instance.GameSettings.transform.SetParent(OptionsScroller.transform.parent);
                         __instance.GameSettings.transform.localPosition = new Vector3(MinX, OriginalY);
 
-                        Object.Destroy(Scroller);
+                        Object.Destroy(OptionsScroller);
                     }
 
                     return;
@@ -377,14 +394,14 @@ namespace TownOfUs.CustomOption
 
                 CreateScroller(__instance);
 
-                Scroller.gameObject.SetActive(__instance.GameSettings.gameObject.activeSelf);
+                OptionsScroller.gameObject.SetActive(__instance.GameSettings.gameObject.activeSelf);
 
-                if (!Scroller.gameObject.active) return;
+                if (!OptionsScroller.gameObject.active) return;
 
                 var rows = __instance.GameSettings.text.Count(c => c == '\n');
                 var maxY = Mathf.Max(MinY, rows * LobbyTextRowHeight + (rows - 38) * LobbyTextRowHeight);
 
-                Scroller.YBounds = new FloatRange(MinY, maxY);
+                OptionsScroller.YBounds = new FloatRange(MinY, maxY);
 
                 // Prevent scrolling when the player is interacting with a menu
                 if (PlayerControl.LocalPlayer?.CanMove != true)
@@ -402,23 +419,23 @@ namespace TownOfUs.CustomOption
 
             private static void CreateScroller(HudManager __instance)
             {
-                if (Scroller != null) return;
+                if (OptionsScroller != null) return;
 
-                Scroller = new GameObject("SettingsScroller").AddComponent<Scroller>();
-                Scroller.transform.SetParent(__instance.GameSettings.transform.parent);
-                Scroller.gameObject.layer = 5;
+                var scroller = OptionsScroller = new GameObject("SettingsScroller").AddComponent<Scroller>();
+                scroller.transform.SetParent(__instance.GameSettings.transform.parent);
+                scroller.gameObject.layer = 5;
 
-                Scroller.transform.localScale = Vector3.one;
-                Scroller.allowX = false;
-                Scroller.allowY = true;
-                Scroller.active = true;
-                Scroller.velocity = new Vector2(0, 0);
-                Scroller.ScrollerYRange = new FloatRange(0, 0);
-                Scroller.XBounds = new FloatRange(MinX, MinX);
-                Scroller.enabled = true;
+                scroller.transform.localScale = Vector3.one;
+                scroller.allowX = false;
+                scroller.allowY = true;
+                scroller.active = true;
+                scroller.velocity = new Vector2(0, 0);
+                scroller.ScrollerYRange = new FloatRange(0, 0);
+                scroller.XBounds = new FloatRange(MinX, MinX);
+                scroller.enabled = true;
 
-                Scroller.Inner = __instance.GameSettings.transform;
-                __instance.GameSettings.transform.SetParent(Scroller.transform);
+                scroller.Inner = __instance.GameSettings.transform;
+                __instance.GameSettings.transform.SetParent(scroller.transform);
             }
         }
     }
