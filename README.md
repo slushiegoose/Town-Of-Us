@@ -279,41 +279,39 @@ Usually, this can be found in the `Downloads` folder.\
 Something different might appear depending on the file manager being used. Make sure the folder gets extracted in the `Town of Us` folder, in the same location as the Among Us application. It should look similar to the picture below.\
 \
 **9. Launch the Among Us application that's inside, and start playing Town of Us!**\
-A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
-<br/>
+A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.\
+\
 
 ## Installation Guide (Epic Games)
-**1. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
-\
-**2. Go to your Epic Games library.**\
-\
-**3. Find Among Us and click on the 3 dots `...` > click `Uninstall`.**\
-\
-**4. Confirm you want to Uninstall Among Us.**\
-\
-**5. In the Epic library, click on Among Us to install.**\
-\
-**6. Copy the Folder Path.**\
-\
-**7. Uncheck Auto-Update.**\
-\
-**8. Click on Install.**\
-\
-**9. Click Yes on the Windows popup.**\
-\
-**10. Paste the folder path in Windows search bar.**\
-\
-**11. Click on Enter.**\
-\
-**12. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.**\
-\
-**13. Finally, launch Among Us from Epic Games library.**\
-\
-A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
-<br/>
+**If you have never installed a mod before, skip to step 9**
 
-![Install](https://i.imgur.com/pvBAyZN.png)
-<br/>
+**1. Go to your Epic Games library.**\
+\
+**2. Find Among Us and click on the 3 dots `...` > click `Uninstall`.**\
+\
+**3. Confirm you want to Uninstall Among Us.**\
+\
+**4. In the Epic library, click on Among Us to install.**\
+\
+**5. Uncheck Auto-Update.**\
+\
+**6. Click on Install.**\
+\
+**7. Click Yes on the Windows popup.**\
+\
+**8. Click on Enter.**\
+\
+**9. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
+\
+**10. Copy and Paste `%ProgramFiles%\Epic Games\AmongUs` into the Windows Search bar.**\
+\
+**11. Copy or move the contents of the Town Of Us zip file into the folder you just opened.**\
+\
+**12. Finally, launch Among Us from Epic Games library.**\
+A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.
+
+![This is what your folder should look like](https://user-images.githubusercontent.com/28943913/128607680-d91740a4-59d5-477e-96c9-8e42e6c594be.png)
+
 ## Issues
 If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/polus) to receive help.
 
@@ -324,7 +322,7 @@ If you have issues installing Town of Us, you can join our [Discord](https://dis
 ### **Team: Crewmates**
 The Mayor is a Crewmate that can vote multiple times.\
 The Mayor has a Vote Bank, which is the number of times they can vote.\
-They have the option to abstain their vote during a meeting, adding that vote to the Vote Bank.\
+They have the option to abstain their vote during a meeting, adding that vote to the Vote Bank, their vote will also be missing from the results screen.
 As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.
 
 ### Game Options
@@ -342,6 +340,7 @@ These two players get picked randomly between Crewmates and Impostors.\
 They gain the primary objective to stay alive together.\
 If they are both among the last 3 players, they win.\
 In order to so, they gain access to a private chat, only visible by them in between meetings.\
+**The chat is visible to everyone during a meeting.**
 However, they can also win with their respective team, hence why the Lovers do not know the role of the other lover.
 
 ### Game Options
@@ -413,7 +412,7 @@ Every footprint disappears after a set amount of time.
 The Time Lord is a Crewmate that can rewind time and reverse the positions of all players.\
 If enabled, any players killed during this time will be revived.\
 Nothing but movements and kills are affected.\
-If enabled, the Time Lord can't use Vitals to make things more balanced.
+If enabled, the Time Lord can't use Vitals to make the role more balanced.
 
 ### Game Options
 | Name | Description | Type | Default |
@@ -427,10 +426,11 @@ If enabled, the Time Lord can't use Vitals to make things more balanced.
 -----------------------
 ## Medic
 ### **Team: Crewmates**
-The Medic is a Crewmate that can give any player a shield that will make them immortal until the Medic dies.\
+The Medic is a Crewmate that can give any player a shield that will make them immortal until the Medic dies, or the shield breaks.\
 A Shielded player cannot be Shifted into, Hacked or Killed by anyone, unless by suicide.\
 If the Medic reports a dead body, they can get a report containing clues to the Killer's identity.\
 A report can contain the name of the killer or the color type (Darker/Lighter)
+This color/name will be the real identity of the killer, even if they killed while Morphed or Mimiced.
 ### Colors
 - Red - Darker
 - Blue - Darker
@@ -491,9 +491,8 @@ If the Seer investigates someone, the Seer's name will change color to inform th
 ## Spy
 ### **Team: Crewmates**
 
-The Spy is a Crewmate that gains more information when on Admin Table and Vitals.\
-On Admin Table, the Spy can see the colors of every person on the map.\
-On Vitals, the Spy can see how long killed bodies have been dead for.
+The Spy is a Crewmate that gains more information when on the Admin Table.\
+On the Admin Table, the Spy can see the colors of every person on the map.\
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
@@ -512,6 +511,7 @@ However, when they only have a single task left, the Impostors get an arrow poin
 |----------|:-------------:|:------:|:------:|
 | Snitch | The percentage probability of the Snitch appearing | Percentage | 0% |
 | Snitch knows who they are on Game Start | Whether the Snitch knows their role at the start of a game | Toggle | False |
+| Snitch sees Neutral Roles | Whether the Snitch can see the role of players with a Neutral role | Toggle | False |
 
 -----------------------
 ## Altruist
@@ -533,7 +533,7 @@ After a set period of time, the player will be resurrected, if the revival isn't
 ## Jester
 ### **Team: Neutral**
 The Jester is a Neutral role with its own win condition.\
-If they are voted out after a meeting, the game finishes and they win.\
+If they are voted out, after the meeting the game finishes and they win.\
 However, the Jester does not win if the Crewmates, Impostors or another Neutral role wins.
 
 ### Game Options
@@ -549,7 +549,7 @@ They have zero tasks and are essentially roleless.\
 However, they can swap roles with other players.\
 Swapping roles with a custom role gives the Shifter their role and tasks and turns the other player into a Crewmate.\
 Swapping roles with a Crewmate swaps tasks.\
-Swapping roles with an Impostor fails and kills the Shifter.
+Swapping roles with an Impostor or Glitch fails and kills the Shifter.
 
 ### Game Options
 | Name | Description | Type | Default |
@@ -564,8 +564,7 @@ Swapping roles with an Impostor fails and kills the Shifter.
 
 The Glitch is a Neutral role with its own win condition.\
 The Glitch's aim is to kill __everyone__ and be the last person standing.\
-The Glitch can Hack players, resulting in them being unable to report bodies and do tasks.\
-Hacking prevents the hacked player from doing anything but walk around the map.\
+The Glitch can Hack players, resulting in them being unable to do anything except walk around the map.\
 The Glitch can Mimic someone, which results in them looking exactly like the other person.
 
 ### Game Options
@@ -599,14 +598,14 @@ If that player gets voted out, they win the game.
 
 The Arsonist is a Neutral role with its own win condition.\
 They have the ability to douse other players with gasoline.\
-Once they have doused every player remaining, they can Ignite everyone at once.\
+Once they have doused every alive player, they can Ignite everyone at once.\
 Upon Igniting every player, they win the game.
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Arsonist | The percentage probability of the Arsonist appearing | Percentage | 0% |
 | Douse Cooldown | The cooldown of the Arsonist's Douse button | Time | 25s |
-| Game keeps going so long as Arsonist is alive | Whether the game keeps going while the Arsonist remains | Toggle | False |
+| Game keeps going so long as Arsonist is alive | Whether the game keeps going if all Impostors and The Glitch are dead | Toggle | False |
 
 -----------------------
 ## Phantom
@@ -693,16 +692,17 @@ To balance the role, they can't vent.
 ### **Team: Impostors**
 
 The Assassin is an Impostor that can kill during meetings by guessing the role of non-Impostors.\
-If they guessed wrong, they die instead.
+If they guessed wrong, they die instead.\
+The Assassin cannot guess someone whos role has been revealed to them, for example once the snitch has one task left or the seer has investigated them.
 
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Assassin | The percentage probability of the Assassin appearing | Percentage | 0% |
-| Assassin Kill | The number of kill the Assassin can do with his ability | Number | 1 |
-| Assassin Guess Crewmate | Whether the Assassin can Guess "Crewmate" | Toggle | False |
-| Assassin Guess Neutral  | Whether the Assassin can Guess Neutral roles | Toggle | False |
-| Assassin Multiple Kill  | Whether the Assassin can kill more than once per meeting | Toggle | True |
+| Assassin Max Kills | The maximum number of times the Assassin can assassinate | Number | 1 |
+| Assassin Can Guess Crewmate | Whether the Assassin can Guess "Crewmate" | Toggle | False |
+| Assassin Can Guess Neutral  | Whether the Assassin can Guess Neutral roles | Toggle | False |
+| Assassin Multi Kill | Whether the Assassin can kill more than once per meeting | Toggle | True |
 
 -----------------------
 ## Undertaker
@@ -813,7 +813,7 @@ They have the same amount of meetings as a regular player.
 -----------------------
 # Extras
 ## New Colors!
-New colors are added for crewmates to pick from: watermelon, chocolate, sky blue, beige, hot pink, turquoise and lilac.
+New colors are added for crewmates to pick from: watermelon, chocolate, sky blue, beige, hot pink, turquoise, lilac and azure.
 ## Rainbow Color!
 A rainbow color has also been added. Anyone who equips this color will constantly switch between the colors of the rainbow.
 ## Custom Hats!
@@ -823,7 +823,7 @@ Custom hats have been added, made by some very talented artists. These are mostl
 
 -----------------------
 # Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord server](https://discord.gg/polus) or create a ticket on GitHub.
+If you find any bugs or have a suggestion, [create an issue](https://github.com/polusgg/Town-Of-Us/issues/new)
 
 -----------------------
 # Credits & Resources
