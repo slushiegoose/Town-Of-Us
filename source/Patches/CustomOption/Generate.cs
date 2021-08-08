@@ -217,8 +217,8 @@ namespace TownOfUs.CustomOption
         {
             var num = 0;
 
-            Patches.ExportButton = new Export(num++);
-            Patches.ImportButton = new Import(num++);
+            Patches.ExportButton = new ImportExport(num++, "Save Custom Settings");
+            Patches.ImportButton = new ImportExport(num++, "Load Custom Settings");
 
 
             CrewmateRoles = new CustomHeaderOption(num++, "Crewmate Roles");

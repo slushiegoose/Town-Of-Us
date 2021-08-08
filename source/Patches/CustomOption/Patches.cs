@@ -2,7 +2,7 @@
 using System.Linq;
 using HarmonyLib;
 using Reactor.Extensions;
-using TownOfUs.Extensions;
+using Reactor;
 using UnhollowerBaseLib;
 using UnityEngine;
 
@@ -10,12 +10,14 @@ namespace TownOfUs.CustomOption
 {
     public static class Patches
     {
-        public static Export ExportButton;
-        public static Import ImportButton;
+        public static ImportExport ExportButton;
+        public static ImportExport ImportButton;
         public static List<OptionBehaviour> DefaultOptions;
         public static float LobbyTextRowHeight { get; set; } = 0.081F;
 
         public static Scroller OptionsScroller;
+
+        public static bool DontRefresh = false;
 
         private static List<OptionBehaviour> CreateOptions()
         {
@@ -58,7 +60,11 @@ namespace TownOfUs.CustomOption
                 options.Add(toggle);
             }
 
-            foreach (var defaultOption in DefaultOptions) options.Add(defaultOption);
+            foreach (var defaultOption in DefaultOptions)
+            {
+                defaultOption.gameObject.SetActive(true);
+                options.Add(defaultOption);
+            }
 
             foreach (var option in CustomOption.AllOptions)
             {
@@ -140,17 +146,17 @@ namespace TownOfUs.CustomOption
         [HarmonyPatch(typeof(GameOptionsMenu))]
         public static class GameOptionsMenuPatch
         {
-            private static GameOptionsMenu OptionsMenuInstance;
             private static float OriginalMaxY;
             public static void RefreshOptions()
             {
-                if (OptionsMenuInstance != null)
-                    RefreshOptions(OptionsMenuInstance);
+                PluginSingleton<TownOfUs>.Instance.Log.LogMessage("refreshing");
+                var instance = Object.FindObjectOfType<GameOptionsMenu>();
+                if (instance != null)
+                    RefreshOptions(instance);
             }
 
             public static void RefreshOptions(GameOptionsMenu __instance)
             {
-                OptionsMenuInstance = __instance;
                 var customOptions = CreateOptions();
                 var child = DefaultOptions[1].transform.localPosition;
                 var x = child.x;
@@ -234,17 +240,17 @@ namespace TownOfUs.CustomOption
                     return false;
                 }
 
-                
-
                 if (__instance == ExportButton.Setting)
                 {
                     if (!AmongUsClient.Instance.AmHost) return false;
+                    DontRefresh = true;
                     ExportButton.Do();
                     return false;
                 }
                 else if (__instance == ImportButton.Setting)
                 {
                     if (!AmongUsClient.Instance.AmHost) return false;
+                    DontRefresh = true;
                     ImportButton.Do();
                     return false;
                 }
@@ -252,7 +258,9 @@ namespace TownOfUs.CustomOption
 
                 if (option is CustomHeaderOption) return false;
 
-                CustomOption option2 = ExportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
+                var option2 =
+                    ExportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance) ??
+                    ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
                 if (option2 is CustomButtonOption button)
                 {
                     if (!AmongUsClient.Instance.AmHost) return false;
@@ -260,18 +268,13 @@ namespace TownOfUs.CustomOption
                     return false;
                 }
 
-                CustomOption option3 = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
-                if (option3 is CustomButtonOption button2)
-                {
-                    if (!AmongUsClient.Instance.AmHost) return false;
-                    button2.Do();
-                    return false;
-                }
-
                 return true;
             }
 
-            public static void Postfix() => GameOptionsMenuPatch.RefreshOptions();
+            public static void Postfix()
+            {
+                if (!DontRefresh) GameOptionsMenuPatch.RefreshOptions();
+            }
         }
 
         [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Increase))]
