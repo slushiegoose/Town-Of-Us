@@ -9,6 +9,7 @@ using TownOfUs.ImpostorRoles.CamouflageMod;
 using TownOfUs.Roles.Modifiers;
 using TownOfUs.CrewmateRoles.SeerMod;
 using TownOfUs.CrewmateRoles.MedicMod;
+using TownOfUs.NeutralRoles.GlitchMod;
 using UnhollowerBaseLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -461,6 +462,8 @@ namespace TownOfUs.Roles
                 RoleDictionary.Clear();
                 Modifier.ModifierDictionary.Clear();
                 Lights.SetLights(Color.white);
+                // rare possibility that this is still set
+                GlitchCoroutines.IsHacked = false;
             }
         }
 

@@ -173,9 +173,9 @@ namespace TownOfUs
                         : ((BodyAbilityData) buttonData).Target?.bodyRenderer).material;
                     material?.SetFloat("_Outline", 0f);
                 }
-
+                
                 if (__instance.AmOwner)
-                    HudManagerPatch.SetHudActive(true);
+                    HudManagerPatch.SetHudActive(false);
             }
 
             [HarmonyPostfix]
