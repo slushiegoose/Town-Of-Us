@@ -108,24 +108,27 @@ namespace TownOfUs.Roles
         {
             var players = PlayerControl.AllPlayerControls.ToArray();
             var alives = players.Where(x => !x.Data.IsDead).ToList();
-            var lover1 = Player;
-            var lover2 = OtherLover.Player;
+            var lover1 = Player.Data;
+            var lover2 = OtherLover.Player.Data;
             {
-                return !lover1.Data.IsDead && !lover2.Data.IsDead &&
-                       alives.Count() == 4 && LoverImpostor;
+                return
+                    !lover1.IsDead && !lover1.Disconnected &&
+                    !lover2.IsDead && !lover2.Disconnected &&
+                    alives.Count() == 4 && LoverImpostor;
             }
         }
 
         private bool CheckLoversWin()
         {
-            //System.Console.WriteLine("CHECKWIN");
             var players = PlayerControl.AllPlayerControls.ToArray();
             var alives = players.Where(x => !x.Data.IsDead).ToList();
-            var lover1 = Player;
-            var lover2 = OtherLover.Player;
+            var lover1 = Player.Data;
+            var lover2 = OtherLover.Player.Data;
 
-            return !lover1.Data.IsDead && !lover2.Data.IsDead &&
-                   (alives.Count == 3) | (alives.Count == 2);
+            return
+                !lover1.IsDead && !lover1.Disconnected &&
+                !lover2.IsDead && !lover2.Disconnected &&
+                ((alives.Count == 3) || (alives.Count == 2));
         }
 
         public void Win()
