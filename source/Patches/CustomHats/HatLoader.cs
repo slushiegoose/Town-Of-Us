@@ -1,5 +1,7 @@
+extern alias Il2CppNewtonsoft;
 using BepInEx.Logging;
-using Newtonsoft.Json.Linq;
+using Il2CppNewtonsoft::Newtonsoft.Json;
+using Il2CppNewtonsoft::Newtonsoft.Json.Linq;
 using Reactor;
 using Reactor.Extensions;
 using System;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using UnhollowerBaseLib;
 using UnityEngine;
 
 namespace TownOfUs.Patches.CustomHats
