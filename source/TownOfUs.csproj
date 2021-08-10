@@ -3,6 +3,9 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Version>2.2.1</Version>
     <DebugType>embedded</DebugType>
+	<!--<AmongUs>C:\Program Files\Epic Games\AmongUs</AmongUs>-->
+	<AmongUs>../</AmongUs>
+	<NoWarn>MSB3243</NoWarn>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -13,6 +16,12 @@
   <ItemGroup>
     <PackageReference Include="Reactor" Version="1.0.0-rc.1" />
     <PackageReference Include="Reactor.MSBuild" Version="0.1.5" />
+	  
+	<!-- Using Newtonsoft.Json generated from unhollower -->
+	<Reference Include="Newtonsoft.Json" Version="3.7.1.6" Condition="$(AmongUs) != ''">
+	    <HintPath>$(AmongUs)\BepInEx\unhollowed\Newtonsoft.Json.dll</HintPath>
+	    <Aliases>Il2CppNewtonsoft</Aliases>
+	</Reference>
   </ItemGroup>
 
   <ItemGroup>

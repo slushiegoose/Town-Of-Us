@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using BepInEx.Logging;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Reactor;
 using Reactor.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 namespace TownOfUs.Patches.CustomHats
@@ -24,9 +25,7 @@ namespace TownOfUs.Patches.CustomHats
             Log.LogMessage($"Generating Hats from namespace {HAT_RESOURCE_NAMESPACE}");
             try
             {
-                var hatJson = LoadJson();
-                
-                var hatBehaviours = DiscoverHatBehaviours(hatJson);
+                var hatBehaviours = DiscoverHatBehaviours(LoadJson());
 
                 DestroyableSingleton<HatManager>.Instance.AllHats.ForEach(
                     (Action<HatBehaviour>)(x => x.StoreName = "Vanilla")
@@ -36,7 +35,7 @@ namespace TownOfUs.Patches.CustomHats
                     hatBehaviours[i].Order = HAT_ORDER_BASELINE + i;
                     HatManager.Instance.AllHats.Add(hatBehaviours[i]);
                 }
-            
+
             }
             catch (Exception e)
             {
@@ -44,17 +43,35 @@ namespace TownOfUs.Patches.CustomHats
             }
         }
 
-        private static HatMetadataJson LoadJson()
+        private static List<HatMetadataElement> LoadJson()
         {
+            var element = new List<HatMetadataElement>();
+
             var stream = Assembly.GetManifestResourceStream($"{HAT_RESOURCE_NAMESPACE}.{HAT_METADATA_JSON}");
-            return JsonConvert.DeserializeObject<HatMetadataJson>(Encoding.UTF8.GetString(stream.ReadFully()));
+            var streamContent = Encoding.UTF8.GetString(stream.ReadFully());
+            var obj = JObject.Parse(streamContent);
+
+            for (var json = obj["credits"].First; json != null; json = json.Next)
+            {
+                var hatdatas = new HatMetadataElement
+                {
+                    Id = (string)json["id"],
+                    Name = (string)json["name"] ?? string.Empty,
+                    Artist = (string)json["artist"] ?? string.Empty
+                };
+
+                if (hatdatas.Id != null)
+                    element.Add(hatdatas);
+            }
+
+            return element;
         }
 
-        private static List<HatBehaviour> DiscoverHatBehaviours(HatMetadataJson metadata)
+        private static List<HatBehaviour> DiscoverHatBehaviours(List<HatMetadataElement> metadata)
         {
             var hatBehaviours = new List<HatBehaviour>();
 
-            foreach (var hatCredit in metadata.Credits)
+            foreach (var hatCredit in metadata)
             {
                 try
                 {
@@ -69,9 +86,8 @@ namespace TownOfUs.Patches.CustomHats
                 }
                 catch (Exception e)
                 {
-                    // Log.LogError(
-                    //     $"Error loading hat {hatCredit.Id} in metadata file ({HAT_METADATA_JSON})");
-                    // Log.LogError($"{e.Message}\nStack:{e.StackTrace}");
+                    Log.LogError($"Error loading hat {hatCredit.Id} in metadata file ({HAT_METADATA_JSON})");
+                    Log.LogError($"{e.Message}\nStack:{e.StackTrace}");
                 }
             }
 
@@ -80,13 +96,12 @@ namespace TownOfUs.Patches.CustomHats
 
         private static HatBehaviour GenerateHatBehaviour(byte[] mainImg)
         {
-            
-            //TODO: Move to Graphics Utils class
+            // TODO: Move to Graphics Utils class
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             TownOfUs.LoadImage(tex2D, mainImg, false);
             var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-            
-            
+
+
             var hat = ScriptableObject.CreateInstance<HatBehaviour>();
             hat.MainImage = sprite;
             hat.ChipOffset = new Vector2(-0.1f, 0.35f);
