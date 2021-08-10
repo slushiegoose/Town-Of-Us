@@ -35,7 +35,9 @@ namespace TownOfUs.Roles
 
         public override bool Criteria()
         {
-            return OtherLover.Player.AmOwner || base.Criteria();
+            return (
+                OtherLover.Player.AmOwner && !OtherLover.Player.Data.Disconnected
+            ) || base.Criteria();
         }
 
         public static void Gen(List<PlayerControl> crewmates, List<PlayerControl> impostors)

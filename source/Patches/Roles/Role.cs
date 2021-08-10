@@ -161,7 +161,7 @@ namespace TownOfUs.Roles
 
         public virtual bool Criteria()
         {
-            if (Player.AmOwner) return true;
+            if (Player.AmOwner) return !Player.Data.Disconnected;
 
             if (
                 Faction == Faction.Impostors ||

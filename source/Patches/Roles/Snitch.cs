@@ -31,7 +31,9 @@ namespace TownOfUs.Roles
 
         public override bool Criteria()
         {
-            return Player.AmOwner || (OneTaskLeft && PlayerControl.LocalPlayer.Data.IsImpostor) || base.Criteria();
+            return (
+                Player.AmOwner && !Player.Data.Disconnected
+            ) || (OneTaskLeft && PlayerControl.LocalPlayer.Data.IsImpostor) || base.Criteria();
         }
     }
 }

@@ -190,7 +190,12 @@ namespace TownOfUs
             [HarmonyPatch(nameof(PlayerControl.FixedUpdate))]
             public static void FixedUpdate(PlayerControl __instance)
             {
-                if (!__instance.AmOwner || __instance.Data.IsDead) return;
+                if (
+                    !__instance.AmOwner ||
+                    __instance.Data.IsDead ||
+                    // just in case
+                    __instance.Data.Disconnected
+                ) return;
                 var isImpostor = __instance.Data.IsImpostor;
                 var cannotDeplete = !__instance.CanMove && (Minigame.Instance == null || Minigame.Instance.MyTask == null);
                 for (var i = 0;i < Buttons.Count;i++)

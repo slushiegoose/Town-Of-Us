@@ -38,7 +38,7 @@ namespace TownOfUs.Roles
         public override bool Criteria()
         {
             var localPlayer = PlayerControl.LocalPlayer;
-            return Player.AmOwner || (
+            return (Player.AmOwner && !Player.Data.Disconnected) || (
                 Investigated.Contains(localPlayer.PlayerId) &&
                 CheckSeeReveal(localPlayer)
             ) || base.Criteria();

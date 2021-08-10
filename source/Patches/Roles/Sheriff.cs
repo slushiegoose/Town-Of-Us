@@ -60,7 +60,7 @@ namespace TownOfUs.Roles
 
         public override bool Criteria()
         {
-            return Player.AmOwner || CustomGameOptions.ShowSheriff || base.Criteria();
+            return (Player.AmOwner && !Player.Data.Disconnected) || CustomGameOptions.ShowSheriff || base.Criteria();
         }
     }
 }
