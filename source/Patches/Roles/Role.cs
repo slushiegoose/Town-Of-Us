@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
 using System;
 using System.Collections.Generic;
@@ -280,8 +280,6 @@ namespace TownOfUs.Roles
                     //                        Scale = ModifierText.scale;
                     else
                         ModifierText = null;
-
-                    Lights.SetLights();
                 }
             }
 
@@ -298,7 +296,6 @@ namespace TownOfUs.Roles
                     //                        Scale = ModifierText.scale;
                     else
                         ModifierText = null;
-                    Lights.SetLights();
                 }
             }
 
@@ -450,7 +447,6 @@ namespace TownOfUs.Roles
 
                 RoleDictionary.Clear();
                 Modifier.ModifierDictionary.Clear();
-                Lights.SetLights(Color.white);
             }
         }
 
