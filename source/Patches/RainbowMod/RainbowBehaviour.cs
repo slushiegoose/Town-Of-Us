@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Reactor;
+using System;
 using UnityEngine;
 
 namespace TownOfUs.RainbowMod
 {
+    [RegisterInIl2Cpp]
     public class RainbowBehaviour : MonoBehaviour
     {
         public Renderer Renderer;
@@ -16,12 +18,8 @@ namespace TownOfUs.RainbowMod
 
         public void Update()
         {
-            if (Renderer == null) return;
-
-            if (RainbowUtils.IsRainbow(Id))
-            {
+            if (RainbowUtils.IsRainbow(Id) && Renderer != null)
                 RainbowUtils.SetRainbow(Renderer);
-            }
         }
 
         public RainbowBehaviour(IntPtr ptr) : base(ptr) { }
