@@ -1,11 +1,12 @@
+using BepInEx.Logging;
+using Reactor;
+using Reactor.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using BepInEx.Logging;
-using Newtonsoft.Json;
-using Reactor;
-using Reactor.Extensions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using UnityEngine;
 
 namespace TownOfUs.Patches.CustomHats
@@ -25,18 +26,19 @@ namespace TownOfUs.Patches.CustomHats
             try
             {
                 var hatJson = LoadJson();
-                
+
                 var hatBehaviours = DiscoverHatBehaviours(hatJson);
 
                 DestroyableSingleton<HatManager>.Instance.AllHats.ForEach(
                     (Action<HatBehaviour>)(x => x.StoreName = "Vanilla")
                 );
+
                 for (var i = 0; i < hatBehaviours.Count; i++)
                 {
                     hatBehaviours[i].Order = HAT_ORDER_BASELINE + i;
                     HatManager.Instance.AllHats.Add(hatBehaviours[i]);
                 }
-            
+
             }
             catch (Exception e)
             {
@@ -47,7 +49,9 @@ namespace TownOfUs.Patches.CustomHats
         private static HatMetadataJson LoadJson()
         {
             var stream = Assembly.GetManifestResourceStream($"{HAT_RESOURCE_NAMESPACE}.{HAT_METADATA_JSON}");
-            return JsonConvert.DeserializeObject<HatMetadataJson>(Encoding.UTF8.GetString(stream.ReadFully()));
+            var streamContent = Encoding.UTF8.GetString(stream.ReadFully());
+
+            return JsonSerializer.Deserialize<HatMetadataJson>(streamContent);
         }
 
         private static List<HatBehaviour> DiscoverHatBehaviours(HatMetadataJson metadata)
@@ -80,13 +84,13 @@ namespace TownOfUs.Patches.CustomHats
 
         private static HatBehaviour GenerateHatBehaviour(byte[] mainImg)
         {
-            
+
             //TODO: Move to Graphics Utils class
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             TownOfUs.LoadImage(tex2D, mainImg, false);
             var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-            
-            
+
+
             var hat = ScriptableObject.CreateInstance<HatBehaviour>();
             hat.MainImage = sprite;
             hat.ChipOffset = new Vector2(-0.1f, 0.35f);
