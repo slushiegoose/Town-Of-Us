@@ -1,6 +1,11 @@
-﻿using HarmonyLib;
+﻿using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.IL2CPP;
+using HarmonyLib;
+using Reactor;
 using Reactor.Extensions;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
@@ -8,10 +13,10 @@ using Object = UnityEngine.Object;
 namespace TownOfUs.RainbowMod
 {
     [HarmonyPatch(typeof(PlayerTab))]
-    public class PlayerTabPatch
+    public static class PlayerTabPatch
     {
-        [HarmonyPatch(nameof(PlayerTab.OnEnable))]
         [HarmonyPostfix]
+        [HarmonyPatch(nameof(PlayerTab.OnEnable))]
         public static void OnEnablePatch(PlayerTab __instance)
         {
             foreach (ColorChip instanceColorChip in __instance.ColorChips)
@@ -33,8 +38,9 @@ namespace TownOfUs.RainbowMod
 
                 colorChip.Button.OnClick.AddListener((Action)(() =>
                 {
-                    __instance.SelectColor(colorId);
-                    SaveManager.BodyColor = colorId <= 17 ? colorId : (byte)0;
+                    if (colorId <= 17) __instance.SelectColor(colorId);
+                    __instance.SelectCustomColor(colorId);
+                    __instance.HatImage.SetColor(colorId);
                 }));
 
                 colorChip.Inner.color = colors[i];
@@ -42,22 +48,29 @@ namespace TownOfUs.RainbowMod
             }
         }
 
-        [HarmonyPatch(nameof(PlayerTab.SelectColor))]
         [HarmonyPostfix]
-        public static void SelectColorPatch(PlayerTab __instance, [HarmonyArgument(0)] int id)
-        {
-            __instance.HatImage.SetColor(id);
-        }
-
         [HarmonyPatch(nameof(PlayerTab.Update))]
-        [HarmonyPostfix]
         public static void UpdatePatch(PlayerTab __instance)
         {
             for (int i = 0; i < __instance.ColorChips.Count; i++)
             {
                 if (RainbowUtils.IsRainbow(i))
+                {
                     __instance.ColorChips[i].Inner.color = RainbowUtils.Rainbow;
+                    break;
+                }
             }
+        }
+
+        public static void SelectCustomColor(this PlayerTab playerTab, byte colorId)
+        {
+            PluginSingleton<TownOfUs>.Instance.CustomColor.Value = colorId;
+            if (colorId <= 17) return;
+
+            playerTab.UpdateAvailableColors();
+
+            if (PlayerControl.LocalPlayer)
+                PlayerControl.LocalPlayer.CmdCheckColor(colorId);
         }
     }
 }

@@ -64,6 +64,7 @@ namespace TownOfUs
         public ConfigEntry<string> Ip { get; set; }
 
         public ConfigEntry<ushort> Port { get; set; }
+        public ConfigEntry<byte> CustomColor { get; set; }
 
 
         public override void Load()
@@ -118,6 +119,8 @@ namespace TownOfUs
                     ip = address.ToString();
                     break;
                 }
+
+            CustomColor = Config.Bind($"Custom Cosmetics", "Custom Color", SaveManager.BodyColor);
 
             ServerManager.DefaultRegions = defaultRegions.ToArray();
 
