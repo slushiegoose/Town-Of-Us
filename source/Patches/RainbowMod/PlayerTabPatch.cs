@@ -69,8 +69,7 @@ namespace TownOfUs.RainbowMod
 
             playerTab.UpdateAvailableColors();
 
-            if (PlayerControl.LocalPlayer)
-                PlayerControl.LocalPlayer.CmdCheckColor(colorId);
+            PlayerControl.LocalPlayer.CmdCheckColor(colorId);
         }
     }
 }
