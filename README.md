@@ -256,29 +256,32 @@ An Among Us mod that adds a bunch of roles, modifiers and game settings
 - Steam or Epic Games
 
 ## Installation Guide (Steam)
-**1. Create a new folder on `Desktop`, called `Town of Us`.**\
-This can be created anywhere and be named anything, as long as this folder is easy to locate.\
+**1. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
 \
-**2. Open Steam, go to `Library` and locate Among Us. Right click on it, select `Properties...`. Then, under `Local Files`, click on `Browse...`.**\
-This opens the folder containing the Among Us application.\
+**2. Go to your Steam library.**\
 \
-**3. Delete everything in the currently opened folder.**\
-Don't worry, this will not delete the game. This simply verifies the Among Us folder being entirely clean.\
+**3. Right-click Among Us > click `Manage` > click `Browse local files`.**\
 \
-**4. On Steam, locate Among Us once again. Right click on it, select `Properties...`. Now, under `Local Files`, click on `Verify integrity of game files...`.**\
-This restores all of the game files as a fresh installation.\
+**4. In the File Explorer, delete the entire `Among Us` folder.**\
 \
-**5. Copy all of the files from the `Among Us` folder to the newly created folder.**\
+**5. Go back to your Steam library.**\
 \
-**6. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.**\
+**6. Right-Click Among Us > click `Properties...` > click `LOCAL FILES`.**\
 \
-**7. Locate the downloaded `.zip` file, and move it to the `Town of Us` folder.**\
-Usually, this can be found in the `Downloads` folder.\
+**7. Click on `VERIFY INTEGRITY OF GAME FILES...`.**\
 \
-**8. Right click on the `.zip` file, and click on `7-Zip`. Then choose `Extract Here`.**\
-Something different might appear depending on the file manager being used. Make sure the folder gets extracted in the `Town of Us` folder, in the same location as the Among Us application. It should look similar to the picture below.\
+**8. Wait for Steam to download a clean version of Among Us.**\
 \
-**9. Launch the Among Us application that's inside, and start playing Town of Us!**\
+**9. Duplicate the new Among Us Folder.**\
+\
+**10. Rename it to `Among Us - ToU`.**\
+\
+**11. Double-click on the zip file you downloaded.**\
+\
+**12. Drag all the files from the zip file in the new ToU folder.**\
+\
+**13. Finally, launch `Among Us.exe` from that folder.**\
+\
 A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.<br/>
 <br/>
 
