@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Version>2.2.1</Version>
@@ -13,8 +13,9 @@
   <ItemGroup>
     <PackageReference Include="Reactor" Version="1.0.0-rc.1" />
     <PackageReference Include="Reactor.MSBuild" Version="0.1.5" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0-preview.7.21377.19" />
   </ItemGroup>
-
+	
   <ItemGroup>
     <EmbeddedResource Include="Resources\*" />
     <EmbeddedResource Include="Resources\Hats\**" />
