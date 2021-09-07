@@ -1,14 +1,14 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.IL2CPP;
 using HarmonyLib;
 using Reactor;
 using Reactor.Extensions;
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 using TownOfUs.CustomOption;
 using TownOfUs.Patches.CustomHats;
 using TownOfUs.RainbowMod;
@@ -24,7 +24,7 @@ namespace TownOfUs
     public class TownOfUs : BasePlugin
     {
         public const string Id = "com.slushiegoose.townofus";
-        
+
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
         public static Sprite SwapperSwitch;
@@ -64,6 +64,7 @@ namespace TownOfUs
         public ConfigEntry<string> Ip { get; set; }
 
         public ConfigEntry<ushort> Port { get; set; }
+        public ConfigEntry<byte> CustomColor { get; set; }
 
 
         public override void Load()
@@ -103,12 +104,11 @@ namespace TownOfUs
             GuessSprite = CreateSprite("TownOfUs.Resources.Guess.png");
 
             PalettePatch.Load();
-            ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
 
             // RegisterInIl2CppAttribute.Register();
 
             Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
-            Port = Config.Bind("Custom", "Port", (ushort) 22023);
+            Port = Config.Bind("Custom", "Port", (ushort)22023);
             var defaultRegions = ServerManager.DefaultRegions.ToList();
             var ip = Ip.Value;
             if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
@@ -120,12 +120,14 @@ namespace TownOfUs
                     break;
                 }
 
+            CustomColor = Config.Bind($"Custom Cosmetics", "Custom Color", SaveManager.BodyColor);
+
             ServerManager.DefaultRegions = defaultRegions.ToArray();
 
-            SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>) ((scene, loadSceneMode) =>
-            {
-                ModManager.Instance.ShowModStamp();
-            }));
+            SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>)((scene, loadSceneMode) =>
+           {
+               ModManager.Instance.ShowModStamp();
+           }));
 
             _harmony.PatchAll();
             DirtyPatches.Initialize(_harmony);
@@ -150,7 +152,7 @@ namespace TownOfUs
         public static void LoadImage(Texture2D tex, byte[] data, bool markNonReadable)
         {
             _iCallLoadImage ??= IL2CPP.ResolveICall<DLoadImage>("UnityEngine.ImageConversion::LoadImage");
-            var il2CPPArray = (Il2CppStructArray<byte>) data;
+            var il2CPPArray = (Il2CppStructArray<byte>)data;
             _iCallLoadImage.Invoke(tex.Pointer, il2CPPArray.Pointer, markNonReadable);
         }
 
