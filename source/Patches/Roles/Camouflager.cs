@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace TownOfUs.Roles
@@ -13,10 +13,8 @@ namespace TownOfUs.Roles
 
         public Camouflager(PlayerControl player) : base(player)
         {
-            Name = "Camouflager";
             ImpostorText = () => "Camouflage and turn everyone grey";
             TaskText = () => "Camouflage and get secret kills";
-            Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Camouflager;
             Faction = Faction.Impostors;
         }
