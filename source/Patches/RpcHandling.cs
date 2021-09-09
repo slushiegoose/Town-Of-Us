@@ -338,12 +338,12 @@ namespace TownOfUs
                     case CustomRPC.SetCouple:
                         var id = reader.ReadByte();
                         var id2 = reader.ReadByte();
-                        var b1 = reader.ReadByte();
+                        bool lovingImpostor = reader.ReadByte() == 0;
                         var lover1 = Utils.PlayerById(id);
                         var lover2 = Utils.PlayerById(id2);
 
-                        var roleLover1 = new Lover(lover1, 1, b1 == 0);
-                        var roleLover2 = new Lover(lover2, 2, b1 == 0);
+                        var roleLover1 = new Lover(lover1, false, lovingImpostor);
+                        var roleLover2 = new Lover(lover2, lovingImpostor, lovingImpostor);
 
                         roleLover1.OtherLover = roleLover2;
                         roleLover2.OtherLover = roleLover1;
