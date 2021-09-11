@@ -368,7 +368,9 @@ However, if they kill a Crewmate or a Neutral player they can't kill, they inste
 | Show Sheriff | Whether everybody can see who the Sheriff is | Toggle | False |
 | Sheriff Miskill Kills Crewmate | Whether the other player is killed if the Sheriff Misfires | Toggle | False |
 | Sheriff Kills Jester | Whether the Sheriff is able to kill the Jester | Toggle | False |
+| Sheriff Kills Shifter | Whether the Sheriff is able to kill the Shifter | Toggle | False |
 | Sheriff Kills The Glitch | Whether the Sheriff is able to kill The Glitch | Toggle | False |
+| Sheriff Kills the Executioner | Whether the Sheriff is able to kill the Executioner | Toggle | False |
 | Sheriff Kills Arsonist | Whether the Sheriff is able to kill the Arsonist | Toggle | False |
 | Sheriff Kill Cooldown | The cooldown on the Sheriff's kill button | Time | 25s |
 | Sheriff can report who they've killed | Whether the Sheriff is able to report their own kills | Toggle | True |

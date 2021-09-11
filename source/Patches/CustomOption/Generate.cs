@@ -74,7 +74,9 @@ namespace TownOfUs.CustomOption
         public static CustomToggleOption ShowSheriff;
         public static CustomToggleOption SheriffKillOther;
         public static CustomToggleOption SheriffKillsJester;
+        public static CustomToggleOption SheriffKillsShifter;
         public static CustomToggleOption SheriffKillsGlitch;
+        public static CustomToggleOption SheriffKillsExecutioner;
         public static CustomToggleOption SheriffKillsArsonist;
         public static CustomNumberOption SheriffKillCd;
         public static CustomToggleOption SheriffBodyReport;
@@ -294,8 +296,12 @@ namespace TownOfUs.CustomOption
 
             SheriffKillsJester =
                 new CustomToggleOption(num++, "Sheriff Kills Jester", false);
+            SheriffKillsShifter =
+                new CustomToggleOption(num++, "Sheriff Kills Shifter", false);
             SheriffKillsGlitch =
                 new CustomToggleOption(num++, "Sheriff Kills The Glitch", false);
+            SheriffKillsExecutioner =
+                new CustomToggleOption(num++, "Sheriff Kills Executioner", false);
             SheriffKillsArsonist =
                 new CustomToggleOption(num++, "Sheriff Kills Arsonist", false);
 
