@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using TMPro;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -7,8 +7,6 @@ namespace TownOfUs.CrewmateRoles.MayorMod
 {
     public class AddAbstain
     {
-        private static Sprite Abstain => TownOfUs.Abstain;
-
         public static void UpdateButton(Mayor role, MeetingHud __instance)
         {
             var skip = __instance.SkipVoteButton;
