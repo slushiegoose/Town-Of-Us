@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using HarmonyLib;
@@ -261,8 +261,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                     Role.GetRole<Arsonist>(shifter).IgniteButton.Destroy();
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                 DestroyableSingleton<HudManager>.Instance.KillButton.isActive = false;
-
-                Lights.SetLights();
             }
         }
     }
