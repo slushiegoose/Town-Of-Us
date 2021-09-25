@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,56 +13,6 @@ namespace TownOfUs
     [HarmonyPatch]
     public static class GameSettings
     {
-        public static bool AllOptions;
-
-        /*public static string StringBuild()
-        {
-            var builder = new StringBuilder("Roles:\n");
-            foreach (var option in TownOfUs.Roles)
-            {
-                builder.AppendLine($"     {option.Name}: {option}");
-            }
-
-            builder.AppendLine("Modifiers:");
-            foreach (var option in TownOfUs.Modifiers)
-            {
-                builder.AppendLine($"     {option.Name}: {option}");
-            }
-            
-            
-            foreach (var option in TownOfUs.AllOptions)
-            {
-                builder.AppendLine($"{option.Name}: {option}");
-            }
-            
-
-            return builder.ToString();
-        }
-
-        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.FixedUpdate))]
-        public static class LobbyFix
-        {
-
-            public static bool Prefix()
-            {
-                
-                DestroyableSingleton<HudManager>.Instance.GameSettings.text = StringBuild();
-                DestroyableSingleton<HudManager>.Instance.GameSettings.gameObject.SetActive(true);
-                return false;
-            }
-        }
-
-
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        [HarmonyAfter("com.comando.essentials")]
-        public static class FixScale
-        {
-            public static void Prefix(HudManager __instance)
-            {
-//                __instance.GameSettings.scale = 0.3f;
-            }
-        }*/
-
         [HarmonyPatch] //ToHudString
         private static class GameOptionsDataPatch
         {
@@ -71,40 +21,44 @@ namespace TownOfUs
                 return typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
             }
 
-            private static void Postfix(ref string __result)
+            public static void Postfix(ref string __result)
             {
-                var builder = new StringBuilder(AllOptions ? __result : "");
+                var builder = new StringBuilder(__result);
+
+                var showLater = new List<CustomOption.CustomOption>();
 
                 foreach (var option in CustomOption.CustomOption.AllOptions)
                 {
-                    if (option.Name == "Custom Game Settings" && !AllOptions) break;
                     if (option.Type == CustomOptionType.Button) continue;
-                    if (option.Type == CustomOptionType.Header) builder.AppendLine($"\n{option.Name}");
-                    else if (option.Indent) builder.AppendLine($"     {option.Name}: {option}");
-                    else builder.AppendLine($"{option.Name}: {option}");
+                    if (option.Type == CustomOptionType.Header) 
+                        builder.AppendLine($"\n{option.Name}");
+                    else if (option.Parent != null)
+                        showLater.Add(option);
+                    else
+                    {
+                        var prefix = option.Indent ? "     " : "";
+                        builder.AppendLine($"{prefix}{option.Name}: {option}");
+                    }
                 }
 
+                var parentId = -1;
 
-                __result = builder.ToString();
+                foreach (var option in showLater)
+                {
+                    var parent = option.Parent;
+                    if (parentId != parent.ID)
+                    {
+                        builder.AppendLine($"\n{parent.Name}");
+                        parentId = parent.ID;
+                    }
+                    builder.AppendLine($"{option.Name}: {option}");
+                }
+
+                if (CustomOption.CustomOption.LobbyTextScroller)
+                    builder.Insert(0, "(Scroll for more)\n");
 
 
-                if (CustomOption.CustomOption.LobbyTextScroller && __result.Count(c => c == '\n') > 38)
-                    __result = __result.Insert(__result.IndexOf('\n'), " (Scroll for more)");
-                else __result = __result.Insert(__result.IndexOf('\n'), "Press Tab to see All Options");
-
-
-                __result = $"<size=1.25>{__result}</size>";
-            }
-        }
-
-        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.FixedUpdate))]
-        private static class LobbyBehaviourPatch
-        {
-            private static void Postfix()
-            {
-                if (Input.GetKeyInt(KeyCode.Tab)) AllOptions = !AllOptions;
-
-                //                HudManager.Instance.GameSettings.scale = 0.5f;
+                __result = $"<size=1.25>{builder}</size>";
             }
         }
 
@@ -113,7 +67,8 @@ namespace TownOfUs
         {
             public static void Postfix(ref GameOptionsMenu __instance)
             {
-                __instance.GetComponentInParent<Scroller>().YBounds.max = 70f;
+                var scroller = __instance.GetComponentInParent<Scroller>();
+                scroller.YBounds.max = 70f;
             }
         }
     }

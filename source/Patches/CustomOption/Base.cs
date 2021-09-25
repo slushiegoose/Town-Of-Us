@@ -1,11 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TownOfUs.CustomOption
 {
     public class CustomOption
     {
         public static List<CustomOption> AllOptions = new List<CustomOption>();
+        public static int ShownOptions()
+        {
+            return AllOptions.Count(option => option.ShouldShow());
+        }
+
         public readonly int ID;
 
         public Func<object, string> Format;
@@ -32,7 +38,8 @@ namespace TownOfUs.CustomOption
         public object DefaultValue { get; set; }
 
         public static bool LobbyTextScroller { get; set; } = true;
-
+        public Func<bool> ShouldShow { get; set; } = () => true;
+        public CustomNumberOption Parent { get; set; } = null;
         protected internal bool Indent { get; set; }
 
         public override string ToString()
@@ -48,11 +55,10 @@ namespace TownOfUs.CustomOption
 
         protected internal void Set(object value, bool SendRpc = true)
         {
-            System.Console.WriteLine($"{Name} set to {value}");
-
             Value = value;
 
             if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc) Rpc.SendRpc(this);
+
 
             try
             {

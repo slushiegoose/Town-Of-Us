@@ -1,8 +1,8 @@
-namespace TownOfUs.CustomOption
+﻿namespace TownOfUs.CustomOption
 {
     public class CustomToggleOption : CustomOption
     {
-        protected internal CustomToggleOption(int id, string name, bool value = true) : base(id, name,
+        protected internal CustomToggleOption(int id, string name, bool value) : base(id, name,
             CustomOptionType.Toggle,
             value)
         {
