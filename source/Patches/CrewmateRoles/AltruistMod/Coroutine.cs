@@ -1,13 +1,12 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using InnerNet;
 using Reactor.Extensions;
 using TownOfUs.CrewmateRoles.MedicMod;
-using TownOfUs.Extensions;
 using TownOfUs.Roles;
 using UnityEngine;
+using InnerNet;
 using Object = UnityEngine.Object;
 
 namespace TownOfUs.CrewmateRoles.AltruistMod
@@ -25,17 +24,15 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
 
             var revived = new List<PlayerControl>();
 
-
             if (AmongUsClient.Instance.AmHost) Utils.RpcMurderPlayer(role.Player, role.Player);
 
-            if (CustomGameOptions.AltruistTargetBody)
-                if (target != null)
-                {
-                    foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
-                    {
-                        if (deadBody.ParentId == target.ParentId) deadBody.gameObject.Destroy();
-                    }
-                }
+            if (CustomGameOptions.AltruistTargetBody && target != null)
+            {
+                target.gameObject?.Destroy();
+                MeetingIntroPatch.DeadPlayers.Add(
+                    GameData.Instance.GetPlayerById(parentId)
+                );
+            }
 
             var startTime = DateTime.UtcNow;
             while (true)
@@ -49,15 +46,19 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
                 if (MeetingHud.Instance) yield break;
             }
 
-            foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+            var altruist = role.Player;
+            var altruistBody = Object.FindObjectsOfType<DeadBody>()
+                .FirstOrDefault(b => b.ParentId == altruist.PlayerId);
+            if (altruistBody != null)
             {
-                if (deadBody.ParentId == role.Player.PlayerId) deadBody.gameObject.Destroy();
+                altruistBody.gameObject?.Destroy();
+                MeetingIntroPatch.DeadPlayers.Add(altruist.Data);
             }
 
             var player = Utils.PlayerById(parentId);
 
-            // if (player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
-            //     yield break;
+            if (player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
+                yield break;
 
             player.Revive();
             Murder.KilledPlayers.Remove(
@@ -65,22 +66,25 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             revived.Add(player);
             player.NetTransform.SnapTo(position);
 
-            if (target != null) Object.Destroy(target.gameObject);
+            if (target != null) target.gameObject?.Destroy();
 
             if (player.isLover() && CustomGameOptions.BothLoversDie)
             {
                 var lover = Role.GetRole<Lover>(player).OtherLover.Player;
 
-                lover.Revive();
-                Murder.KilledPlayers.Remove(
-                    Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
-                revived.Add(lover);
-
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                if (lover?.Data != null && !lover.Data.Disconnected)
                 {
-                    if (deadBody.ParentId == lover.PlayerId)
+                    lover.Revive();
+                    Murder.KilledPlayers.Remove(
+                        Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
+                    revived.Add(lover);
+
+                    var loverBody = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == lover.PlayerId);
+
+                    if (loverBody != null)
                     {
-                        deadBody.gameObject.Destroy();
+                        lover.NetTransform.SnapTo(loverBody.TruePosition);
+                        loverBody.gameObject?.Destroy();
                     }
                 }
             }
@@ -88,8 +92,8 @@ namespace TownOfUs.CrewmateRoles.AltruistMod
             if (revived.Any(x => x.AmOwner))
                 try
                 {
-                    Minigame.Instance.Close();
-                    Minigame.Instance.Close();
+                    Minigame.Instance?.Close();
+                    Minigame.Instance?.Close();
                 }
                 catch
                 {
