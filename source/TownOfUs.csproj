@@ -19,4 +19,8 @@
     <EmbeddedResource Include="Resources\*" />
     <EmbeddedResource Include="Resources\Hats\**" />
   </ItemGroup>
+   
+  <Target Name="Copy" AfterTargets="Build">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="../AmongUs/BepInEx/plugins/" />
+  </Target>
 </Project>
