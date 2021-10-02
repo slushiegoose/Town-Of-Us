@@ -1,4 +1,4 @@
-using System;
+﻿﻿﻿using System;
 using System.Collections;
 using System.Linq;
 using HarmonyLib;
@@ -252,9 +252,6 @@ namespace TownOfUs.NeutralRoles.ShifterMod
                 if (resetShifter) shifterRole.RegenTask();
             }
 
-            //System.Console.WriteLine(shifter.Is(RoleEnum.Sheriff));
-            //System.Console.WriteLine(other.Is(RoleEnum.Sheriff));
-            //System.Console.WriteLine(Roles.Role.GetRole(shifter));
             if (shifter.AmOwner || other.AmOwner)
             {
                 if (shifter.Is(RoleEnum.Arsonist) && other.AmOwner)

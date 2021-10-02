@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -78,50 +78,51 @@ namespace TownOfUs.CrewmateRoles.TimeLordMod
             {
                 points.RemoveAt(0);
                 points.RemoveAt(0);
-                if (PlayerControl.LocalPlayer.inVent)
+
+                var localPlayer = PlayerControl.LocalPlayer;
+                var currentVent = Vent.currentVent;
+                if (currentVent != null)
                 {
-                    PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
-                    PlayerControl.LocalPlayer.MyPhysics.ExitAllVents();
+                    localPlayer.MyPhysics.RpcExitVent(currentVent.Id);
+                    currentVent.SetButtons(false);
                 }
-                
-                if (!PlayerControl.LocalPlayer.inVent)
+
+
+                if (!localPlayer.Collider.enabled)
                 {
-                    if (!PlayerControl.LocalPlayer.Collider.enabled)
-                    {
-                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-                        PlayerControl.LocalPlayer.Collider.enabled = true;
-                        PlayerControl.LocalPlayer.NetTransform.enabled = true;
+                    localPlayer.MyPhysics.ResetMoveState();
+                    localPlayer.Collider.enabled = true;
+                    localPlayer.NetTransform.enabled = true;
 
 
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.FixAnimation, SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(localPlayer.NetId,
+                        (byte)CustomRPC.FixAnimation, SendOption.Reliable, -1);
+                    writer.Write(localPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
 
 
-                    var currentPoint = points[0];
+                var currentPoint = points[0];
 
-                    PlayerControl.LocalPlayer.transform.position = currentPoint.position;
-                    PlayerControl.LocalPlayer.gameObject.GetComponent<Rigidbody2D>().velocity =
-                        currentPoint.velocity * 3;
+                localPlayer.transform.position = currentPoint.position;
+                localPlayer.gameObject.GetComponent<Rigidbody2D>().velocity =
+                    currentPoint.velocity * 3;
 
-                    if (isDead && currentPoint.unix < deadTime && PlayerControl.LocalPlayer.Data.IsDead &&
-                        CustomGameOptions.RewindRevive)
-                    {
-                        var player = PlayerControl.LocalPlayer;
+                if (isDead && currentPoint.unix < deadTime && localPlayer.Data.IsDead &&
+                    CustomGameOptions.RewindRevive)
+                {
+                    var player = PlayerControl.LocalPlayer;
 
-                        ReviveBody(player);
-                        player.myTasks.RemoveAt(0);
+                    ReviveBody(player);
+                    player.myTasks.RemoveAt(0);
 
-                        deadTime = 0;
-                        isDead = false;
+                    deadTime = 0;
+                    isDead = false;
 
-                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.RewindRevive, SendOption.Reliable, -1);
-                        write.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(write);
-                    }
+                    var write = AmongUsClient.Instance.StartRpcImmediately(localPlayer.NetId,
+                        (byte)CustomRPC.RewindRevive, SendOption.Reliable, -1);
+                    write.Write(localPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(write);
                 }
 
                 points.RemoveAt(0);
