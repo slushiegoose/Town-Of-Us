@@ -17,49 +17,21 @@ namespace TownOfUs.ImpostorRoles.UndertakerMod
             var body = role.CurrentlyDragging;
             if (body == null) return;
 
-
             if (__instance.Data.IsDead)
             {
-                if (__instance.AmOwner)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.Drop, SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    var position = PlayerControl.LocalPlayer.GetTruePosition();
-                    writer.Write(position);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    // body.transform.position = position;
-
-                    role.CurrentlyDragging = null;
-                    body.bodyRenderer.material.SetFloat("_Outline", 0f);
-                    role.LastDragged = DateTime.UtcNow;
-
-                }
+                role.DragDropCallback(body);
                 return;
             }
 
             var currentPosition = __instance.GetTruePosition();
             var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
             var newPos = ((Vector2) __instance.transform.position) - (velocity / 3) + body.myCollider.offset;
-            if (PhysicsHelpers.AnythingBetween(
+            if (!PhysicsHelpers.AnythingBetween(
                 currentPosition,
                 newPos,
                 Constants.ShipAndObjectsMask,
                 false
-            ))
-            {
-                body.transform.position = currentPosition;
-            }
-            else
-            {
-                body.transform.position = newPos;
-            }
-
-            if (!__instance.AmOwner) return;
-            var material = body.bodyRenderer.material;
-            material.SetColor("_OutlineColor", Color.green);
-            material.SetFloat("_Outline", 1f);
-            
+            )) body.transform.position = newPos;
         }
     }
 }

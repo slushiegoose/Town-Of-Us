@@ -1,30 +1,46 @@
+﻿using UnityEngine;
+using Hazel;
+using TownOfUs.ImpostorRoles.JanitorMod;
+using Reactor;
+
 namespace TownOfUs.Roles
 {
-    public class Janitor : Role
+    public class Janitor : Impostor
     {
-        public KillButtonManager _cleanButton;
-
         public Janitor(PlayerControl player) : base(player)
         {
-            Name = "Janitor";
             ImpostorText = () => "Clean up bodies";
             TaskText = () => "Clean bodies to prevent Crewmates from discovering them.";
-            Color = Palette.ImpostorRed;
             RoleType = RoleEnum.Janitor;
-            Faction = Faction.Impostors;
+            CreateButtons();
         }
 
-        public DeadBody CurrentTarget { get; set; }
-
-        public KillButtonManager CleanButton
+        public override void CreateButtons()
         {
-            get => _cleanButton;
-            set
+            if (Player.AmOwner)
             {
-                _cleanButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AbilityManager.Add(new BodyAbilityData
+                {
+                    Callback = CleanCallback,
+                    MaxTimer = CustomGameOptions.DragCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color.yellow,
+                    Icon = TownOfUs.JanitorClean,
+                    Position = AbilityPositions.OverKillButton,
+                    SyncWithKill = true
+                });
             }
+        }
+
+        public void CleanCallback(DeadBody target)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.JanitorClean, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(target.ParentId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            Coroutines.Start(JanitorCoroutines.CleanCoroutine(target, this));
         }
     }
 }

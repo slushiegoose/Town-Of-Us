@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿﻿using HarmonyLib;
 using UnityEngine;
 
 namespace TownOfUs
@@ -28,7 +28,7 @@ namespace TownOfUs
             position.AdjustPosition();
 
             __instance.text.text =
-                "<color=#00FF00FF>TownOfUs v2.2.1</color>\n" +
+                $"<color=#00FF00FF>TownOfUs v{TownOfUs.Version}</color>\n" +
                 "Available on <color=#BEA4FFFF>Polus.gg</color>\n" +
                 $"Ping: {AmongUsClient.Instance.Ping}ms\n" +
                 (!MeetingHud.Instance

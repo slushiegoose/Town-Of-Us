@@ -1,5 +1,4 @@
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TownOfUs.Roles
 {
@@ -7,29 +6,61 @@ namespace TownOfUs.Roles
     {
         public Sheriff(PlayerControl player) : base(player)
         {
-            Name = "Sheriff";
             ImpostorText = () => "Shoot the <color=#FF0000FF>Impostor</color>";
             TaskText = () => "Kill off the impostor but don't kill crewmates.";
-            Color = Color.yellow;
             RoleType = RoleEnum.Sheriff;
+            CreateButtons();
         }
 
-        public PlayerControl ClosestPlayer;
-        public DateTime LastKilled { get; set; }
-
-        public float SheriffKillTimer()
+        public override void CreateButtons()
         {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.SheriffKillCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            if (Player.AmOwner)
+            {
+                var killButton = HudManager.Instance.KillButton;
+                AbilityManager.Add(new PlayerAbilityData
+                {
+                    Callback = KillCallback,
+                    KillButton = killButton,
+                    MaxTimer = CustomGameOptions.SheriffKillCd,
+                    Range = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+                    TargetColor = Color,
+                    Position = AbilityPositions.KillButton
+                });
+            }
         }
 
-        internal override bool Criteria()
+        public bool CanKill(PlayerControl player)
         {
-            return CustomGameOptions.ShowSheriff || base.Criteria();
+            if (player.Data.IsImpostor) return true;
+
+            var role = GetRole(player)?.RoleType;
+
+            return
+                role != null && (role == RoleEnum.Glitch ||
+                (CustomGameOptions.SheriffKillsJester && role == RoleEnum.Jester) ||
+                (CustomGameOptions.SheriffKillsArsonist && role == RoleEnum.Arsonist));
+        }
+
+        public void KillCallback(PlayerControl player)
+        {
+            var canKill = CanKill(player);
+
+            if (player.IsShielded())
+            {
+                Utils.RpcBreakShield(player);
+                return;
+            }
+
+            if (canKill || CustomGameOptions.SheriffKillOther)
+                Utils.RpcMurderPlayer(Player, player);
+
+            if (!canKill)
+                Utils.RpcMurderPlayer(Player, Player);
+        }
+
+        public override bool Criteria()
+        {
+            return (Player.AmOwner && !Player.Data.Disconnected) || CustomGameOptions.ShowSheriff || base.Criteria();
         }
     }
 }

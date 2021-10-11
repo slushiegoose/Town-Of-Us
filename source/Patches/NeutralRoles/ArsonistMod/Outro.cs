@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUs.Roles;
 using UnityEngine;
@@ -15,7 +15,7 @@ namespace TownOfUs.NeutralRoles.ArsonistMod
             if (role == null) return;
             if (Role.GetRoles(RoleEnum.Jester).Any(x => ((Jester) x).VotedOut)) return;
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
-            array[0].NameText.text = role.ColorString + array[0].NameText.text + "</color>";
+            array[0].NameText.text = Utils.ColorText(role.Color, array[0].NameText.text);
             __instance.BackgroundBar.material.color = role.Color;
             var text = Object.Instantiate(__instance.WinText);
             text.text = "Arsonist wins";

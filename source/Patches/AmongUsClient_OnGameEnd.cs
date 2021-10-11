@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using TownOfUs.Roles;

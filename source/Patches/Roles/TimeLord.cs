@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using TownOfUs.CrewmateRoles.TimeLordMod;
 using UnityEngine;
+using Hazel;
 
 namespace TownOfUs.Roles
 {
@@ -8,46 +9,36 @@ namespace TownOfUs.Roles
     {
         public TimeLord(PlayerControl player) : base(player)
         {
-            Name = "Time Lord";
             ImpostorText = () => "Rewind Time";
             TaskText = () => "Rewind Time!";
-            Color = new Color(0f, 0f, 1f, 1f);
             RoleType = RoleEnum.TimeLord;
-            Scale = 1.4f;
+            CreateButtons();
         }
 
-        public DateTime StartRewind { get; set; }
-        public DateTime FinishRewind { get; set; }
-
-        public float TimeLordRewindTimer()
+        public override void CreateButtons()
         {
-            var utcNow = DateTime.UtcNow;
-
-
-            TimeSpan timespan;
-            float num;
-
-            if (RecordRewind.rewinding)
+            if (Player.AmOwner)
             {
-                timespan = utcNow - StartRewind;
-                num = CustomGameOptions.RewindDuration * 1000f / 3f;
+                AbilityManager.Add(new PlainAbilityData
+                {
+                    Callback = RewindCallback,
+                    MaxTimer = CustomGameOptions.RewindCooldown,
+                    Icon = TownOfUs.Rewind,
+                    Position = AbilityPositions.KillButton,
+                    IsHighlighted = () => true
+                });
             }
-            else
-            {
-                timespan = utcNow - FinishRewind;
-                num = CustomGameOptions.RewindCooldown * 1000f;
-            }
-
-
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
-            return (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
-
-        public float GetCooldown()
+        public void RewindCallback()
         {
-            return RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.SheriffKillCd;
+            if (Player.AmOwner)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)CustomRPC.Rewind, SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            StartStop.StartRewind();
         }
     }
 }

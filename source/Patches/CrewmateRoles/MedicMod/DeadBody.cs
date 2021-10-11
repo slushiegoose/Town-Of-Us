@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TownOfUs.CrewmateRoles.MedicMod
 {
@@ -7,6 +8,7 @@ namespace TownOfUs.CrewmateRoles.MedicMod
     {
         public byte KillerId { get; set; }
         public byte PlayerId { get; set; }
+        public Vector2 DeathPosition { get; set; }
         public DateTime KillTime { get; set; }
     }
 
@@ -18,20 +20,19 @@ namespace TownOfUs.CrewmateRoles.MedicMod
         public PlayerControl Body { get; set; }
         public float KillAge { get; set; }
 
-        public static string ParseBodyReport(BodyReport br)
+        public static string ParseBodyReport(BodyReport report)
         {
-            //System.Console.WriteLine(br.KillAge);
-            if (br.KillAge > CustomGameOptions.MedicReportColorDuration * 1000)
-                return
-                    $"Body Report: The corpse is too old to gain information from. (Killed {Math.Round(br.KillAge / 1000)}s ago)";
+            string BuildMessage(string info) =>
+                $"Body Report: {info} (Killed {Math.Round(report.KillAge / 1000)}s ago)";
 
-            if (br.Killer.PlayerId == br.Body.PlayerId)
-                return
-                    $"Body Report: The kill appears to have been a suicide! (Killed {Math.Round(br.KillAge / 1000)}s ago)";
+            if (report.KillAge > CustomGameOptions.MedicReportColorDuration * 1000)
+                return BuildMessage("The corpse is too old to gain information from.");
 
-            if (br.KillAge < CustomGameOptions.MedicReportNameDuration * 1000)
-                return
-                    $"Body Report: The killer appears to be {br.Killer.Data.PlayerName}! (Killed {Math.Round(br.KillAge / 1000)}s ago)";
+            if (report.Killer.PlayerId == report.Body.PlayerId)
+                return BuildMessage("The kill appears to have been a suicide!");
+
+            if (report.KillAge < CustomGameOptions.MedicReportNameDuration * 1000)
+                return BuildMessage($"The killer appears to be {report.Killer.Data.PlayerName}!");
 
             var colors = new Dictionary<int, string>
             {
@@ -63,9 +64,9 @@ namespace TownOfUs.CrewmateRoles.MedicMod
                 {25, "lighter"},// rainbow
                 {26, "lighter"},// azure
             };
-            var typeOfColor = colors[br.Killer.Data.ColorId];
-            return
-                $"Body Report: The killer appears to be a {typeOfColor} color. (Killed {Math.Round(br.KillAge / 1000)}s ago)";
+            return BuildMessage(
+                $"The killer appears to be a {colors[report.Killer.Data.ColorId]} color."
+            );
         }
     }
 }

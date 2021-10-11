@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUs.Extensions;
 
-namespace TownOfUs.Patches
+namespace TownOfUs
 {
     [HarmonyPatch]
     public static class SpeedPatch
